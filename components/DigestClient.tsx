@@ -13,6 +13,7 @@ import {
 import DigestHeader from "./DigestHeader";
 import FeaturedStory from "./FeaturedStory";
 import CategorySection from "./CategorySection";
+import TweaksPanel from "./TweaksPanel";
 
 interface ThemeCtxValue {
   t: Theme;
@@ -125,6 +126,9 @@ export default function DigestClient({ digest }: Props) {
 
         </div>
       </div>
+
+      {/* Floating tweaks panel */}
+      <TweaksPanel prefs={prefs} onPrefsChange={handlePrefsChange} />
     </ThemeCtx.Provider>
   );
 }

@@ -36,9 +36,15 @@ export default function Thumb({ ogImage, label, height }: Props) {
           />
         ) : (
           <>
+            {/* Vignette overlay — margin: 0px 56px per user edit */}
             {t.thumbVignette !== "transparent" && (
-              <div style={{ position: "absolute", inset: 0, background: t.thumbVignette }} />
+              <div style={{
+                position: "absolute", inset: 0,
+                background: t.thumbVignette,
+                margin: "0px 56px",
+              }} />
             )}
+            {/* Label */}
             <div style={{
               position: "absolute",
               bottom: 14,
@@ -50,6 +56,34 @@ export default function Thumb({ ogImage, label, height }: Props) {
               color: t.thumbLabel,
             }}>
               {label}
+            </div>
+            {/* Play button ring — margin: 10px; border-width: 3px 56px per user edit */}
+            <div style={{
+              position: "absolute", inset: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              padding: "50px",
+              margin: "10px",
+              borderStyle: "solid",
+              borderWidth: "3px 56px",
+              borderColor: "transparent",
+            }}>
+              <div
+                className="play-ring"
+                style={{
+                  width: 54, height: 54, borderRadius: "50%",
+                  border: `1px solid ${t.playBorder}`,
+                  background: t.playBg,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                <div style={{
+                  width: 0, height: 0,
+                  borderLeft: `16px solid ${t.playArrow}`,
+                  borderTop: "9px solid transparent",
+                  borderBottom: "9px solid transparent",
+                  marginLeft: 5,
+                }} />
+              </div>
             </div>
           </>
         )}
