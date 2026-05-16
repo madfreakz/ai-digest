@@ -18,6 +18,31 @@ const QUERIES = [
   "embodied AI robot foundation model breakthrough 2025",
 ];
 
+async function scrapeOgImage(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; PhysicalAIBot/1.0)" },
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    // Match both attribute orderings of og:image
+    const match =
+      html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
+      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
+    if (!match) return null;
+    const src = match[1].trim();
+    // Resolve relative URLs
+    if (src.startsWith("http")) return src;
+    const base = new URL(url);
+    return new URL(src, base.origin).href;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchRoboticsNews(): Promise<ExaArticle[]> {
   const exa = new Exa(process.env.EXA_API_KEY!);
 
@@ -56,6 +81,19 @@ export async function fetchRoboticsNews(): Promise<ExaArticle[]> {
       }
     })
   );
+
+  // For articles without an image from Exa, scrape og:image in parallel
+  const missing = allResults.filter((a) => !a.ogImage);
+  if (missing.length > 0) {
+    const scraped = await Promise.allSettled(
+      missing.map((a) => scrapeOgImage(a.url))
+    );
+    scraped.forEach((res, i) => {
+      if (res.status === "fulfilled" && res.value) {
+        missing[i].ogImage = res.value;
+      }
+    });
+  }
 
   return allResults;
 }

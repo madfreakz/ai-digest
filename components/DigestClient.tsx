@@ -97,11 +97,7 @@ export default function DigestClient({ digest }: Props) {
           <div style={{ height: t.mastheadH, background: t.mastheadBg }} />
 
           {/* Header */}
-          <DigestHeader
-            generatedAt={digest.generatedAt}
-            prefs={prefs}
-            onPrefsChange={handlePrefsChange}
-          />
+          <DigestHeader generatedAt={digest.generatedAt} />
 
           {/* Featured lead story */}
           {featured && <FeaturedStory article={featured} compact={compact} />}
