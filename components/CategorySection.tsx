@@ -44,9 +44,9 @@ export default function CategorySection({ articles }: Props) {
       {/* Sticky tab bar */}
       <div
         className="tab-bar"
-        style={{ position: "sticky", top: 0, zIndex: 10, padding: "0 56px" }}
+        style={{ position: "sticky", top: 0, zIndex: 10, padding: "0 var(--page-pad-x)" }}
       >
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", overflowX: "auto", WebkitOverflowScrolling: "touch" as const, scrollbarWidth: "none" }}>
           {activeCats.map((cat) => {
             const isActive = cat === active;
             return (

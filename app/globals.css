@@ -2,6 +2,13 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── Responsive horizontal padding ── */
+:root { --page-pad-x: 56px; }
+@media (max-width: 600px) {
+  :root { --page-pad-x: 20px; }
+  .physai-title { font-size: clamp(26px, 7vw, 38px) !important; }
+}
+
 /* ── CSS custom properties (set by DigestClient on theme switch) ── */
 :root {
   --page-bg:           #FAF8F4;
@@ -83,4 +90,4 @@ html, body { background: var(--page-bg); min-height: 100vh; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 2px; }
 
-a, button { font-family: inherit; cursor: pointer; }
+a, button { font-family: inherit; cursor: pointer; touch-action: manipulation; }

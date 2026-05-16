@@ -30,7 +30,7 @@ export default function FeaturedStory({ article, compact }: Props) {
         </div>
       </a>
 
-      <div style={{ padding: compact ? "20px 56px 26px" : "28px 56px 38px" }}>
+      <div style={{ padding: compact ? "20px var(--page-pad-x) 26px" : "28px var(--page-pad-x) 38px" }}>
         {/* Lead Story label */}
         <div style={{
           fontFamily: "'DM Sans', sans-serif",

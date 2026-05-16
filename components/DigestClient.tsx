@@ -91,7 +91,7 @@ export default function DigestClient({ digest }: Props) {
   return (
     <ThemeCtx.Provider value={{ t, headlineFont, showBD, compact }}>
       <div style={{ background: t.bg, minHeight: "100vh", display: "flex", justifyContent: "center", paddingBottom: 100 }}>
-        <div style={{ width: "100%", maxWidth: 680 }}>
+        <div style={{ width: "100%", maxWidth: 680, minWidth: 0 }}>
 
           {/* Masthead rule */}
           <div style={{ height: t.mastheadH, background: t.mastheadBg }} />
@@ -107,7 +107,8 @@ export default function DigestClient({ digest }: Props) {
 
           {/* Footer */}
           <div style={{
-            padding: compact ? "20px 56px" : "26px 56px",
+            padding: compact ? "20px var(--page-pad-x)" : "26px var(--page-pad-x)",
+            paddingBottom: `calc(${compact ? "20px" : "26px"} + env(safe-area-inset-bottom, 0px))`,
             background: t.bgDeep,
             borderTop: `1px solid ${t.border}`,
             marginTop: 20,

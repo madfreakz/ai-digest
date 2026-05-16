@@ -17,8 +17,8 @@ export default function NewsCard({ article, index }: Props) {
   const time = formatPublishedAt(article.publishedAt);
 
   const padV = compact
-    ? hasThumb ? "14px 56px 16px" : "14px 56px 14px"
-    : hasThumb ? "22px 56px 30px" : "24px 56px 28px";
+    ? hasThumb ? "14px var(--page-pad-x) 16px" : "14px var(--page-pad-x) 14px"
+    : hasThumb ? "22px var(--page-pad-x) 30px" : "24px var(--page-pad-x) 28px";
 
   return (
     <div

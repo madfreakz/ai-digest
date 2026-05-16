@@ -14,9 +14,9 @@ export default function DigestHeader({ generatedAt }: Props) {
   });
 
   return (
-    <div style={{ padding: compact ? "36px 56px 24px" : "52px 56px 36px" }}>
+    <div style={{ padding: compact ? "36px var(--page-pad-x) 24px" : "52px var(--page-pad-x) 36px" }}>
       {/* Title */}
-      <div style={{
+      <div className="physai-title" style={{
         fontFamily: headlineFont,
         fontSize: 38,
         fontWeight: 600,
