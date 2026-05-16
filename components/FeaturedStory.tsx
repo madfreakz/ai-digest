@@ -114,7 +114,7 @@ export default function FeaturedStory({ article, compact }: Props) {
               fontWeight: 500,
               marginRight: 8,
             }}>
-              Business Development
+              So What?
             </span>
             <span style={{
               fontSize: 12.5,

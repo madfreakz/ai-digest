@@ -106,7 +106,7 @@ export default function NewsCard({ article, index }: Props) {
               fontWeight: 500,
               marginRight: 8,
             }}>
-              Business Development
+              So What?
             </span>
             <span style={{
               fontSize: 12.5,
