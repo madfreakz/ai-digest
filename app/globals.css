@@ -1,1 +1,86 @@
 @import "tailwindcss";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── CSS custom properties (set by DigestClient on theme switch) ── */
+:root {
+  --page-bg:           #FAF8F4;
+  --tab-blur-bg:       rgba(250,248,244,0.94);
+  --accent:            #1B3A6B;
+  --article-hover-bg:  rgba(27,58,107,0.025);
+  --article-hover-clr: #080604;
+  --play-hover-border: rgba(27,58,107,0.5);
+  --play-hover-bg:     rgba(27,58,107,0.1);
+  --tab-hover-clr:     #5A6E8A;
+  --scroll-thumb:      #D0C8BC;
+  --tab-border:        #DED8CC;
+}
+
+html, body { background: var(--page-bg); min-height: 100vh; }
+
+/* ── Tab fade ── */
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tab-content { animation: tabFadeIn 0.2s ease-out; }
+
+/* ── Article hover ── */
+.article-item { position: relative; transition: background 0.2s ease; }
+.article-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 1.5px; background: var(--accent); opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.article-item:hover::before { opacity: 1; }
+.article-item:hover         { background: var(--article-hover-bg); }
+
+.article-link  { text-decoration: none; display: block; color: inherit; }
+.article-title { transition: color 0.16s ease; }
+.article-item:hover .article-title { color: var(--article-hover-clr) !important; }
+
+.ext-arrow {
+  display: inline-block; opacity: 0; margin-left: 6px;
+  transform: translate(-2px, 2px);
+  transition: opacity 0.16s, transform 0.16s;
+  font-size: 12px; vertical-align: middle;
+  color: var(--accent); font-style: normal;
+}
+.article-item:hover .ext-arrow { opacity: 1; transform: translate(0,0); }
+
+/* ── Thumb hover ── */
+.thumb-wrap  { overflow: hidden; }
+.thumb-inner { transition: transform 0.55s ease; }
+.article-item:hover .thumb-inner { transform: scale(1.02); }
+
+.play-ring { transition: border-color 0.2s, background 0.2s; }
+.article-item:hover .play-ring {
+  border-color: var(--play-hover-border) !important;
+  background:   var(--play-hover-bg)     !important;
+}
+
+/* ── Featured hover ── */
+.featured-wrap  { overflow: hidden; }
+.featured-inner { transition: transform 0.55s ease; }
+.featured-wrap:hover .featured-inner { transform: scale(1.015); }
+.featured-title { transition: color 0.16s ease; }
+.featured-wrap:hover .featured-title { color: var(--article-hover-clr) !important; }
+.featured-wrap:hover .ext-arrow      { opacity: 1; transform: translate(0,0); }
+
+/* ── Tab hover ── */
+.tab-btn:not(.tab-active):hover .tab-label { color: var(--tab-hover-clr) !important; }
+
+/* ── Sticky tab backdrop ── */
+.tab-bar {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: var(--tab-blur-bg) !important;
+  border-bottom: 1px solid var(--tab-border);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 2px; }
+
+a, button { font-family: inherit; cursor: pointer; }

@@ -7,42 +7,50 @@ import Thumb from "./Thumb";
 
 interface Props {
   article: DigestArticle;
-  index: number;
+  compact: boolean;
 }
 
-export default function NewsCard({ article, index }: Props) {
-  const { t, headlineFont, showBD, compact } = useTheme();
-  const hasThumb = index === 0 && (!!article.ogImage || !!article.companyTags.length);
-  const thumbH = compact ? 160 : 220;
+export default function FeaturedStory({ article, compact }: Props) {
+  const { t, headlineFont, showBD } = useTheme();
+  const thumbH = compact ? 240 : 360;
   const time = formatPublishedAt(article.publishedAt);
-
-  const padV = compact
-    ? hasThumb ? "14px 56px 16px" : "14px 56px 14px"
-    : hasThumb ? "22px 56px 30px" : "24px 56px 28px";
 
   return (
     <div
-      className="article-item"
-      style={{ borderTop: index === 0 ? "none" : `1px solid ${t.borderLight}` }}
+      className="featured-wrap"
+      style={{ borderBottom: `1px solid ${t.border}`, borderTop: `1px solid ${t.border}` }}
     >
-      {hasThumb && (
-        <a href={article.url} target="_blank" rel="noopener noreferrer">
+      <a href={article.url} target="_blank" rel="noopener noreferrer">
+        <div className="featured-inner">
           <Thumb
             ogImage={article.ogImage}
             label={article.companyTags.join(" · ").toLowerCase() || article.category.toLowerCase()}
             height={thumbH}
           />
-        </a>
-      )}
+        </div>
+      </a>
 
-      <div style={{ padding: padV }}>
+      <div style={{ padding: compact ? "20px 56px 26px" : "28px 56px 38px" }}>
+        {/* Lead Story label */}
+        <div style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 10,
+          color: t.accent,
+          fontVariantCaps: "small-caps",
+          letterSpacing: "0.1em",
+          fontWeight: 500,
+          marginBottom: 12,
+        }}>
+          Lead Story
+        </div>
+
         {/* Meta */}
         <div style={{
           fontFamily: "'DM Sans', sans-serif",
           fontSize: 11,
           color: t.textGhost,
           fontWeight: 300,
-          marginBottom: 9,
+          marginBottom: 12,
           display: "flex",
           gap: 8,
           flexWrap: "wrap",
@@ -65,31 +73,31 @@ export default function NewsCard({ article, index }: Props) {
           target="_blank"
           rel="noopener noreferrer"
           className="article-link"
+          style={{ display: "block", marginBottom: 14 }}
         >
           <div
-            className="article-title"
+            className="article-title featured-title"
             style={{
               fontFamily: headlineFont,
-              fontSize: hasThumb ? 20 : 16.5,
-              fontWeight: hasThumb ? 500 : 400,
-              lineHeight: 1.36,
+              fontSize: compact ? 20 : 26,
+              fontWeight: 500,
+              lineHeight: 1.28,
               color: t.textHigh,
-              marginBottom: hasThumb ? 13 : 9,
             }}
           >
             {article.title}
-            <span className="ext-arrow">↗</span>
+            <span className="ext-arrow" style={{ fontSize: 14 }}>↗</span>
           </div>
         </a>
 
         {/* Summary */}
         <div style={{
           fontFamily: "'DM Sans', sans-serif",
-          fontSize: 13.5,
+          fontSize: 14,
           lineHeight: 1.72,
           color: t.textMid,
           fontWeight: 300,
-          marginBottom: showBD ? 13 : 0,
+          marginBottom: showBD ? 15 : 0,
         }}>
           {article.summary}
         </div>

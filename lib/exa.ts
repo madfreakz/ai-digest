@@ -3,10 +3,10 @@ import Exa from "exa-js";
 export interface ExaArticle {
   title: string;
   url: string;
-  publishedDate?: string;
+  publishedAt: string;
   text?: string;
-  author?: string;
   source?: string;
+  ogImage: string | null;
 }
 
 const QUERIES = [
@@ -44,9 +44,10 @@ export async function fetchRoboticsNews(): Promise<ExaArticle[]> {
             allResults.push({
               title: item.title ?? "Untitled",
               url: item.url,
-              publishedDate: item.publishedDate ?? undefined,
+              publishedAt: item.publishedDate ?? new Date().toISOString(),
               text: item.text ?? undefined,
               source: hostname,
+              ogImage: (item as Record<string, unknown>).image as string | null ?? null,
             });
           }
         }

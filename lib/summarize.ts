@@ -13,7 +13,8 @@ export interface DigestArticle {
   title: string;
   url: string;
   source: string;
-  publishedDate?: string;
+  publishedAt: string;
+  ogImage: string | null;
   category: Category;
   companyTags: string[];
   summary: string;
@@ -21,7 +22,6 @@ export interface DigestArticle {
 }
 
 export interface Digest {
-  keyPoints: string[];
   articles: DigestArticle[];
   generatedAt: string;
 }
@@ -55,11 +55,12 @@ const KNOWN_COMPANIES = [
 export async function generateDigest(articles: ExaArticle[]): Promise<Digest> {
   const client = new Anthropic({ apiKey: process.env.PHYSAI_ANTHROPIC_KEY });
 
-  const articleList = articles
-    .slice(0, 25)
+  const sliced = articles.slice(0, 25);
+
+  const articleList = sliced
     .map(
       (a, i) =>
-        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedDate ?? "recent"}\nExcerpt: ${(a.text ?? "").slice(0, 500)}`
+        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 500)}`
     )
     .join("\n\n---\n\n");
 
@@ -71,13 +72,11 @@ ${articleList}
 
 Based on these articles, produce a JSON response with this exact structure:
 {
-  "keyPoints": ["4-6 concise bullet points covering the most important developments. Each bullet max 15 words. Mention specific companies, dollar amounts, or breakthroughs. No fluff."],
   "articles": [
     {
       "title": "exact article title",
       "url": "exact article url",
       "source": "domain name",
-      "publishedDate": "date or null",
       "category": one of ["Funding", "Product", "AI/Models", "Partnerships", "Hiring", "General"],
       "companyTags": ["Company Name"],
       "summary": "2 sentence summary of the article",
@@ -103,13 +102,23 @@ Rules:
     message.content[0].type === "text" ? message.content[0].text : "";
 
   const parsed = JSON.parse(text) as {
-    keyPoints: string[];
-    articles: DigestArticle[];
+    articles: Omit<DigestArticle, "publishedAt" | "ogImage">[];
   };
 
+  // Build a lookup from URL → Exa metadata
+  const exaByUrl = new Map(sliced.map((a) => [a.url, a]));
+
+  const enrichedArticles: DigestArticle[] = parsed.articles.map((a) => {
+    const exa = exaByUrl.get(a.url);
+    return {
+      ...a,
+      publishedAt: exa?.publishedAt ?? new Date().toISOString(),
+      ogImage: exa?.ogImage ?? null,
+    };
+  });
+
   return {
-    keyPoints: parsed.keyPoints,
-    articles: parsed.articles,
+    articles: enrichedArticles,
     generatedAt: new Date().toISOString(),
   };
 }

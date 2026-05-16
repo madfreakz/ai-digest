@@ -13,7 +13,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 function buildEmailHtml(digest: {
-  keyPoints: string[];
   articles: DigestArticle[];
   generatedAt: string;
 }): string {
@@ -53,10 +52,6 @@ function buildEmailHtml(digest: {
     <div style="text-align:center;margin-bottom:32px;">
       <h1 style="color:#f1f5f9;font-size:24px;font-weight:700;margin:0;">Physical AI Daily</h1>
       <p style="color:#64748b;font-size:13px;margin:4px 0 0;">${date}</p>
-    </div>
-    <div style="background:#0f172a;border:1px solid #1e293b;border-left:3px solid #3b82f6;border-radius:8px;padding:20px;margin-bottom:24px;">
-      <h2 style="color:#93c5fd;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 10px;">Today's Big Picture</h2>
-      ${digest.keyPoints.map((p) => `<div style="display:flex;gap:10px;margin-bottom:6px;"><span style="color:#3b82f6;margin-top:1px;">▸</span><span style="color:#cbd5e1;font-size:14px;line-height:1.5;">${p}</span></div>`).join("")}
     </div>
     <h2 style="color:#64748b;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 12px;">${digest.articles.length} Stories</h2>
     ${articleRows}

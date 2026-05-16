@@ -1,6 +1,4 @@
-import DigestHeader from "@/components/DigestHeader";
-import ExecutiveSummary from "@/components/ExecutiveSummary";
-import CategorySection from "@/components/CategorySection";
+import DigestClient from "@/components/DigestClient";
 import { fetchRoboticsNews } from "@/lib/exa";
 import { generateDigest, type Digest } from "@/lib/summarize";
 import { unstable_cache } from "next/cache";
@@ -27,24 +25,16 @@ export default async function Home() {
 
   if (!digest) {
     return (
-      <main className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-slate-400 text-lg">Failed to load digest.</p>
-          <p className="text-slate-600 text-sm mt-2">
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center", fontFamily: "'DM Sans', sans-serif" }}>
+          <p style={{ color: "#7A7268", fontSize: 16 }}>Failed to load digest.</p>
+          <p style={{ color: "#A8A098", fontSize: 13, marginTop: 8 }}>
             Check that your API keys are set in .env.local
           </p>
         </div>
-      </main>
+      </div>
     );
   }
 
-  return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <DigestHeader generatedAt={digest.generatedAt} />
-        <ExecutiveSummary keyPoints={digest.keyPoints} />
-        <CategorySection articles={digest.articles} />
-      </div>
-    </main>
-  );
+  return <DigestClient digest={digest} />;
 }
