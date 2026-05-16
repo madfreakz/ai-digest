@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchRoboticsNews } from "@/lib/exa";
 import { generateDigest } from "@/lib/summarize";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
 try {
