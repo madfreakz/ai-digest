@@ -21,7 +21,7 @@ export interface DigestArticle {
 }
 
 export interface Digest {
-  executiveSummary: string;
+  keyPoints: string[];
   articles: DigestArticle[];
   generatedAt: string;
 }
@@ -71,7 +71,7 @@ ${articleList}
 
 Based on these articles, produce a JSON response with this exact structure:
 {
-  "executiveSummary": "3-5 sentence big-picture summary of what's happening in Physical AI and robotics right now. Mention specific companies, funding amounts, or breakthroughs. Written as a sharp analyst briefing.",
+  "keyPoints": ["4-6 concise bullet points covering the most important developments. Each bullet max 15 words. Mention specific companies, dollar amounts, or breakthroughs. No fluff."],
   "articles": [
     {
       "title": "exact article title",
@@ -103,12 +103,12 @@ Rules:
     message.content[0].type === "text" ? message.content[0].text : "";
 
   const parsed = JSON.parse(text) as {
-    executiveSummary: string;
+    keyPoints: string[];
     articles: DigestArticle[];
   };
 
   return {
-    executiveSummary: parsed.executiveSummary,
+    keyPoints: parsed.keyPoints,
     articles: parsed.articles,
     generatedAt: new Date().toISOString(),
   };

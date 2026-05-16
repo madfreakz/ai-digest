@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { DigestArticle, Category } from "@/lib/summarize";
 import NewsCard from "./NewsCard";
 
@@ -23,28 +26,37 @@ export default function CategorySection({ articles }: Props) {
     {} as Record<Category, DigestArticle[]>
   );
 
+  const activeCats = CATEGORY_ORDER.filter((c) => grouped[c].length > 0);
+  const [active, setActive] = useState<Category>(activeCats[0]);
+
   return (
-    <div className="space-y-10">
-      {CATEGORY_ORDER.map((cat) => {
-        const items = grouped[cat];
-        if (items.length === 0) return null;
-        return (
-          <section key={cat}>
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
-                {cat}
-              </h2>
-              <span className="text-slate-700 text-xs">{items.length}</span>
-              <div className="flex-1 border-t border-slate-800" />
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {items.map((a) => (
-                <NewsCard key={a.url} article={a} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+    <div>
+      {/* Tab bar */}
+      <div className="flex gap-1 flex-wrap mb-6 border-b border-slate-800 pb-0">
+        {activeCats.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActive(cat)}
+            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors relative -mb-px ${
+              active === cat
+                ? "text-slate-100 bg-slate-900 border border-b-slate-900 border-slate-700"
+                : "text-slate-500 hover:text-slate-300"
+            }`}
+          >
+            {cat}
+            <span className={`ml-1.5 text-xs ${active === cat ? "text-slate-400" : "text-slate-700"}`}>
+              {grouped[cat].length}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {grouped[active].map((a) => (
+          <NewsCard key={a.url} article={a} />
+        ))}
+      </div>
     </div>
   );
 }

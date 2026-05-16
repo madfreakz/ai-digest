@@ -42,7 +42,7 @@ export default async function Home() {
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="max-w-4xl mx-auto px-4 py-10">
         <DigestHeader generatedAt={digest.generatedAt} />
-        <ExecutiveSummary summary={digest.executiveSummary} />
+        <ExecutiveSummary keyPoints={digest.keyPoints} />
         <CategorySection articles={digest.articles} />
       </div>
     </main>
