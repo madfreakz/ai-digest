@@ -133,7 +133,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
           <!-- CTA -->
           <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
             <tr><td align="center">
-              <a href="https://hello-vercel-three-kappa.vercel.app" style="display:inline-block;background:${ACCENT};color:#FFFFFF;font-size:13px;font-weight:600;text-decoration:none;padding:11px 28px;border-radius:6px;letter-spacing:0.01em;">View full digest →</a>
+              <a href="https://frontier-ai-digest.vercel.app" style="display:inline-block;background:${ACCENT};color:#FFFFFF;font-size:13px;font-weight:600;text-decoration:none;padding:11px 28px;border-radius:6px;letter-spacing:0.01em;">View full digest →</a>
             </td></tr>
           </table>
 
