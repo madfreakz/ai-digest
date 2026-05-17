@@ -1,5 +1,5 @@
 import DigestClient from "@/components/DigestClient";
-import { fetchRoboticsNews } from "@/lib/exa";
+import { fetchAllNews } from "@/lib/exa";
 import { generateDigest, type Digest } from "@/lib/summarize";
 import { unstable_cache } from "next/cache";
 
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const getCachedDigest = unstable_cache(
   async (): Promise<Digest | null> => {
     try {
-      const articles = await fetchRoboticsNews();
+      const articles = await fetchAllNews();
       if (articles.length === 0) return null;
       return generateDigest(articles);
     } catch (err) {

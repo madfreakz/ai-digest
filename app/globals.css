@@ -6,7 +6,7 @@
 :root { --page-pad-x: 56px; }
 @media (max-width: 600px) {
   :root { --page-pad-x: 20px; }
-  .physai-title { font-size: clamp(26px, 7vw, 38px) !important; }
+  .digest-title { font-size: clamp(26px, 7vw, 38px) !important; }
 }
 
 /* ── CSS custom properties (set by DigestClient on theme switch) ── */

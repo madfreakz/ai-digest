@@ -16,7 +16,7 @@ export default function DigestHeader({ generatedAt }: Props) {
   return (
     <div style={{ padding: compact ? "36px var(--page-pad-x) 24px" : "52px var(--page-pad-x) 36px" }}>
       {/* Title */}
-      <div className="physai-title" style={{
+      <div className="digest-title" style={{
         fontFamily: headlineFont,
         fontSize: 38,
         fontWeight: 600,
@@ -25,7 +25,7 @@ export default function DigestHeader({ generatedAt }: Props) {
         lineHeight: 1,
         marginBottom: compact ? 20 : 28,
       }}>
-        Physical AI News
+        AI Frontier Digest
       </div>
 
       {/* Horizontal rule */}

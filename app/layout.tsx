@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Physical AI News",
-  description: "Daily digest of Physical AI, robotics, and embodied AI news",
+  title: "AI Frontier Digest",
+  description: "Daily intelligence on Physical AI, AI Infrastructure, AI Labs, and Vertical AI — with BD signal",
 };
 
 export default function RootLayout({

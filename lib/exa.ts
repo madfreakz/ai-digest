@@ -1,4 +1,5 @@
 import Exa from "exa-js";
+import type { Beat } from "./companies";
 
 export interface ExaArticle {
   title: string;
@@ -7,9 +8,17 @@ export interface ExaArticle {
   text?: string;
   source?: string;
   ogImage: string | null;
+  beatHint: Beat;
 }
 
-const QUERIES = [
+const BEAT_PLACEHOLDERS: Record<Beat, string> = {
+  "Physical AI":       "/placeholder-physical-ai.png",
+  "AI Infrastructure": "/placeholder-ai-infra.png",
+  "AI Labs":           "/placeholder-ai-labs.png",
+  "Vertical AI":       "/placeholder-vertical-ai.png",
+};
+
+const QUERIES_PHYSICAL_AI = [
   "physical AI humanoid robot startup news 2025",
   "robotics AI funding investment round 2025",
   "Figure AI Physical Intelligence 1X Boston Dynamics Agility Robotics news",
@@ -18,32 +27,56 @@ const QUERIES = [
   "embodied AI robot foundation model breakthrough 2025",
 ];
 
-async function scrapeOgImage(url: string): Promise<string | null> {
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; PhysicalAIBot/1.0)" },
-      signal: AbortSignal.timeout(4000),
-    });
-    if (!res.ok) return null;
-    const html = await res.text();
-    // Match both attribute orderings of og:image
-    const match =
-      html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
-      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
-      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
-      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
-    if (!match) return null;
-    const src = match[1].trim();
-    // Resolve relative URLs
-    if (src.startsWith("http")) return src;
-    const base = new URL(url);
-    return new URL(src, base.origin).href;
-  } catch {
-    return null;
+const QUERIES_AI_INFRASTRUCTURE = [
+  "AI infrastructure developer tools API startup funding 2025",
+  "vector database embedding search startup deal 2025",
+  "LLM observability evaluation tooling announcement 2025",
+  "Exa Weaviate Pinecone Modal Together AI LangChain news 2025",
+  "AI compute GPU cloud infrastructure startup partnership 2025",
+  "AI developer platform SDK tooling launch 2025",
+];
+
+const QUERIES_AI_LABS = [
+  "Anthropic OpenAI DeepMind model release announcement 2025",
+  "foundation model safety alignment research breakthrough 2025",
+  "xAI Mistral Cohere model update product launch 2025",
+  "AI research lab funding valuation round 2025",
+  "large language model benchmark capability advance 2025",
+  "AI lab partnership enterprise deployment deal 2025",
+];
+
+const QUERIES_VERTICAL_AI = [
+  "Harvey Rogo Sierra Decagon Glean AI startup news 2025",
+  "vertical AI legal finance healthcare enterprise deal 2025",
+  "AI agent enterprise workflow automation contract win 2025",
+  "AI SaaS startup revenue ARR milestone funding 2025",
+  "AI copilot enterprise deployment partnership announcement 2025",
+  "AI native software company customer win expansion 2025",
+];
+
+const BEAT_QUERIES: [Beat, string[]][] = [
+  ["Physical AI",       QUERIES_PHYSICAL_AI],
+  ["AI Infrastructure", QUERIES_AI_INFRASTRUCTURE],
+  ["AI Labs",           QUERIES_AI_LABS],
+  ["Vertical AI",       QUERIES_VERTICAL_AI],
+];
+
+async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3, baseDelay = 500): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (i < maxAttempts - 1) {
+        await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, i)));
+      }
+    }
   }
+  throw lastErr;
 }
 
-export async function fetchRoboticsNews(): Promise<ExaArticle[]> {
+export async function fetchAllNews(): Promise<ExaArticle[]> {
   const exa = new Exa(process.env.EXA_API_KEY!);
 
   const sevenDaysAgo = new Date();
@@ -54,46 +87,38 @@ export async function fetchRoboticsNews(): Promise<ExaArticle[]> {
   const seenUrls = new Set<string>();
 
   await Promise.allSettled(
-    QUERIES.map(async (query) => {
-      try {
-        const result = await exa.searchAndContents(query, {
-          numResults: 8,
-          startPublishedDate: startDate,
-          text: { maxCharacters: 800 },
-          highlights: { numSentences: 2, highlightsPerUrl: 1 },
-        });
-        for (const item of result.results) {
-          if (!seenUrls.has(item.url)) {
-            seenUrls.add(item.url);
-            const hostname = new URL(item.url).hostname.replace(/^www\./, "");
-            allResults.push({
-              title: item.title ?? "Untitled",
-              url: item.url,
-              publishedAt: item.publishedDate ?? new Date().toISOString(),
-              text: item.text ?? undefined,
-              source: hostname,
-              ogImage: (item as Record<string, unknown>).image as string | null ?? null,
-            });
+    BEAT_QUERIES.flatMap(([beat, queries]) =>
+      queries.map(async (query) => {
+        try {
+          const result = await withRetry(() =>
+            exa.searchAndContents(query, {
+              numResults: 8,
+              startPublishedDate: startDate,
+              text: { maxCharacters: 800 },
+            })
+          );
+          for (const item of result.results) {
+            if (!seenUrls.has(item.url)) {
+              seenUrls.add(item.url);
+              const hostname = new URL(item.url).hostname.replace(/^www\./, "");
+              const image = (item as Record<string, unknown>).image as string | null;
+              allResults.push({
+                title: item.title ?? "Untitled",
+                url: item.url,
+                publishedAt: item.publishedDate ?? new Date().toISOString(),
+                text: item.text ?? undefined,
+                source: hostname,
+                ogImage: image ?? BEAT_PLACEHOLDERS[beat],
+                beatHint: beat,
+              });
+            }
           }
+        } catch {
+          // Failed queries are skipped silently — Promise.allSettled handles the rest
         }
-      } catch {
-        // skip failed queries silently
-      }
-    })
+      })
+    )
   );
-
-  // For articles without an image from Exa, scrape og:image in parallel
-  const missing = allResults.filter((a) => !a.ogImage);
-  if (missing.length > 0) {
-    const scraped = await Promise.allSettled(
-      missing.map((a) => scrapeOgImage(a.url))
-    );
-    scraped.forEach((res, i) => {
-      if (res.status === "fulfilled" && res.value) {
-        missing[i].ogImage = res.value;
-      }
-    });
-  }
 
   return allResults;
 }

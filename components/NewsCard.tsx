@@ -59,19 +59,20 @@ export default function NewsCard({ article, index }: Props) {
           <span style={{ color: t.textMin }}>{time}</span>
         </div>
 
-        {/* Title */}
+        {/* Title — slightly larger + accent left border for high-impact articles */}
         <a
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
           className="article-link"
+          style={article.impactScore >= 8 ? { borderLeft: `2px solid ${t.accent}`, paddingLeft: 10, display: "block" } : undefined}
         >
           <div
             className="article-title"
             style={{
               fontFamily: headlineFont,
-              fontSize: hasThumb ? 20 : 16.5,
-              fontWeight: hasThumb ? 500 : 400,
+              fontSize: hasThumb ? 20 : article.impactScore >= 8 ? 18 : 16.5,
+              fontWeight: hasThumb ? 500 : article.impactScore >= 8 ? 500 : 400,
               lineHeight: 1.36,
               color: t.textHigh,
               marginBottom: hasThumb ? 13 : 9,
