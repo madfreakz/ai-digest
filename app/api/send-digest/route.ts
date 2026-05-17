@@ -91,7 +91,7 @@ function buildEmailHtml(digest: {
 </html>`;
 }
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const expectedSecret = process.env.CRON_SECRET;
 
