@@ -5,8 +5,25 @@ import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
+function todayKey(): string {
+  return `digest:v2:${new Date().toISOString().split("T")[0]}`;
+}
+
+async function kvRead(key: string): Promise<Digest | null> {
+  try {
+    const { kv } = await import("@vercel/kv");
+    return (await kv.get<Digest>(key)) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 const getCachedDigest = unstable_cache(
   async (): Promise<Digest | null> => {
+    // Prefer KV (populated once daily by cron) — avoids re-running Exa + Claude
+    const kvDigest = await kvRead(todayKey());
+    if (kvDigest) return kvDigest;
+
     try {
       const articles = await fetchAllNews();
       if (articles.length === 0) return null;

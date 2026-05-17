@@ -142,11 +142,11 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     try {
       message = await client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 1800,
+        max_tokens: 3000,
         tools: [RECORD_ARTICLES_TOOL],
         tool_choice: { type: "tool", name: "record_articles" },
         messages: [{ role: "user", content: prompt }],
-      });
+      }, { timeout: 45_000 });
       break;
     } catch (err: unknown) {
       const apiErr = err as { status?: number; headers?: { get?: (k: string) => string | null; [k: string]: unknown } };
