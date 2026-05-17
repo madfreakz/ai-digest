@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import type { Message } from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
@@ -137,7 +138,7 @@ For each article:
 
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.`;
 
-  let message: Awaited<ReturnType<typeof client.messages.create>> | undefined;
+  let message: Message | undefined;
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
       message = await client.messages.create({
