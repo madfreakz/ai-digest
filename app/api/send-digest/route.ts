@@ -168,7 +168,7 @@ export async function GET(req: NextRequest) {
 
     const { data, error } = await resend.emails.send({
       from:    "AI Frontier Digest <onboarding@resend.dev>",
-      to:      ["fokjenhong@gmail.com"],
+      to:      ["fokjenhong@gmail.com", "sueannlau568@gmail.com"],
       subject: `AI Frontier Digest — ${date}`,
       html,
     });

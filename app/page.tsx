@@ -1,6 +1,7 @@
 import DigestClient from "@/components/DigestClient";
 import { fetchAllNews } from "@/lib/exa";
 import { generateDigest, type Digest } from "@/lib/summarize";
+import { MOCK_DIGEST } from "@/lib/mock-digest";
 import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,12 @@ const getCachedDigest = unstable_cache(
     // Prefer KV (populated once daily by cron) — avoids re-running Exa + Claude
     const kvDigest = await kvRead(todayKey());
     if (kvDigest) return kvDigest;
+
+    // In development without KV, use mock data for testing
+    if (process.env.NODE_ENV === "development") {
+      console.warn("Using mock digest data in development. Configure Vercel KV for production.");
+      return MOCK_DIGEST;
+    }
 
     try {
       const articles = await fetchAllNews();
