@@ -152,19 +152,30 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
       }
     }
   }
-  if (!response) return [];
+  if (!response) {
+    console.error(`[gemini] ${beat} - No response`);
+    return [];
+  }
 
   const functionCall = response.response.functionCalls()?.[0];
   if (!functionCall || functionCall.name !== "record_articles") {
-    console.error(`No function tool call returned for beat: ${beat}`);
+    console.error(`[gemini] ${beat} - No function call returned`, {
+      hasFunctionCall: !!functionCall,
+      name: functionCall?.name,
+      allCalls: response.response.functionCalls(),
+    });
     return [];
   }
 
+  console.log(`[gemini] ${beat} - function call received with ${functionCall.args.articles?.length || 0} articles`);
+
   const parsed = ToolOutputSchema.safeParse(functionCall.args);
   if (!parsed.success) {
-    console.error(`Zod validation failed for beat ${beat}:`, parsed.error.message);
+    console.error(`[gemini] ${beat} - Zod validation failed:`, parsed.error.message);
     return [];
   }
+
+  console.log(`[gemini] ${beat} - parsed ${parsed.data.articles.length} articles`);
 
   const exaByUrl = new Map(articles.map(a => [a.url, a]));
 

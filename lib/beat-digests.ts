@@ -27,25 +27,32 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
     const articles = await fetchAllNews();
     const beatArticles = articles.filter(a => a.beatHint === beat);
+    console.log(`[beat-digests] ${beat} - fetched ${articles.length} total, ${beatArticles.length} for this beat`);
 
     const beatDigest = await generateBeatDigest(beatArticles, beat);
+    console.log(`[beat-digests] ${beat} - generateBeatDigest returned ${beatDigest.articles.length} articles`);
 
-    await Promise.all([
-      kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, JSON.stringify(beatDigest.articles)),
-      kv.setex(
-        beatMetadataKey(beat),
-        BEAT_CACHE_TTL,
-        JSON.stringify({
-          timestamp: new Date().toISOString(),
-          articleCount: beatDigest.articles.length,
-        })
-      ),
-    ]);
+    // Try to cache, but still return articles even if caching fails
+    try {
+      await Promise.all([
+        kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, JSON.stringify(beatDigest.articles)),
+        kv.setex(
+          beatMetadataKey(beat),
+          BEAT_CACHE_TTL,
+          JSON.stringify({
+            timestamp: new Date().toISOString(),
+            articleCount: beatDigest.articles.length,
+          })
+        ),
+      ]);
+      console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
+    } catch (cacheErr) {
+      console.warn(`[beat-digests] Cache write failed for ${beat} (will return articles anyway):`, cacheErr instanceof Error ? cacheErr.message : String(cacheErr));
+    }
 
-    console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
     return beatDigest.articles;
   } catch (err) {
-    console.error(`[beat-digests] Cache error for ${beat}:`, err);
+    console.error(`[beat-digests] Failed to fetch/generate articles for ${beat}:`, err);
     return [];
   }
 }

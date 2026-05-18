@@ -89,6 +89,7 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
               text: { maxCharacters: 400 },
             })
           );
+          console.log(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - results: ${result.results.length}`);
           for (const item of result.results) {
             if (!seenUrls.has(item.url)) {
               seenUrls.add(item.url);
@@ -108,8 +109,8 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
               });
             }
           }
-        } catch {
-          // Failed queries are skipped silently
+        } catch (err) {
+          console.error(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - error:`, err instanceof Error ? err.message : String(err));
         }
       })
     )
