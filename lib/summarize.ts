@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
@@ -53,10 +53,12 @@ const ArticleSchema = z.object({
 
 const ToolOutputSchema = z.object({ articles: z.array(ArticleSchema).default([]) });
 
-const RECORD_ARTICLES_TOOL: Anthropic.Tool = {
-  name: "record_articles",
-  description: "Record the analyzed and scored articles for the digest",
-  input_schema: {
+const RECORD_ARTICLES_TOOL: Groq.Chat.Tool = {
+  type: "function",
+  function: {
+    name: "record_articles",
+    description: "Record the analyzed and scored articles for the digest",
+    parameters: {
     type: "object",
     properties: {
       articles: {
@@ -88,7 +90,8 @@ const RECORD_ARTICLES_TOOL: Anthropic.Tool = {
       },
     },
     required: ["articles"],
-  } as Anthropic.Tool["input_schema"],
+    } as Groq.Chat.FunctionDefinition["parameters"],
+  },
 };
 
 function compositeScore(a: Pick<DigestArticle, "relevanceScore" | "impactScore">): number {
@@ -98,7 +101,7 @@ function compositeScore(a: Pick<DigestArticle, "relevanceScore" | "impactScore">
 async function summarizeBeat(
   beat: Beat,
   articles: ExaArticle[],
-  client: Anthropic,
+  client: Groq,
 ): Promise<DigestArticle[]> {
   if (articles.length === 0) return [];
 
@@ -138,16 +141,16 @@ For each article:
 
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.`;
 
-  let message: Anthropic.Messages.Message | undefined;
+  let message: Groq.Chat.ChatCompletion | undefined;
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
-      message = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 5000,
+      message = await client.chat.completions.create({
+        model: "mixtral-8x7b-32768",
+        max_tokens: 2000,
         tools: [RECORD_ARTICLES_TOOL],
-        tool_choice: { type: "tool", name: "record_articles" },
+        tool_choice: { type: "function", function: { name: "record_articles" } },
         messages: [{ role: "user", content: prompt }],
-      }, { timeout: 45_000 });
+      });
       break;
     } catch (err: unknown) {
       const apiErr = err as { status?: number; headers?: { get?: (k: string) => string | null; [k: string]: unknown } };
@@ -163,13 +166,13 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   }
   if (!message) return [];
 
-  const toolBlock = message.content.find(b => b.type === "tool_use");
-  if (!toolBlock || toolBlock.type !== "tool_use") {
-    console.error(`No tool_use block returned for beat: ${beat}`);
+  const toolCall = message.tool_calls?.[0];
+  if (!toolCall || toolCall.type !== "function" || toolCall.function.name !== "record_articles") {
+    console.error(`No function tool call returned for beat: ${beat}`);
     return [];
   }
 
-  const parsed = ToolOutputSchema.safeParse(toolBlock.input);
+  const parsed = ToolOutputSchema.safeParse(JSON.parse(toolCall.function.arguments));
   if (!parsed.success) {
     console.error(`Zod validation failed for beat ${beat}:`, parsed.error.message);
     return [];
@@ -274,7 +277,7 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
 }
 
 export async function generateDigest(articles: ExaArticle[]): Promise<Digest> {
-  const client = new Anthropic({ apiKey: process.env.PHYSAI_ANTHROPIC_KEY });
+  const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   // Group by beatHint
   const groups = new Map<Beat, ExaArticle[]>();

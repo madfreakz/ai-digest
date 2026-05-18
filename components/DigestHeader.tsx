@@ -25,7 +25,7 @@ export default function DigestHeader({ generatedAt }: Props) {
         lineHeight: 1,
         marginBottom: compact ? 20 : 28,
       }}>
-        AI Frontier Digest
+        Frontier AI Digest
       </div>
 
       {/* Horizontal rule */}

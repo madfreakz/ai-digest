@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Frontier Digest",
+  title: "Frontier AI Digest",
   description: "Daily intelligence on Physical AI, AI Infrastructure, AI Labs, and Vertical AI — with BD signal",
 };
 

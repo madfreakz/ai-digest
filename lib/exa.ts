@@ -92,8 +92,11 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
           for (const item of result.results) {
             if (!seenUrls.has(item.url)) {
               seenUrls.add(item.url);
+              const itemWithScore = item as Record<string, unknown>;
+              // Note: Exa searchAndContents doesn't return a score field in the default response
+              // The relevance is implicit in the search ranking. We'll include all results.
               const hostname = new URL(item.url).hostname.replace(/^www\./, "");
-              const image = (item as Record<string, unknown>).image as string | null;
+              const image = itemWithScore.image as string | null;
               allResults.push({
                 title: item.title ?? "Untitled",
                 url: item.url,

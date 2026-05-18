@@ -94,7 +94,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
-  <title>AI Frontier Digest</title>
+  <title>Frontier AI Digest</title>
   <style>
     body { margin:0; padding:0; background:${PAGE_BG}; -webkit-text-size-adjust:100%; }
     img  { border:0; outline:none; text-decoration:none; }
@@ -114,7 +114,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
           <div style="height:3px;background:linear-gradient(90deg,${ACCENT},#2E5EA8,transparent);margin-bottom:24px;border-radius:2px;"></div>
 
           <!-- Header -->
-          <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">AI Frontier Digest</h1>
+          <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">Frontier AI Digest</h1>
           <p style="color:${TEXT_LOW};font-size:12px;margin:0 0 28px;">${date}</p>
 
           <!-- Featured story -->
@@ -137,7 +137,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
           </table>
 
           <!-- Footer -->
-          <p style="color:${FOOTER_CLR};font-size:11px;text-align:center;margin:0;">© Mark Fok · AI Frontier Digest · Powered by Exa + Claude</p>
+          <p style="color:${FOOTER_CLR};font-size:11px;text-align:center;margin:0;">© Mark Fok · Frontier AI Digest · Powered by Exa + Claude</p>
 
         </td></tr>
       </table>
@@ -161,9 +161,9 @@ export async function GET() {
     const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
 
     const { data, error } = await resend.emails.send({
-      from:    "AI Frontier Digest <onboarding@resend.dev>",
+      from:    "Frontier AI Digest <onboarding@resend.dev>",
       to:      ["fokjenhong@gmail.com", "sueannlau568@gmail.com"],
-      subject: `AI Frontier Digest — ${date}`,
+      subject: `Frontier AI Digest — ${date}`,
       html,
     });
 
