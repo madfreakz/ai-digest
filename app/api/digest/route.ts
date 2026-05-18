@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 function dateKey(offsetDays = 0): string {
   const d = new Date();
   d.setDate(d.getDate() + offsetDays);
-  return `digest:v2:${d.toISOString().split("T")[0]}`;
+  return `digest:v3:${d.toISOString().split("T")[0]}`;
 }
 
 async function kvGet(key: string): Promise<Digest | null> {

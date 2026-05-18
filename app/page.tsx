@@ -7,7 +7,7 @@ import { unstable_cache } from "next/cache";
 export const dynamic = "force-dynamic";
 
 function todayKey(): string {
-  return `digest:v2:${new Date().toISOString().split("T")[0]}`;
+  return `digest:v3:${new Date().toISOString().split("T")[0]}`;
 }
 
 async function kvRead(key: string): Promise<Digest | null> {
