@@ -106,7 +106,7 @@ async function summarizeBeat(
   const companyNames = getCompanyNames(beat).slice(0, 25).join(", ");
 
   const articleList = articles
-    .slice(0, 6)
+    .slice(0, 15)
     .map(
       (a, i) =>
         `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 150)}`,
@@ -120,7 +120,7 @@ Today: ${new Date().toDateString()}
 TRACKED COMPANIES (name: deal_vectors):
 ${companyContext || "None for this beat"}
 
-Analyze these ${Math.min(articles.length, 6)} ${beat} articles and call record_articles with your results:
+Analyze these ${Math.min(articles.length, 15)} ${beat} articles and call record_articles with your results:
 
 ${articleList}
 
@@ -143,7 +143,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     try {
       message = await client.messages.create({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 2000,
+        max_tokens: 5000,
         tools: [RECORD_ARTICLES_TOOL],
         tool_choice: { type: "tool", name: "record_articles" },
         messages: [{ role: "user", content: prompt }],
@@ -187,12 +187,36 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   });
 }
 
+const DOMAIN_ALIASES: Record<string, string> = {
+  "google": "google.com",
+  "meta": "meta.com",
+  "microsoft": "microsoft.com",
+  "nvidia": "nvidia.com",
+  "amazon": "amazon.com",
+  "apple": "apple.com",
+  "stability ai": "stability.ai",
+  "hugging face": "huggingface.co",
+  "databricks": "databricks.com",
+  "scale ai": "scale.com",
+  "inflection": "inflection.ai",
+  "adept": "adept.ai",
+  "character ai": "character.ai",
+  "perplexity": "perplexity.ai",
+  "runway": "runwayml.com",
+  "midjourney": "midjourney.com",
+};
+
 async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
   const companyDomainMap = new Map<string, string>();
   for (const company of COMPANIES) {
     if (company.domain) {
       companyDomainMap.set(company.name.toLowerCase(), company.domain);
     }
+  }
+
+  function resolveDomain(companyName: string): string | undefined {
+    const key = companyName.toLowerCase();
+    return companyDomainMap.get(key) ?? DOMAIN_ALIASES[key];
   }
 
   // Concurrency control: max 5 parallel Clearbit requests
@@ -206,7 +230,7 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
         try {
           const firstCompany = article.companyTags[0];
           if (firstCompany) {
-            const domain = companyDomainMap.get(firstCompany.toLowerCase());
+            const domain = resolveDomain(firstCompany);
             if (domain) {
               const url = `https://logo.clearbit.com/${domain}`;
               // Fetch with 1s timeout

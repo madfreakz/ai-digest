@@ -84,7 +84,7 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
         try {
           const result = await withRetry(() =>
             exa.searchAndContents(query, {
-              numResults: 5,
+              numResults: 8,
               startPublishedDate: startDate,
               text: { maxCharacters: 400 },
             })
