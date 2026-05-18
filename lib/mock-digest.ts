@@ -702,7 +702,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 9,
       impactReason: "Advanced reasoning capabilities in frontier model; signals capability parity with leading labs",
       dealSignal: true,
-      dealSignalType: "model_release",
+      dealSignalType: "positioning_shift",
     },
   ],
 };
