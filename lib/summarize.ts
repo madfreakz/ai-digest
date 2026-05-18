@@ -53,7 +53,7 @@ const ArticleSchema = z.object({
 
 const ToolOutputSchema = z.object({ articles: z.array(ArticleSchema).default([]) });
 
-const RECORD_ARTICLES_TOOL: Groq.Chat.Tool = {
+const RECORD_ARTICLES_TOOL = {
   type: "function",
   function: {
     name: "record_articles",
@@ -90,7 +90,7 @@ const RECORD_ARTICLES_TOOL: Groq.Chat.Tool = {
       },
     },
     required: ["articles"],
-    } as Groq.Chat.FunctionDefinition["parameters"],
+    },
   },
 };
 
@@ -145,7 +145,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
       message = await client.chat.completions.create({
-        model: "mixtral-8x7b-32768",
+        model: "llama-3.1-70b-versatile",
         max_tokens: 2000,
         tools: [RECORD_ARTICLES_TOOL],
         tool_choice: { type: "function", function: { name: "record_articles" } },
@@ -166,7 +166,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   }
   if (!message) return [];
 
-  const toolCall = message.tool_calls?.[0];
+  const toolCall = message.choices[0]?.message?.tool_calls?.[0];
   if (!toolCall || toolCall.type !== "function" || toolCall.function.name !== "record_articles") {
     console.error(`No function tool call returned for beat: ${beat}`);
     return [];
