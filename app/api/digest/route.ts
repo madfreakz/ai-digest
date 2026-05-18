@@ -30,9 +30,9 @@ async function kvSet(key: string, value: Digest): Promise<void> {
 }
 
 export async function GET() {
-  // Cache hit: return today's digest immediately
+  // Cache hit: return today's digest immediately (only if it has articles)
   const cached = await kvGet(dateKey());
-  if (cached) return NextResponse.json(cached);
+  if (cached && cached.articles.length > 0) return NextResponse.json(cached);
 
   try {
     const articles = await fetchAllNews();
@@ -45,7 +45,7 @@ export async function GET() {
     }
 
     const digest = await generateDigest(articles);
-    await kvSet(dateKey(), digest); // fire-and-forget
+    if (digest.articles.length > 0) await kvSet(dateKey(), digest);
     return NextResponse.json(digest);
   } catch (err) {
     console.error("Digest error:", err);
