@@ -1,6 +1,6 @@
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
-import { getDigest } from "@/lib/digest-cache";
+import { aggregateDigestFromBeats } from "@/lib/beat-digests";
 
 export const dynamic = "force-dynamic";
 
@@ -9,9 +9,9 @@ export default async function Home() {
     return <DigestClient digest={MOCK_DIGEST} />;
   }
 
-  const digest = await getDigest();
+  const digest = await aggregateDigestFromBeats();
 
-  if (!digest) {
+  if (!digest || digest.articles.length === 0) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF8F4" }}>
         <div style={{ textAlign: "center", fontFamily: "'DM Sans', sans-serif" }}>
