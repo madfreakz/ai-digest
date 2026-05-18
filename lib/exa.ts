@@ -19,39 +19,39 @@ const BEAT_PLACEHOLDERS: Record<Beat, string> = {
 };
 
 const QUERIES_PHYSICAL_AI = [
-  "physical AI humanoid robot startup news 2025",
-  "robotics AI funding investment round 2025",
+  "physical AI humanoid robot startup news 2026",
+  "robotics AI funding investment round 2026",
   "Figure AI Physical Intelligence 1X Boston Dynamics Agility Robotics news",
   "Genesis AI Mind Robotics Bedrock Robotics announcement",
   "Tesla Optimus humanoid robot update progress",
-  "embodied AI robot foundation model breakthrough 2025",
+  "embodied AI robot foundation model breakthrough 2026",
 ];
 
 const QUERIES_AI_INFRASTRUCTURE = [
-  "AI infrastructure developer tools API startup funding 2025",
-  "vector database embedding search startup deal 2025",
-  "LLM observability evaluation tooling announcement 2025",
-  "Exa Weaviate Pinecone Modal Together AI LangChain news 2025",
-  "AI compute GPU cloud infrastructure startup partnership 2025",
-  "AI developer platform SDK tooling launch 2025",
+  "AI infrastructure developer tools API startup funding 2026",
+  "vector database embedding search startup deal 2026",
+  "LLM observability evaluation tooling announcement 2026",
+  "Exa Weaviate Pinecone Modal Together AI LangChain news 2026",
+  "AI compute GPU cloud infrastructure startup partnership 2026",
+  "AI developer platform SDK tooling launch 2026",
 ];
 
 const QUERIES_AI_LABS = [
-  "Anthropic OpenAI DeepMind model release announcement 2025",
-  "foundation model safety alignment research breakthrough 2025",
-  "xAI Mistral Cohere model update product launch 2025",
-  "AI research lab funding valuation round 2025",
-  "large language model benchmark capability advance 2025",
-  "AI lab partnership enterprise deployment deal 2025",
+  "Anthropic OpenAI DeepMind model release announcement 2026",
+  "foundation model safety alignment research breakthrough 2026",
+  "xAI Mistral Cohere model update product launch 2026",
+  "AI research lab funding valuation round 2026",
+  "large language model benchmark capability advance 2026",
+  "AI lab partnership enterprise deployment deal 2026",
 ];
 
 const QUERIES_VERTICAL_AI = [
-  "Harvey Rogo Sierra Decagon Glean AI startup news 2025",
-  "vertical AI legal finance healthcare enterprise deal 2025",
-  "AI agent enterprise workflow automation contract win 2025",
-  "AI SaaS startup revenue ARR milestone funding 2025",
-  "AI copilot enterprise deployment partnership announcement 2025",
-  "AI native software company customer win expansion 2025",
+  "Harvey Rogo Sierra Decagon Glean AI startup news 2026",
+  "vertical AI legal finance healthcare enterprise deal 2026",
+  "AI agent enterprise workflow automation contract win 2026",
+  "AI SaaS startup revenue ARR milestone funding 2026",
+  "AI copilot enterprise deployment partnership announcement 2026",
+  "AI native software company customer win expansion 2026",
 ];
 
 const BEAT_QUERIES: [Beat, string[]][] = [

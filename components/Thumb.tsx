@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTheme } from "./DigestClient";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 export default function Thumb({ ogImage, label, height }: Props) {
   const { t } = useTheme();
+  const [imgFailed, setImgFailed] = useState(false);
 
   return (
     <div
@@ -27,12 +29,13 @@ export default function Thumb({ ogImage, label, height }: Props) {
             : `repeating-linear-gradient(-45deg, ${t.thumbS1} 0px, ${t.thumbS1} 14px, ${t.thumbS2} 14px, ${t.thumbS2} 28px)`,
         }}
       >
-        {ogImage ? (
+        {ogImage && !imgFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={ogImage}
             alt=""
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            onError={() => setImgFailed(true)}
           />
         ) : (
           <>
