@@ -24,6 +24,7 @@ export default function FeaturedStory({ article, compact }: Props) {
         <div className="featured-inner">
           <Thumb
             ogImage={article.ogImage}
+            companyLogoUrl={article.companyLogoUrl}
             label={article.companyTags.join(" · ").toLowerCase() || article.category.toLowerCase()}
             height={thumbH}
           />

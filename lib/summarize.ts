@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
-import { getCompanyContext, getCompanyNames } from "./companies";
+import { getCompanyContext, getCompanyNames, COMPANIES } from "./companies";
 
 export type { Beat, DealSignalType };
 
@@ -14,6 +14,7 @@ export interface DigestArticle {
   source: string;
   publishedAt: string;
   ogImage: string | null;
+  companyLogoUrl?: string;
   beat: Beat;
   category: Category;
   companyTags: string[];
@@ -186,6 +187,68 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   });
 }
 
+async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
+  const companyDomainMap = new Map<string, string>();
+  for (const company of COMPANIES) {
+    if (company.domain) {
+      companyDomainMap.set(company.name.toLowerCase(), company.domain);
+    }
+  }
+
+  // Concurrency control: max 5 parallel Clearbit requests
+  const maxConcurrent = 5;
+  let activeCount = 0;
+  const queue: Array<() => Promise<void>> = [];
+
+  const enqueueFetch = (article: DigestArticle): Promise<void> => {
+    return new Promise((resolve) => {
+      const task = async () => {
+        try {
+          const firstCompany = article.companyTags[0];
+          if (firstCompany) {
+            const domain = companyDomainMap.get(firstCompany.toLowerCase());
+            if (domain) {
+              const url = `https://logo.clearbit.com/${domain}`;
+              // Fetch with 1s timeout
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 1000);
+              try {
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (response.ok) {
+                  article.companyLogoUrl = url;
+                }
+              } catch (err) {
+                clearTimeout(timeoutId);
+                // Clearbit fetch failed, leave companyLogoUrl undefined
+              }
+            }
+          }
+        } catch {
+          // Silently fail if anything goes wrong
+        }
+
+        activeCount--;
+        resolve();
+        const nextTask = queue.shift();
+        if (nextTask) {
+          activeCount++;
+          nextTask();
+        }
+      };
+
+      if (activeCount < maxConcurrent) {
+        activeCount++;
+        task();
+      } else {
+        queue.push(task);
+      }
+    });
+  };
+
+  await Promise.all(articles.map(enqueueFetch));
+}
+
 export async function generateDigest(articles: ExaArticle[]): Promise<Digest> {
   const client = new Anthropic({ apiKey: process.env.PHYSAI_ANTHROPIC_KEY });
 
@@ -203,17 +266,22 @@ export async function generateDigest(articles: ExaArticle[]): Promise<Digest> {
   for (const [beat, items] of beatEntries) {
     try {
       const result = await summarizeBeat(beat, items, client);
+      // Sort within each beat: dealSignal first, then by publishedAt descending (latest first), then by composite score
+      result.sort((a, b) => {
+        if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
+        const dateA = new Date(a.publishedAt).getTime();
+        const dateB = new Date(b.publishedAt).getTime();
+        if (dateA !== dateB) return dateB - dateA;
+        return compositeScore(b) - compositeScore(a);
+      });
       allArticles.push(...result);
     } catch (err) {
       console.error(`Beat summarization failed (${beat}):`, err);
     }
   }
 
-  // Sort: dealSignal=true first, then by composite score (relevance 70%, impact 30%)
-  allArticles.sort((a, b) => {
-    if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
-    return compositeScore(b) - compositeScore(a);
-  });
+  // Fetch Clearbit logos for company tags (with concurrency control)
+  await fetchClearbitLogos(allArticles);
 
   return { articles: allArticles, generatedAt: new Date().toISOString() };
 }

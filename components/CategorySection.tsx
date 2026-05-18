@@ -97,9 +97,11 @@ export default function CategorySection({ articles }: Props) {
 
       {/* Article list with fade animation on tab change */}
       <div key={animKey} className="tab-content">
-        {grouped[active].map((article, i) => (
-          <NewsCard key={article.url} article={article} index={i} />
-        ))}
+        {[...grouped[active]]
+          .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+          .map((article, i) => (
+            <NewsCard key={article.url} article={article} index={i} />
+          ))}
       </div>
     </div>
   );

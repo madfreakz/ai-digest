@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function BeatSection({ articles, activeBeat, onBeatChange }: Props) {
-  const { t } = useTheme();
+  const theme = useTheme();
   const [animKey, setAnimKey] = useState(0);
 
   function switchBeat(beat: Beat) {
@@ -50,7 +50,7 @@ export default function BeatSection({ articles, activeBeat, onBeatChange }: Prop
                 style={{
                   background: "none",
                   border: "none",
-                  borderBottom: isActive ? `1.5px solid ${t.accent}` : "1.5px solid transparent",
+                  borderBottom: isActive ? `1.5px solid ${theme.accent}` : "1.5px solid transparent",
                   padding: "16px 18px 14px",
                   marginBottom: -1,
                   display: "flex",
@@ -66,7 +66,7 @@ export default function BeatSection({ articles, activeBeat, onBeatChange }: Prop
                     fontFamily: "'DM Sans', sans-serif",
                     fontSize: 12,
                     fontWeight: isActive ? 500 : 300,
-                    color: isActive ? t.accent : t.textGhost,
+                    color: isActive ? theme.accent : theme.textGhost,
                     transition: "all 0.14s ease",
                   }}
                 >
@@ -76,7 +76,7 @@ export default function BeatSection({ articles, activeBeat, onBeatChange }: Prop
                   style={{
                     fontFamily: "'DM Mono', monospace",
                     fontSize: 9,
-                    color: isActive ? t.textGhost : t.textMin,
+                    color: isActive ? theme.textGhost : theme.textMin,
                     transition: "color 0.14s ease",
                   }}
                 >

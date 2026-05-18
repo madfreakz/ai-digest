@@ -2,6 +2,17 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* ── Cinematic animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes parallaxBg {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-60px); }
+}
+
 /* ── Responsive horizontal padding ── */
 :root { --page-pad-x: 56px; }
 @media (max-width: 600px) {
@@ -85,7 +96,28 @@ html, body { background: var(--page-bg); min-height: 100vh; }
   border-bottom: 1px solid var(--tab-border);
 }
 
-/* ── Scrollbar ── */
+/* ── Keyboard focus states (WCAG 2.1 Level AA) ── */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tab-specific focus styles */
+[role="tab"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Input elements */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Scrollbar ── */
 ::-webkit-scrollbar       { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 2px; }

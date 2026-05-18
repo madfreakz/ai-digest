@@ -1,34 +1,15 @@
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
-import type { Digest } from "@/lib/summarize";
+import { getDigest } from "@/lib/digest-cache";
 
 export const dynamic = "force-dynamic";
-
-async function getCachedDigest(): Promise<Digest | null> {
-  try {
-    const { kv } = await import("@vercel/kv");
-    const fmt = (d: Date) => `digest:v3:${d.toISOString().split("T")[0]}`;
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    // Try today first, then yesterday — never generate inline (would timeout)
-    for (const key of [fmt(today), fmt(yesterday)]) {
-      const val = await kv.get<Digest>(key);
-      if (val && val.articles?.length > 0) return val;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
     return <DigestClient digest={MOCK_DIGEST} />;
   }
 
-  const digest = await getCachedDigest();
+  const digest = await getDigest();
 
   if (!digest) {
     return (

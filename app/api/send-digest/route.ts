@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import type { Digest, DigestArticle } from "@/lib/summarize";
+import type { DigestArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -147,26 +147,10 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
 </html>`;
 }
 
-async function getDigestFromKV(): Promise<Digest | null> {
-  try {
-    const { kv } = await import("@vercel/kv");
-    const fmt = (d: Date) => `digest:v3:${d.toISOString().split("T")[0]}`;
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    for (const key of [fmt(today), fmt(yesterday)]) {
-      const val = await kv.get<Digest>(key);
-      if (val && val.articles?.length > 0) return val;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 export async function GET() {
   try {
-    const digest = await getDigestFromKV();
+    const { getDigest } = await import("@/lib/digest-cache");
+    const digest = await getDigest();
     if (!digest) {
       return NextResponse.json({ error: "No digest in KV — run /api/digest first" }, { status: 404 });
     }

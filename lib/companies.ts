@@ -23,20 +23,21 @@ export interface TrackedCompany {
   dealVector: DealVector[];
   vcBacked: string[];
   addedAt: string;
+  domain?: string;
 }
 
 export const COMPANIES: TrackedCompany[] = [
   // ── Physical AI — tier 1 ──────────────────────────────────────────────────
-  { name: "Physical Intelligence", beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Sequoia", "Lux Capital"], addedAt: "2024-01-01" },
-  { name: "Figure AI",             beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Microsoft", "Bezos Expeditions"], addedAt: "2024-01-01" },
-  { name: "1X Technologies",       beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["OpenAI", "EQT Ventures"], addedAt: "2024-01-01" },
-  { name: "Boston Dynamics",       beat: "Physical AI", tier: 1, dealVector: ["potential_customer", "competitive_threat"],    vcBacked: ["Hyundai"], addedAt: "2024-01-01" },
-  { name: "Agility Robotics",      beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Amazon", "DCVC"], addedAt: "2024-01-01" },
-  { name: "Tesla",                 beat: "Physical AI", tier: 1, dealVector: ["competitive_threat", "potential_customer"],    vcBacked: [], addedAt: "2024-01-01" },
-  { name: "Apptronik",             beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Google"], addedAt: "2024-01-01" },
-  { name: "Unitree",               beat: "Physical AI", tier: 1, dealVector: ["competitive_threat", "potential_customer"],    vcBacked: [], addedAt: "2024-01-01" },
-  { name: "Sanctuary AI",          beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["SoftBank"], addedAt: "2024-01-01" },
-  { name: "Covariant",             beat: "Physical AI", tier: 1, dealVector: ["technology_dependency", "strategic_partner"],  vcBacked: ["Bessemer", "Radical Ventures"], addedAt: "2024-01-01" },
+  { name: "Physical Intelligence", beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Sequoia", "Lux Capital"], addedAt: "2024-01-01", domain: "physicalintelligence.com" },
+  { name: "Figure AI",             beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Microsoft", "Bezos Expeditions"], addedAt: "2024-01-01", domain: "figure.ai" },
+  { name: "1X Technologies",       beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["OpenAI", "EQT Ventures"], addedAt: "2024-01-01", domain: "1xtechnologies.com" },
+  { name: "Boston Dynamics",       beat: "Physical AI", tier: 1, dealVector: ["potential_customer", "competitive_threat"],    vcBacked: ["Hyundai"], addedAt: "2024-01-01", domain: "bostondynamics.com" },
+  { name: "Agility Robotics",      beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Amazon", "DCVC"], addedAt: "2024-01-01", domain: "agilityrobotics.com" },
+  { name: "Tesla",                 beat: "Physical AI", tier: 1, dealVector: ["competitive_threat", "potential_customer"],    vcBacked: [], addedAt: "2024-01-01", domain: "tesla.com" },
+  { name: "Apptronik",             beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["Google"], addedAt: "2024-01-01", domain: "apptronik.com" },
+  { name: "Unitree",               beat: "Physical AI", tier: 1, dealVector: ["competitive_threat", "potential_customer"],    vcBacked: [], addedAt: "2024-01-01", domain: "unitree.com" },
+  { name: "Sanctuary AI",          beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: ["SoftBank"], addedAt: "2024-01-01", domain: "sanctuaryai.com" },
+  { name: "Covariant",             beat: "Physical AI", tier: 1, dealVector: ["technology_dependency", "strategic_partner"],  vcBacked: ["Bessemer", "Radical Ventures"], addedAt: "2024-01-01", domain: "covariant.ai" },
   // Physical AI — tier 2–3
   { name: "Genesis AI",        beat: "Physical AI", tier: 2, dealVector: ["strategic_partner"], vcBacked: [], addedAt: "2024-01-01" },
   { name: "Mind Robotics",     beat: "Physical AI", tier: 2, dealVector: ["strategic_partner"], vcBacked: [], addedAt: "2024-01-01" },
@@ -48,15 +49,15 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Sarcos",            beat: "Physical AI", tier: 3, dealVector: ["strategic_partner"], vcBacked: [], addedAt: "2024-01-01" },
 
   // ── AI Infrastructure — tier 1 ────────────────────────────────────────────
-  { name: "Exa",             beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Lightspeed"], addedAt: "2024-01-01" },
-  { name: "Anyscale",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["a16z", "NEA"], addedAt: "2024-01-01" },
-  { name: "Modal",           beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Redpoint"], addedAt: "2024-01-01" },
-  { name: "Replicate",       beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["a16z"], addedAt: "2024-01-01" },
-  { name: "Together AI",     beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "competitive_threat"], vcBacked: ["Salesforce Ventures"], addedAt: "2024-01-01" },
-  { name: "Weights & Biases", beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["GV", "Insight Partners"], addedAt: "2024-01-01" },
-  { name: "LangChain",       beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Sequoia"], addedAt: "2024-01-01" },
-  { name: "Weaviate",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Index Ventures"], addedAt: "2024-01-01" },
-  { name: "Pinecone",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "competitive_threat"], vcBacked: ["Andreessen Horowitz"], addedAt: "2024-01-01" },
+  { name: "Exa",             beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Lightspeed"], addedAt: "2024-01-01", domain: "exa.ai" },
+  { name: "Anyscale",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["a16z", "NEA"], addedAt: "2024-01-01", domain: "anyscale.com" },
+  { name: "Modal",           beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Redpoint"], addedAt: "2024-01-01", domain: "modal.com" },
+  { name: "Replicate",       beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["a16z"], addedAt: "2024-01-01", domain: "replicate.com" },
+  { name: "Together AI",     beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "competitive_threat"], vcBacked: ["Salesforce Ventures"], addedAt: "2024-01-01", domain: "together.ai" },
+  { name: "Weights & Biases", beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["GV", "Insight Partners"], addedAt: "2024-01-01", domain: "wandb.com" },
+  { name: "LangChain",       beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Sequoia"], addedAt: "2024-01-01", domain: "langchain.com" },
+  { name: "Weaviate",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Index Ventures"], addedAt: "2024-01-01", domain: "weaviate.io" },
+  { name: "Pinecone",        beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "competitive_threat"], vcBacked: ["Andreessen Horowitz"], addedAt: "2024-01-01", domain: "pinecone.io" },
   // AI Infrastructure — tier 2–3
   { name: "Helicone",     beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
   { name: "Braintrust",   beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [], addedAt: "2024-01-01" },
@@ -65,13 +66,13 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Unstructured", beat: "AI Infrastructure", tier: 3, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
 
   // ── AI Labs — tier 1 ──────────────────────────────────────────────────────
-  { name: "Anthropic",        beat: "AI Labs", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Google", "Spark Capital"], addedAt: "2024-01-01" },
-  { name: "OpenAI",           beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "technology_dependency"], vcBacked: ["Microsoft"], addedAt: "2024-01-01" },
-  { name: "Google DeepMind",  beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "strategic_partner"],    vcBacked: ["Google"], addedAt: "2024-01-01" },
-  { name: "Meta AI",          beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "technology_dependency"], vcBacked: ["Meta"], addedAt: "2024-01-01" },
-  { name: "Mistral",          beat: "AI Labs", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Andreessen Horowitz", "Lightspeed"], addedAt: "2024-01-01" },
-  { name: "xAI",              beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "strategic_partner"],    vcBacked: [], addedAt: "2024-01-01" },
-  { name: "Cohere",           beat: "AI Labs", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["NVIDIA", "Salesforce Ventures"], addedAt: "2024-01-01" },
+  { name: "Anthropic",        beat: "AI Labs", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Google", "Spark Capital"], addedAt: "2024-01-01", domain: "anthropic.com" },
+  { name: "OpenAI",           beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "technology_dependency"], vcBacked: ["Microsoft"], addedAt: "2024-01-01", domain: "openai.com" },
+  { name: "Google DeepMind",  beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "strategic_partner"],    vcBacked: ["Google"], addedAt: "2024-01-01", domain: "deepmind.google" },
+  { name: "Meta AI",          beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "technology_dependency"], vcBacked: ["Meta"], addedAt: "2024-01-01", domain: "meta.com" },
+  { name: "Mistral",          beat: "AI Labs", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Andreessen Horowitz", "Lightspeed"], addedAt: "2024-01-01", domain: "mistral.ai" },
+  { name: "xAI",              beat: "AI Labs", tier: 1, dealVector: ["competitive_threat", "strategic_partner"],    vcBacked: [], addedAt: "2024-01-01", domain: "x.ai" },
+  { name: "Cohere",           beat: "AI Labs", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["NVIDIA", "Salesforce Ventures"], addedAt: "2024-01-01", domain: "cohere.ai" },
   // AI Labs — tier 2–3
   { name: "AI21 Labs",     beat: "AI Labs", tier: 2, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
   { name: "Inflection AI", beat: "AI Labs", tier: 2, dealVector: ["competitive_threat"],   vcBacked: [], addedAt: "2024-01-01" },
@@ -79,14 +80,14 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Reka",          beat: "AI Labs", tier: 3, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
 
   // ── Vertical AI — tier 1 ──────────────────────────────────────────────────
-  { name: "Harvey",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Sequoia", "OpenAI"], addedAt: "2024-01-01" },
-  { name: "Rogo",        beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["a16z"], addedAt: "2024-01-01" },
-  { name: "Sierra",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["Sequoia"], addedAt: "2024-01-01" },
-  { name: "Decagon",     beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["a16z"], addedAt: "2024-01-01" },
-  { name: "Glean",       beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Sequoia", "Coatue"], addedAt: "2024-01-01" },
-  { name: "Writer",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["ICONIQ Growth"], addedAt: "2024-01-01" },
-  { name: "Moveworks",   beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["Kleiner Perkins", "ICONIQ Growth"], addedAt: "2024-01-01" },
-  { name: "Cognigy",     beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: [], addedAt: "2024-01-01" },
+  { name: "Harvey",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Sequoia", "OpenAI"], addedAt: "2024-01-01", domain: "harvey.ai" },
+  { name: "Rogo",        beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["a16z"], addedAt: "2024-01-01", domain: "rogolegal.com" },
+  { name: "Sierra",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["Sequoia"], addedAt: "2024-01-01", domain: "sierrallm.com" },
+  { name: "Decagon",     beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["a16z"], addedAt: "2024-01-01", domain: "decagon.ai" },
+  { name: "Glean",       beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Sequoia", "Coatue"], addedAt: "2024-01-01", domain: "glean.com" },
+  { name: "Writer",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["ICONIQ Growth"], addedAt: "2024-01-01", domain: "writer.com" },
+  { name: "Moveworks",   beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["Kleiner Perkins", "ICONIQ Growth"], addedAt: "2024-01-01", domain: "moveworks.com" },
+  { name: "Cognigy",     beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: [], addedAt: "2024-01-01", domain: "cognigy.com" },
   // Vertical AI — tier 2–3
   { name: "Ironclad AI",  beat: "Vertical AI", tier: 2, dealVector: ["potential_customer", "strategic_partner"], vcBacked: [], addedAt: "2024-01-01" },
   { name: "Abridge",      beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner"],                       vcBacked: [], addedAt: "2024-01-01" },

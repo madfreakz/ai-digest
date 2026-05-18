@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, createContext, useContext } from "react";
-import type { Digest, DigestArticle } from "@/lib/summarize";
-import type { Beat } from "@/lib/companies";
+import type { Digest } from "@/lib/summarize";
 import {
   THEMES,
   DEFAULT_PREFS,
@@ -11,9 +10,7 @@ import {
   type ThemeKey,
   type Theme,
 } from "@/lib/themes";
-import DigestHeader from "./DigestHeader";
-import FeaturedStory from "./FeaturedStory";
-import BeatSection from "./BeatSection";
+import CinematicLayout from "./CinematicLayout";
 import TweaksPanel from "./TweaksPanel";
 
 interface ThemeCtxValue {
@@ -30,31 +27,18 @@ export const ThemeCtx = createContext<ThemeCtxValue>({
   compact: false,
 });
 
-export function useTheme() {
-  return useContext(ThemeCtx);
+export function useTheme(): ThemeCtxValue & Theme {
+  const ctx = useContext(ThemeCtx);
+  return { ...ctx, ...ctx.t };
 }
 
 interface Props {
   digest: Digest;
 }
 
-function compositeScore(a: DigestArticle): number {
-  return (a.relevanceScore ?? 5) * 0.7 + (a.impactScore ?? 5) * 0.3;
-}
-
-function pickFeatured(articles: DigestArticle[]): DigestArticle | undefined {
-  // Prefer highest-relevance deal-signal article; fall back to highest composite score
-  const withSignal = articles.filter(a => a.dealSignal);
-  if (withSignal.length > 0) {
-    return withSignal.sort((a, b) => compositeScore(b) - compositeScore(a))[0];
-  }
-  return [...articles].sort((a, b) => compositeScore(b) - compositeScore(a))[0];
-}
-
 export default function DigestClient({ digest }: Props) {
   const [prefs, setPrefs] = useState<UserPrefs>(DEFAULT_PREFS);
   const [mounted, setMounted] = useState(false);
-  const [activeBeat, setActiveBeat] = useState<Beat>("Physical AI");
 
   useEffect(() => {
     try {
@@ -90,56 +74,13 @@ export default function DigestClient({ digest }: Props) {
     try { localStorage.setItem("aifrontier-prefs", JSON.stringify(next)); } catch {}
   }
 
-  const featured = pickFeatured(digest.articles);
-  const rest = digest.articles.filter(a => a !== featured);
-
   if (!mounted) {
     return <div style={{ background: t.bg, minHeight: "100vh" }} />;
   }
 
   return (
     <ThemeCtx.Provider value={{ t, headlineFont, showBD, compact }}>
-      <div style={{ background: t.bg, minHeight: "100vh", display: "flex", justifyContent: "center", paddingBottom: 100 }}>
-        <div style={{ width: "100%", maxWidth: 680, minWidth: 0 }}>
-
-          {/* Masthead rule */}
-          <div style={{ height: t.mastheadH, background: t.mastheadBg }} />
-
-          {/* Header */}
-          <DigestHeader generatedAt={digest.generatedAt} />
-
-          {/* Featured lead story */}
-          {featured && <FeaturedStory article={featured} compact={compact} />}
-
-          {/* Beat tabs → category tabs → articles */}
-          <BeatSection
-            articles={rest}
-            activeBeat={activeBeat}
-            onBeatChange={setActiveBeat}
-          />
-
-          {/* Footer */}
-          <div style={{
-            padding: compact ? "20px var(--page-pad-x)" : "26px var(--page-pad-x)",
-            paddingBottom: `calc(${compact ? "20px" : "26px"} + env(safe-area-inset-bottom, 0px))`,
-            background: t.bgDeep,
-            borderTop: `1px solid ${t.border}`,
-            marginTop: 20,
-          }}>
-            <div style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 11,
-              color: t.textGhost,
-              fontWeight: 300,
-            }}>
-              © Mark Fok · AI Frontier Digest
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <TweaksPanel prefs={prefs} onPrefsChange={handlePrefsChange} />
+      <CinematicLayout digest={digest} />
     </ThemeCtx.Provider>
   );
 }

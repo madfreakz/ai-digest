@@ -20,7 +20,7 @@ export default function DigestHeader({ generatedAt }: Props) {
         fontFamily: headlineFont,
         fontSize: 38,
         fontWeight: 600,
-        color: t.textHigh,
+        color: '#18140C',
         letterSpacing: "-0.025em",
         lineHeight: 1,
         marginBottom: compact ? 20 : 28,

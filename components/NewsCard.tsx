@@ -15,6 +15,7 @@ export default function NewsCard({ article, index }: Props) {
   const hasThumb = index === 0 && (!!article.ogImage || !!article.companyTags.length);
   const thumbH = compact ? 160 : 220;
   const time = formatPublishedAt(article.publishedAt);
+  const isNew = Date.now() - new Date(article.publishedAt).getTime() < 24 * 60 * 60 * 1000;
 
   const padV = compact
     ? hasThumb ? "14px var(--page-pad-x) 16px" : "14px var(--page-pad-x) 14px"
@@ -29,6 +30,7 @@ export default function NewsCard({ article, index }: Props) {
         <a href={article.url} target="_blank" rel="noopener noreferrer">
           <Thumb
             ogImage={article.ogImage}
+            companyLogoUrl={article.companyLogoUrl}
             label={article.companyTags.join(" · ").toLowerCase() || article.category.toLowerCase()}
             height={thumbH}
           />
@@ -57,6 +59,18 @@ export default function NewsCard({ article, index }: Props) {
           )}
           <span style={{ color: t.borderLight }}>·</span>
           <span style={{ color: t.textMin }}>{time}</span>
+          {isNew && (
+            <span style={{
+              fontSize: 9,
+              fontWeight: 600,
+              fontFamily: "'DM Sans', sans-serif",
+              color: "#fff",
+              background: "#16a34a",
+              borderRadius: 3,
+              padding: "1px 5px",
+              letterSpacing: "0.06em",
+            }}>NEW</span>
+          )}
         </div>
 
         {/* Title — slightly larger + accent left border for high-impact articles */}

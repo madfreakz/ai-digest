@@ -5,13 +5,16 @@ import { useTheme } from "./DigestClient";
 
 interface Props {
   ogImage: string | null;
+  companyLogoUrl?: string;
   label: string;
   height: number;
 }
 
-export default function Thumb({ ogImage, label, height }: Props) {
+export default function Thumb({ ogImage, companyLogoUrl, label, height }: Props) {
   const { t } = useTheme();
   const [imgFailed, setImgFailed] = useState(false);
+
+  const imageUrl = companyLogoUrl || (ogImage && ogImage.startsWith("http") ? ogImage : null);
 
   return (
     <div
@@ -24,17 +27,25 @@ export default function Thumb({ ogImage, label, height }: Props) {
           width: "100%",
           height: "100%",
           position: "relative",
-          background: ogImage
+          background: imageUrl
             ? undefined
             : `repeating-linear-gradient(-45deg, ${t.thumbS1} 0px, ${t.thumbS1} 14px, ${t.thumbS2} 14px, ${t.thumbS2} 28px)`,
         }}
       >
-        {ogImage && !imgFailed ? (
+        {imageUrl && !imgFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={ogImage}
+            src={imageUrl}
             alt=""
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: companyLogoUrl ? "contain" : "cover",
+              objectPosition: "center",
+              display: "block",
+              backgroundColor: companyLogoUrl ? "#f3f4f6" : undefined,
+              padding: companyLogoUrl ? "8px" : undefined,
+            }}
             onError={() => setImgFailed(true)}
           />
         ) : (

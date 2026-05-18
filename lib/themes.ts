@@ -27,6 +27,13 @@ export interface Theme {
   thumbS1: string; thumbS2: string;
   thumbVignette: string; thumbLabel: string;
   playBorder: string; playBg: string; playArrow: string;
+  // Cinematic design tokens
+  scrollProgressGradient: string;
+  cardBackdrop: string;
+  cardBorder: string;
+  cardShadow: string;
+  heroShadow: string;
+  stoneTextureBg: string;
 }
 
 export const THEMES: Record<ThemeKey, Theme> = {
@@ -38,7 +45,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     accent: '#1B3A6B',       accentMid: '#2E5EA8',
     mastheadBg: 'linear-gradient(90deg, #1B3A6B 0%, #2E5EA8 35%, transparent 100%)',
     mastheadH: 2,
-    tabBlurBg: 'rgba(250,248,244,0.94)',
+    tabBlurBg: 'rgba(250,248,244,0.85)',
     articleHoverBg: 'rgba(27,58,107,0.025)',  articleHoverClr: '#080604',
     playHoverBorder: 'rgba(27,58,107,0.5)',   playHoverBg: 'rgba(27,58,107,0.1)',
     tabHoverClr: '#5A6E8A',  scrollThumb: '#D0C8BC',
@@ -46,6 +53,12 @@ export const THEMES: Record<ThemeKey, Theme> = {
     thumbVignette: 'radial-gradient(ellipse at center, transparent 25%, rgba(245,242,236,0.5) 100%)',
     thumbLabel: 'rgba(140,132,120,0.65)',
     playBorder: 'rgba(27,58,107,0.18)', playBg: 'rgba(27,58,107,0.04)', playArrow: 'rgba(27,58,107,0.38)',
+    scrollProgressGradient: 'linear-gradient(90deg, #1B3A6B 0%, #2E5EA8 100%)',
+    cardBackdrop: 'rgba(255,255,255,0.5)',
+    cardBorder: 'rgba(222,216,204,0.6)',
+    cardShadow: '0 8px 32px rgba(24,20,12,0.06), 0 2px 8px rgba(24,20,12,0.04)',
+    heroShadow: '0 40px 80px rgba(24,20,12,0.12), 0 8px 16px rgba(24,20,12,0.08)',
+    stoneTextureBg: '#FAF8F4',
   },
   Ink: {
     bg: '#18150E',           bgDeep: '#130F09',
@@ -63,6 +76,12 @@ export const THEMES: Record<ThemeKey, Theme> = {
     thumbVignette: 'radial-gradient(ellipse at center, transparent 20%, rgba(10,8,4,0.65) 100%)',
     thumbLabel: 'rgba(80,68,52,0.7)',
     playBorder: 'rgba(212,120,90,0.22)', playBg: 'rgba(212,120,90,0.06)', playArrow: 'rgba(212,120,90,0.5)',
+    scrollProgressGradient: 'linear-gradient(90deg, #D4785A 0%, #8A4030 100%)',
+    cardBackdrop: 'rgba(25,21,16,0.6)',
+    cardBorder: 'rgba(44,38,24,0.8)',
+    cardShadow: '0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15)',
+    heroShadow: '0 40px 80px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.2)',
+    stoneTextureBg: '#18150E',
   },
   Press: {
     bg: '#FFFFFF',           bgDeep: '#F2F2F2',
@@ -80,6 +99,12 @@ export const THEMES: Record<ThemeKey, Theme> = {
     thumbVignette: 'transparent',
     thumbLabel: 'rgba(100,100,100,0.6)',
     playBorder: 'rgba(0,0,0,0.15)', playBg: 'rgba(0,0,0,0.03)', playArrow: 'rgba(0,0,0,0.3)',
+    scrollProgressGradient: 'linear-gradient(90deg, #000000 0%, #2A2A2A 100%)',
+    cardBackdrop: 'rgba(242,242,242,0.5)',
+    cardBorder: 'rgba(224,224,224,0.8)',
+    cardShadow: '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
+    heroShadow: '0 40px 80px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.06)',
+    stoneTextureBg: '#FFFFFF',
   },
 };
 
