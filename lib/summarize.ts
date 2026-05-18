@@ -105,10 +105,10 @@ async function summarizeBeat(
   const companyNames = getCompanyNames(beat).slice(0, 25).join(", ");
 
   const articleList = articles
-    .slice(0, 10)
+    .slice(0, 6)
     .map(
       (a, i) =>
-        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 300)}`,
+        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 150)}`,
     )
     .join("\n\n---\n\n");
 
@@ -119,7 +119,7 @@ Today: ${new Date().toDateString()}
 TRACKED COMPANIES (name: deal_vectors):
 ${companyContext || "None for this beat"}
 
-Analyze these ${Math.min(articles.length, 10)} ${beat} articles and call record_articles with your results:
+Analyze these ${Math.min(articles.length, 6)} ${beat} articles and call record_articles with your results:
 
 ${articleList}
 
@@ -141,8 +141,8 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
       message = await client.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 3000,
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 2000,
         tools: [RECORD_ARTICLES_TOOL],
         tool_choice: { type: "tool", name: "record_articles" },
         messages: [{ role: "user", content: prompt }],

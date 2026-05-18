@@ -23,7 +23,7 @@ async function kvGet(key: string): Promise<Digest | null> {
 async function kvSet(key: string, value: Digest): Promise<void> {
   try {
     const { kv } = await import("@vercel/kv");
-    await kv.set(key, value, { ex: 26 * 60 * 60 }); // 26-hour TTL
+    await kv.set(key, value, { ex: 48 * 60 * 60 }); // 48-hour TTL — covers overnight gap
   } catch {
     // Non-fatal — continue without caching
   }

@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { fetchAllNews } from "@/lib/exa";
-import { generateDigest, type DigestArticle } from "@/lib/summarize";
+import type { Digest, DigestArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -148,20 +147,31 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
 </html>`;
 }
 
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+async function getDigestFromKV(): Promise<Digest | null> {
   try {
-    const articles = await fetchAllNews();
-    if (articles.length === 0) {
-      return NextResponse.json({ error: "No articles found" }, { status: 404 });
+    const { kv } = await import("@vercel/kv");
+    const fmt = (d: Date) => `digest:v3:${d.toISOString().split("T")[0]}`;
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    for (const key of [fmt(today), fmt(yesterday)]) {
+      const val = await kv.get<Digest>(key);
+      if (val && val.articles?.length > 0) return val;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET() {
+  try {
+    const digest = await getDigestFromKV();
+    if (!digest) {
+      return NextResponse.json({ error: "No digest in KV — run /api/digest first" }, { status: 404 });
     }
 
-    const digest = await generateDigest(articles);
-    const html   = buildEmailHtml(digest);
+    const html = buildEmailHtml(digest);
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
