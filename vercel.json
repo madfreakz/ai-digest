@@ -1,7 +1,9 @@
 {
   "crons": [
-    { "path": "/api/digest", "schedule": "0 14 * * *" },
-    { "path": "/api/digest", "schedule": "0 23 * * *" },
-    { "path": "/api/send-digest", "schedule": "0 14 * * *" }
+    { "path": "/api/beat?beat=Physical%20AI", "schedule": "0 2 * * *" },
+    { "path": "/api/beat?beat=AI%20Infrastructure", "schedule": "0 3 * * *" },
+    { "path": "/api/beat?beat=AI%20Labs", "schedule": "0 4 * * *" },
+    { "path": "/api/beat?beat=Vertical%20AI", "schedule": "0 5 * * *" },
+    { "path": "/api/send-digest", "schedule": "0 6 * * *" }
   ]
 }

@@ -1,4 +1,5 @@
-import Groq from "groq-sdk";
+import { GoogleGenerativeAI, SchemaType, FunctionCallingMode } from "@google/generative-ai";
+import type { FunctionDeclaration } from "@google/generative-ai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
@@ -53,45 +54,37 @@ const ArticleSchema = z.object({
 
 const ToolOutputSchema = z.object({ articles: z.array(ArticleSchema).default([]) });
 
-const RECORD_ARTICLES_TOOL = {
-  type: "function",
-  function: {
-    name: "record_articles",
-    description: "Record the analyzed and scored articles for the digest",
-    parameters: {
-    type: "object",
+const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
+  name: "record_articles",
+  description: "Record the analyzed and scored articles for the digest",
+  parameters: {
+    type: SchemaType.OBJECT,
     properties: {
       articles: {
-        type: "array",
+        type: SchemaType.ARRAY,
         items: {
-          type: "object",
+          type: SchemaType.OBJECT,
           properties: {
-            title:         { type: "string" },
-            url:           { type: "string" },
-            source:        { type: "string" },
-            beat:          { type: "string", enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
-            category:      { type: "string", enum: ["Funding", "Product", "AI/Models", "Partnerships", "Hiring", "General"] },
-            companyTags:   { type: "array", items: { type: "string" } },
-            summary:       { type: "string" },
-            bdRelevance:   { type: "string" },
-            relevanceScore: { type: "number" },
-            impactScore:   { type: "number" },
-            impactReason:  { type: "string" },
-            dealSignal:    { type: "boolean" },
-            dealSignalType: {
-              type: "string",
-              enum: ["funding_round", "partnership_announced", "customer_win",
-                     "hiring_signal", "positioning_shift", "competitive_move", "product_launch"],
-            },
+            title:         { type: SchemaType.STRING },
+            url:           { type: SchemaType.STRING },
+            source:        { type: SchemaType.STRING },
+            beat:          { type: SchemaType.STRING, enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
+            category:      { type: SchemaType.STRING, enum: ["Funding", "Product", "AI/Models", "Partnerships", "Hiring", "General"] },
+            companyTags:   { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } as any },
+            summary:       { type: SchemaType.STRING },
+            bdRelevance:   { type: SchemaType.STRING },
+            relevanceScore: { type: SchemaType.INTEGER },
+            impactScore:   { type: SchemaType.INTEGER },
+            impactReason:  { type: SchemaType.STRING },
+            dealSignal:    { type: SchemaType.BOOLEAN },
+            dealSignalType: { type: SchemaType.STRING, enum: ["funding_round", "partnership_announced", "customer_win", "hiring_signal", "positioning_shift", "competitive_move", "product_launch"] },
           },
-          required: ["title", "url", "source", "beat", "category", "companyTags",
-                     "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal"],
-        },
+          required: ["title", "url", "source", "beat", "category", "companyTags", "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal"],
+        } as any,
       },
     },
     required: ["articles"],
-    },
-  },
+  } as any,
 };
 
 function compositeScore(a: Pick<DigestArticle, "relevanceScore" | "impactScore">): number {
@@ -101,7 +94,7 @@ function compositeScore(a: Pick<DigestArticle, "relevanceScore" | "impactScore">
 async function summarizeBeat(
   beat: Beat,
   articles: ExaArticle[],
-  client: Groq,
+  model: ReturnType<GoogleGenerativeAI["getGenerativeModel"]>,
 ): Promise<DigestArticle[]> {
   if (articles.length === 0) return [];
 
@@ -141,38 +134,33 @@ For each article:
 
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.`;
 
-  let message: Groq.Chat.ChatCompletion | undefined;
+  let response: any;
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
-      message = await client.chat.completions.create({
-        model: "llama-3.1-70b-versatile",
-        max_tokens: 2000,
-        tools: [RECORD_ARTICLES_TOOL],
-        tool_choice: { type: "function", function: { name: "record_articles" } },
-        messages: [{ role: "user", content: prompt }],
+      response = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
+        toolConfig: { functionCallingConfig: { mode: FunctionCallingMode.ANY } },
       });
       break;
     } catch (err: unknown) {
-      const apiErr = err as { status?: number; headers?: { get?: (k: string) => string | null; [k: string]: unknown } };
-      if (apiErr.status === 429 && attempt < 2) {
-        const raw = apiErr.headers?.get?.("retry-after") ?? (apiErr.headers as Record<string, string>)?.["retry-after"];
-        const retryAfter = parseInt(raw ?? "60", 10);
-        console.warn(`Rate limit on ${beat}, retrying in ${retryAfter}s…`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
+      if (attempt < 2) {
+        console.warn(`Error on ${beat}, retrying…`);
+        await new Promise(r => setTimeout(r, 5000));
       } else {
         throw err;
       }
     }
   }
-  if (!message) return [];
+  if (!response) return [];
 
-  const toolCall = message.choices[0]?.message?.tool_calls?.[0];
-  if (!toolCall || toolCall.type !== "function" || toolCall.function.name !== "record_articles") {
+  const functionCall = response.response.functionCalls()?.[0];
+  if (!functionCall || functionCall.name !== "record_articles") {
     console.error(`No function tool call returned for beat: ${beat}`);
     return [];
   }
 
-  const parsed = ToolOutputSchema.safeParse(JSON.parse(toolCall.function.arguments));
+  const parsed = ToolOutputSchema.safeParse(functionCall.args);
   if (!parsed.success) {
     console.error(`Zod validation failed for beat ${beat}:`, parsed.error.message);
     return [];
@@ -276,29 +264,35 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
   await Promise.all(articles.map(enqueueFetch));
 }
 
-export async function generateDigest(articles: ExaArticle[]): Promise<Digest> {
-  const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
+export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {
+  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  // Filter articles by beat if specified
+  const filtered = beatFilter
+    ? articles.filter(a => a.beatHint === beatFilter)
+    : articles;
 
   // Group by beatHint
   const groups = new Map<Beat, ExaArticle[]>();
-  for (const article of articles) {
+  for (const article of filtered) {
     const beat = article.beatHint;
     if (!groups.has(beat)) groups.set(beat, []);
     groups.get(beat)!.push(article);
   }
 
-  // Sequential Claude calls — avoids hitting the 8,000 TPM rate limit
+  // Sequential Gemini calls
   const beatEntries = Array.from(groups.entries());
   const allArticles: DigestArticle[] = [];
   for (const [beat, items] of beatEntries) {
     try {
-      const result = await summarizeBeat(beat, items, client);
+      const result = await summarizeBeat(beat, items, model);
       // Sort within each beat: dealSignal first, then by publishedAt descending (latest first), then by composite score
       result.sort((a, b) => {
-        if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
         const dateA = new Date(a.publishedAt).getTime();
         const dateB = new Date(b.publishedAt).getTime();
         if (dateA !== dateB) return dateB - dateA;
+        if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
         return compositeScore(b) - compositeScore(a);
       });
       allArticles.push(...result);
