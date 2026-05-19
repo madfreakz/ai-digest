@@ -214,7 +214,7 @@ export async function GET(req: Request) {
 
     const { data, error } = await resend.emails.send({
       from:    "Frontier AI Digest <onboarding@resend.dev>",
-      to:      ["fokjenhong@gmail.com", "sueannlau568@gmail.com"],
+      to:      ["fokjenhong@gmail.com"],
       subject,
       html,
     });
