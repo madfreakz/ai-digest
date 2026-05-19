@@ -76,15 +76,13 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
           color: 'inherit',
           display: 'block',
           transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+          boxShadow: isHovered
+            ? '0 24px 48px rgba(24, 20, 12, 0.12), 0 4px 12px rgba(24, 20, 12, 0.08)'
+            : theme.cardShadow,
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-      {isHovered && (
-        <style>{`
-          a { box-shadow: 0 24px 48px rgba(24, 20, 12, 0.12), 0 4px 12px rgba(24, 20, 12, 0.08) !important; }
-        `}</style>
-      )}
         <div
           style={{
             display: 'flex',
