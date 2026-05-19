@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
+
+export const dynamic = "force-dynamic";
 import type { DigestArticle } from "@/lib/summarize";
 import { pickFeaturedArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
