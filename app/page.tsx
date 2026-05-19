@@ -1,16 +1,19 @@
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
-import { aggregateDigestFromBeats } from "@/lib/beat-digests";
+import { getPublishedDigest, aggregateDigestFromBeats } from "@/lib/beat-digests";
 
-// ISR: regenerate at most every 12 hours; avoids Exa+Gemini on every page load
-export const revalidate = 43200;
+// Revalidate hourly so stale content clears quickly, but content only
+// meaningfully changes when send-digest publishes and calls revalidatePath('/').
+export const revalidate = 3600;
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
     return <DigestClient digest={MOCK_DIGEST} />;
   }
 
-  const digest = await aggregateDigestFromBeats();
+  // Prefer the stable published digest; fall back to live KV aggregation only
+  // until the first send-digest run seeds digest:published.
+  const digest = (await getPublishedDigest()) ?? (await aggregateDigestFromBeats());
 
   if (!digest || digest.articles.length === 0) {
     return (

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import type { DigestArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
@@ -168,11 +169,15 @@ export async function GET(req: Request) {
   }
 
   try {
-    const { aggregateDigestFromBeats } = await import("@/lib/beat-digests");
+    const { aggregateDigestFromBeats, publishFinalDigest } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();
     if (!digest || digest.articles.length === 0) {
       return NextResponse.json({ error: "No digest available — run /api/beat first" }, { status: 404 });
     }
+
+    // Publish to stable KV key so the page only changes when this cron runs
+    await publishFinalDigest(digest);
+    revalidatePath("/");
 
     const html = buildEmailHtml(digest);
 

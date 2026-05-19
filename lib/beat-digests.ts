@@ -12,6 +12,8 @@ interface BeatCacheMetadata {
 const BEAT_CACHE_TTL = 24 * 60 * 60;
 const SYNTHESIS_KEY = "digest:synthesis";
 const SYNTHESIS_TTL = 24 * 60 * 60;
+const PUBLISHED_DIGEST_KEY = "digest:published";
+const PUBLISHED_DIGEST_TTL = 25 * 60 * 60; // 25 hours — outlasts daily cron cycle
 
 // KV is optional — if env vars are absent, fall back to direct Exa+Gemini generation
 const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
@@ -81,6 +83,34 @@ async function generateFreshAllBeats(beats: Beat[]): Promise<DigestArticle[]> {
     })
   );
   return beatResults.flat();
+}
+
+export async function publishFinalDigest(digest: Digest): Promise<void> {
+  if (!KV_CONFIGURED) {
+    console.warn("[beat-digests] KV not configured — skipping publish");
+    return;
+  }
+  try {
+    await kv.setex(PUBLISHED_DIGEST_KEY, PUBLISHED_DIGEST_TTL, digest);
+    console.log(`[beat-digests] Published final digest (${digest.articles.length} articles)`);
+  } catch (err) {
+    console.error("[beat-digests] Failed to publish final digest:", err instanceof Error ? err.message : String(err));
+  }
+}
+
+export async function getPublishedDigest(): Promise<Digest | null> {
+  if (!KV_CONFIGURED) return null;
+  try {
+    const digest = await kv.get<Digest>(PUBLISHED_DIGEST_KEY);
+    if (digest) {
+      console.log(`[beat-digests] Published digest HIT (${digest.articles.length} articles)`);
+      return digest;
+    }
+    console.log("[beat-digests] Published digest MISS");
+  } catch (err) {
+    console.error("[beat-digests] Failed to read published digest:", err instanceof Error ? err.message : String(err));
+  }
+  return null;
 }
 
 export async function aggregateDigestFromBeats(): Promise<Digest> {
