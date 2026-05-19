@@ -95,7 +95,7 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
 
 export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
   const now = Date.now();
-  const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 24 * 60 * 60 * 1000);
+  const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 48 * 60 * 60 * 1000);
   const pool = recent.length > 0 ? recent : articles;
   return pool.reduce<DigestArticle | undefined>((best, a) => {
     if (!best) return a;
