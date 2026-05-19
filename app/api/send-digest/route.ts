@@ -183,8 +183,10 @@ export async function GET(req: Request) {
     const { aggregateDigestFromBeats, publishFinalDigest } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();
     if (!digest || digest.articles.length === 0) {
+      console.error("[send-digest] No articles in digest — check beat caches or KV provisioning");
       return NextResponse.json({ error: "No digest available — run /api/beat first" }, { status: 404 });
     }
+    console.log(`[send-digest] Digest ready: ${digest.articles.length} articles, sending email...`);
 
     // Publish to stable KV key so the page only changes when this cron runs
     await publishFinalDigest(digest);

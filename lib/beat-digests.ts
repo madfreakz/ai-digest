@@ -74,15 +74,36 @@ export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 
 async function generateFreshAllBeats(beats: Beat[]): Promise<DigestArticle[]> {
   console.log("[beat-digests] KV not configured — fetching fresh (single Exa pass)");
-  const allNews = await fetchAllNews();
-  const beatResults = await Promise.all(
+
+  let allNews: Awaited<ReturnType<typeof fetchAllNews>>;
+  try {
+    allNews = await fetchAllNews();
+    console.log(`[beat-digests] fetchAllNews returned ${allNews.length} raw articles`);
+  } catch (err) {
+    console.error("[beat-digests] fetchAllNews threw:", err instanceof Error ? err.message : String(err));
+    return [];
+  }
+
+  const beatResults = await Promise.allSettled(
     beats.map(async beat => {
       const beatArticles = allNews.filter(a => a.beatHint === beat);
+      console.log(`[beat-digests] ${beat}: ${beatArticles.length} raw articles to process`);
       const beatDigest = await generateBeatDigest(beatArticles, beat);
+      console.log(`[beat-digests] ${beat}: ${beatDigest.articles.length} articles after Gemini scoring`);
       return beatDigest.articles;
     })
   );
-  return beatResults.flat();
+
+  const articles: DigestArticle[] = [];
+  for (const result of beatResults) {
+    if (result.status === "fulfilled") {
+      articles.push(...result.value);
+    } else {
+      console.error("[beat-digests] Beat digest generation failed:", result.reason instanceof Error ? result.reason.message : String(result.reason));
+    }
+  }
+  console.log(`[beat-digests] generateFreshAllBeats complete: ${articles.length} articles total`);
+  return articles;
 }
 
 export async function publishFinalDigest(digest: Digest): Promise<void> {
