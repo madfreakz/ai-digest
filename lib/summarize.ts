@@ -1,5 +1,5 @@
-import { GoogleGenerativeAI, SchemaType, FunctionCallingMode } from "@google/generative-ai";
-import type { FunctionDeclaration } from "@google/generative-ai";
+import { GoogleGenAI, FunctionCallingConfigMode, Type } from "@google/genai";
+import type { FunctionDeclaration } from "@google/genai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
@@ -64,26 +64,26 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
   name: "record_articles",
   description: "Record the analyzed and scored articles for the digest",
   parameters: {
-    type: SchemaType.OBJECT,
+    type: Type.OBJECT,
     properties: {
       articles: {
-        type: SchemaType.ARRAY,
+        type: Type.ARRAY,
         items: {
-          type: SchemaType.OBJECT,
+          type: Type.OBJECT,
           properties: {
-            title:         { type: SchemaType.STRING },
-            url:           { type: SchemaType.STRING },
-            source:        { type: SchemaType.STRING },
-            beat:          { type: SchemaType.STRING, enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
-            category:      { type: SchemaType.STRING, enum: ["Funding", "Product", "AI/Models", "Partnerships", "Hiring", "General"] },
-            companyTags:   { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } as any },
-            summary:       { type: SchemaType.STRING },
-            bdRelevance:   { type: SchemaType.STRING },
-            relevanceScore: { type: SchemaType.INTEGER },
-            impactScore:   { type: SchemaType.INTEGER },
-            impactReason:  { type: SchemaType.STRING },
-            dealSignal:    { type: SchemaType.BOOLEAN },
-            dealSignalType: { type: SchemaType.STRING, enum: ["funding_round", "partnership_announced", "customer_win", "hiring_signal", "positioning_shift", "competitive_move", "product_launch"] },
+            title:         { type: Type.STRING },
+            url:           { type: Type.STRING },
+            source:        { type: Type.STRING },
+            beat:          { type: Type.STRING, enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
+            category:      { type: Type.STRING, enum: ["Funding", "Product", "AI/Models", "Partnerships", "Hiring", "General"] },
+            companyTags:   { type: Type.ARRAY, items: { type: Type.STRING } as any },
+            summary:       { type: Type.STRING },
+            bdRelevance:   { type: Type.STRING },
+            relevanceScore: { type: Type.INTEGER },
+            impactScore:   { type: Type.INTEGER },
+            impactReason:  { type: Type.STRING },
+            dealSignal:    { type: Type.BOOLEAN },
+            dealSignalType: { type: Type.STRING, enum: ["funding_round", "partnership_announced", "customer_win", "hiring_signal", "positioning_shift", "competitive_move", "product_launch"] },
           },
           required: ["title", "url", "source", "beat", "category", "companyTags", "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal"],
         } as any,
@@ -107,7 +107,8 @@ export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | 
 async function summarizeBeat(
   beat: Beat,
   articles: ExaArticle[],
-  model: ReturnType<GoogleGenerativeAI["getGenerativeModel"]>,
+  ai: GoogleGenAI,
+  modelName: string,
 ): Promise<DigestArticle[]> {
   if (articles.length === 0) return [];
 
@@ -150,10 +151,13 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   let response: any;
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
-      response = await model.generateContent({
+      response = await ai.models.generateContent({
+        model: modelName,
         contents: [{ role: "user", parts: [{ text: prompt }] }],
-        tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
-        toolConfig: { functionCallingConfig: { mode: FunctionCallingMode.ANY } },
+        config: {
+          tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
+          toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
+        },
       });
       break;
     } catch (err: unknown) {
@@ -170,12 +174,12 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     return [];
   }
 
-  const functionCall = response.response.functionCalls()?.[0];
+  const functionCall = response.functionCalls?.[0];
   if (!functionCall || functionCall.name !== "record_articles") {
     console.error(`[gemini] ${beat} - No function call returned`, {
       hasFunctionCall: !!functionCall,
       name: functionCall?.name,
-      allCalls: response.response.functionCalls(),
+      allCalls: response.functionCalls,
     });
     return [];
   }
@@ -295,8 +299,7 @@ export async function generateEditorialSynthesis(
 ): Promise<DigestSynthesis | undefined> {
   if (articles.length === 0) return undefined;
 
-  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
 
   const top = articles.slice(0, 10);
   const articleList = top
@@ -318,8 +321,11 @@ Return ONLY a valid JSON object with exactly two string fields:
 No markdown, no code fences, no explanation. Just the JSON object.`;
 
   try {
-    const response = await model.generateContent(prompt);
-    const text = response.response.text().trim()
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+    });
+    const text = (response.text ?? "").trim()
       .replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
     const parsed = JSON.parse(text);
     if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
@@ -332,8 +338,7 @@ No markdown, no code fences, no explanation. Just the JSON object.`;
 }
 
 export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {
-  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
 
   // Filter articles by beat if specified
   const filtered = beatFilter
@@ -353,7 +358,7 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
   const allArticles: DigestArticle[] = [];
   for (const [beat, items] of beatEntries) {
     try {
-      const result = await summarizeBeat(beat, items, model);
+      const result = await summarizeBeat(beat, items, ai, "gemini-2.5-flash");
       result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
       allArticles.push(...result);
     } catch (err) {

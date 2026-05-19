@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 
 async function testQuota() {
   const apiKey = process.env.GOOGLE_API_KEY;
@@ -7,11 +7,11 @@ async function testQuota() {
     process.exit(1);
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
-    const response = await model.generateContent({
+    await ai.models.generateContent({
+      model: "gemini-2.5-flash",
       contents: [{ role: "user", parts: [{ text: "Test quota" }] }],
     });
     console.log("✓ Quota available - API responded successfully");
