@@ -59,12 +59,11 @@ export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
       console.log(`[beat-digests] Cache HIT for ${beat}`);
       return cached;
     }
+    console.log(`[beat-digests] Cache MISS for ${beat} (cron not yet run)`);
   } catch (err) {
-    console.warn(`[beat-digests] Cache read error for ${beat}:`, err);
+    console.warn(`[beat-digests] Cache read error for ${beat}:`, err instanceof Error ? err.message : String(err));
   }
-
-  console.log(`[beat-digests] Cache MISS for ${beat}, fetching fresh`);
-  return cacheBeatArticles(beat);
+  return [];
 }
 
 export async function aggregateDigestFromBeats(): Promise<Digest> {
