@@ -36,8 +36,8 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
   const isVisible = useInView(ref);
   const theme = useTheme();
 
-  const minHeight = compact ? '60vh' : '78vh';
-  const padding = compact ? '48px 56px' : '60px 56px';
+  const minHeight = compact ? '60vh' : 'auto';
+  const padding = compact ? '48px 56px' : '48px 56px';
   const titleSize = compact ? '38px' : '48px';
   const gap = compact ? '32px' : '40px';
 
@@ -51,7 +51,7 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
         position: 'relative',
         minHeight,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         overflow: 'hidden',
         background: `linear-gradient(135deg, rgba(27, 58, 107, 0.02) 0%, rgba(27, 58, 107, 0.01) 100%)`,
