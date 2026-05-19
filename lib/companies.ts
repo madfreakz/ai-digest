@@ -107,10 +107,6 @@ export function getCompanyNames(beat?: Beat): string[] {
   return (beat ? COMPANIES.filter(c => c.beat === beat) : COMPANIES).map(c => c.name);
 }
 
-export function getCompanyRegistry(): TrackedCompany[] {
-  return COMPANIES;
-}
-
 // Compressed context for Claude prompt injection — tier 1 + 2 only to keep token count low
 export function getCompanyContext(beat: Beat): string {
   return COMPANIES
