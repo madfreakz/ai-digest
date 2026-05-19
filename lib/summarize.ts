@@ -1,5 +1,5 @@
 import { GoogleGenAI, FunctionCallingConfigMode, Type } from "@google/genai";
-import type { FunctionDeclaration } from "@google/genai";
+import type { FunctionDeclaration, Schema } from "@google/genai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
@@ -93,6 +93,9 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
   } as any,
 };
 
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
+const GEMINI_MODEL = "gemini-2.5-flash";
+
 export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
   const now = Date.now();
   const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 48 * 60 * 60 * 1000);
@@ -157,6 +160,9 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
         config: {
           tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
+          thinkingConfig: { thinkingBudget: 0 },
+          temperature: 0.1,
+          maxOutputTokens: 8192,
         },
       });
       break;
@@ -294,12 +300,19 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
   await Promise.all(articles.map(enqueueFetch));
 }
 
+const SYNTHESIS_RESPONSE_SCHEMA: Schema = {
+  type: Type.OBJECT,
+  properties: {
+    thesis: { type: Type.STRING },
+    emailSubject: { type: Type.STRING },
+  },
+  required: ["thesis", "emailSubject"],
+};
+
 export async function generateEditorialSynthesis(
   articles: DigestArticle[],
 ): Promise<DigestSynthesis | undefined> {
   if (articles.length === 0) return undefined;
-
-  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
 
   const top = articles.slice(0, 10);
   const articleList = top
@@ -314,20 +327,22 @@ export async function generateEditorialSynthesis(
 Today's top pre-scored articles:
 ${articleList}
 
-Return ONLY a valid JSON object with exactly two string fields:
+Return a JSON object with:
 - "thesis": 2 sentences identifying the single most important story and what it signals for BD/partnerships practitioners today
-- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")
-
-No markdown, no code fences, no explanation. Just the JSON object.`;
+- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")`;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: GEMINI_MODEL,
       contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: SYNTHESIS_RESPONSE_SCHEMA,
+        thinkingConfig: { thinkingBudget: 1024 },
+        temperature: 0.4,
+      },
     });
-    const text = (response.text ?? "").trim()
-      .replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
-    const parsed = JSON.parse(text);
+    const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string };
     if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
       return { thesis: parsed.thesis, emailSubject: parsed.emailSubject };
     }
@@ -338,8 +353,6 @@ No markdown, no code fences, no explanation. Just the JSON object.`;
 }
 
 export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {
-  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
-
   // Filter articles by beat if specified
   const filtered = beatFilter
     ? articles.filter(a => a.beatHint === beatFilter)
@@ -358,7 +371,7 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
   const allArticles: DigestArticle[] = [];
   for (const [beat, items] of beatEntries) {
     try {
-      const result = await summarizeBeat(beat, items, ai, "gemini-2.5-flash");
+      const result = await summarizeBeat(beat, items, ai, GEMINI_MODEL);
       result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
       allArticles.push(...result);
     } catch (err) {
