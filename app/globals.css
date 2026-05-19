@@ -34,13 +34,8 @@ html, body { background: var(--page-bg); min-height: 100vh; }
 /* ── Thumb hover ── */
 .thumb-wrap  { overflow: hidden; }
 .thumb-inner { transition: transform 0.55s ease; }
-.article-item:hover .thumb-inner { transform: scale(1.02); }
 
 .play-ring { transition: border-color 0.2s, background 0.2s; }
-.article-item:hover .play-ring {
-  border-color: var(--play-hover-border) !important;
-  background:   var(--play-hover-bg)     !important;
-}
 
 /* ── Keyboard focus states (WCAG 2.1 Level AA) ── */
 button:focus-visible,

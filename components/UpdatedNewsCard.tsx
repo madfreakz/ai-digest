@@ -95,8 +95,8 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
           <div
             style={{
               flexShrink: 0,
-              width: '180px',
-              height: '140px',
+              width: isMobile ? '100%' : '180px',
+              height: isMobile ? '160px' : '140px',
               borderRadius: '6px',
               overflow: 'hidden',
               background: `repeating-linear-gradient(-45deg, ${theme.thumbS1} 0px, ${theme.thumbS1} 14px, ${theme.thumbS2} 14px, ${theme.thumbS2} 28px)`,
