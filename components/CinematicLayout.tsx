@@ -95,7 +95,16 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
               margin: 0,
             }}
           >
-            © Mark Fok · Frontier AI Digest
+            ©{" "}
+            <a
+              href="https://www.linkedin.com/in/markfok/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              Mark Fok
+            </a>{" "}
+            · Frontier AI Digest
           </p>
         </footer>
       </main>
