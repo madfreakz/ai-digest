@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
 import type { DigestArticle, Digest, DigestSynthesis } from "./summarize";
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
-import { fetchAllNews } from "./exa";
+import { fetchAllNews, fetchBeatNews } from "./exa";
 
 interface BeatCacheMetadata {
   timestamp: string;
@@ -26,9 +26,8 @@ function beatMetadataKey(beat: Beat): string {
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
-    const articles = await fetchAllNews();
-    const beatArticles = articles.filter(a => a.beatHint === beat);
-    console.log(`[beat-digests] ${beat} - fetched ${articles.length} total, ${beatArticles.length} for this beat`);
+    const beatArticles = await fetchBeatNews(beat);
+    console.log(`[beat-digests] ${beat} - fetched ${beatArticles.length} articles`);
 
     const beatDigest = await generateBeatDigest(beatArticles, beat);
     console.log(`[beat-digests] ${beat} - generateBeatDigest returned ${beatDigest.articles.length} articles`);

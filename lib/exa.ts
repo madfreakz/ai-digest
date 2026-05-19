@@ -64,6 +64,59 @@ async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3, baseDelay = 5
   throw lastErr;
 }
 
+async function runBeatQueries(
+  beat: Beat,
+  queries: string[],
+  exa: Exa,
+  startDate: string,
+  seenUrls: Set<string>,
+): Promise<ExaArticle[]> {
+  const results: ExaArticle[] = [];
+  await Promise.allSettled(
+    queries.map(async (query) => {
+      try {
+        const result = await withRetry(() =>
+          exa.searchAndContents(query, {
+            type: "neural",
+            numResults: 10,
+            startPublishedDate: startDate,
+            text: { maxCharacters: 400 },
+          })
+        );
+        console.log(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - results: ${result.results.length}`);
+        for (const item of result.results) {
+          if (!seenUrls.has(item.url)) {
+            seenUrls.add(item.url);
+            const hostname = new URL(item.url).hostname.replace(/^www\./, "");
+            const image = (item as Record<string, unknown>).image as string | null;
+            results.push({
+              title: item.title ?? "Untitled",
+              url: item.url,
+              publishedAt: item.publishedDate ?? new Date().toISOString(),
+              text: item.text ?? undefined,
+              source: hostname,
+              ogImage: image ?? BEAT_PLACEHOLDERS[beat],
+              beatHint: beat,
+            });
+          }
+        }
+      } catch (err) {
+        console.error(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - error:`, err instanceof Error ? err.message : String(err));
+      }
+    })
+  );
+  return results;
+}
+
+export async function fetchBeatNews(beat: Beat): Promise<ExaArticle[]> {
+  const exa = new Exa(process.env.EXA_API_KEY!);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const startDate = sevenDaysAgo.toISOString().split("T")[0];
+  const queries = BEAT_QUERIES.find(([b]) => b === beat)?.[1] ?? [];
+  return runBeatQueries(beat, queries, exa, startDate, new Set());
+}
+
 export async function fetchAllNews(): Promise<ExaArticle[]> {
   const exa = new Exa(process.env.EXA_API_KEY!);
 
@@ -71,47 +124,10 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const startDate = sevenDaysAgo.toISOString().split("T")[0];
 
-  const allResults: ExaArticle[] = [];
   const seenUrls = new Set<string>();
-
-  await Promise.allSettled(
-    BEAT_QUERIES.flatMap(([beat, queries]) =>
-      queries.map(async (query) => {
-        try {
-          const result = await withRetry(() =>
-            exa.searchAndContents(query, {
-              type: "neural",
-              numResults: 10,
-              startPublishedDate: startDate,
-              text: { maxCharacters: 400 },
-            })
-          );
-          console.log(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - results: ${result.results.length}`);
-          for (const item of result.results) {
-            if (!seenUrls.has(item.url)) {
-              seenUrls.add(item.url);
-              const itemWithScore = item as Record<string, unknown>;
-              // Note: Exa searchAndContents doesn't return a score field in the default response
-              // The relevance is implicit in the search ranking. We'll include all results.
-              const hostname = new URL(item.url).hostname.replace(/^www\./, "");
-              const image = itemWithScore.image as string | null;
-              allResults.push({
-                title: item.title ?? "Untitled",
-                url: item.url,
-                publishedAt: item.publishedDate ?? new Date().toISOString(),
-                text: item.text ?? undefined,
-                source: hostname,
-                ogImage: image ?? BEAT_PLACEHOLDERS[beat],
-                beatHint: beat,
-              });
-            }
-          }
-        } catch (err) {
-          console.error(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - error:`, err instanceof Error ? err.message : String(err));
-        }
-      })
-    )
+  const beatResultArrays = await Promise.allSettled(
+    BEAT_QUERIES.map(([beat, queries]) => runBeatQueries(beat, queries, exa, startDate, seenUrls))
   );
 
-  return allResults;
+  return beatResultArrays.flatMap(r => r.status === "fulfilled" ? r.value : []);
 }
