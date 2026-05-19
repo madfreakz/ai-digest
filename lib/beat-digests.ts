@@ -9,7 +9,12 @@ interface BeatCacheMetadata {
   articleCount: number;
 }
 
-const BEAT_CACHE_TTL = 24 * 60 * 60; // 24 hours (beat runs once per day)
+const BEAT_CACHE_TTL = 24 * 60 * 60;
+const SYNTHESIS_KEY = "digest:synthesis";
+const SYNTHESIS_TTL = 24 * 60 * 60;
+
+// KV is optional — if env vars are absent, fall back to direct Exa+Gemini generation
+const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
 
 function beatCacheKey(beat: Beat): string {
   return `beat:${beat}:articles`;
@@ -18,9 +23,6 @@ function beatCacheKey(beat: Beat): string {
 function beatMetadataKey(beat: Beat): string {
   return `beat:${beat}:metadata`;
 }
-
-const SYNTHESIS_KEY = "digest:synthesis";
-const SYNTHESIS_TTL = 24 * 60 * 60; // 24 hours, matches beat TTL
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
@@ -31,18 +33,19 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
     const beatDigest = await generateBeatDigest(beatArticles, beat);
     console.log(`[beat-digests] ${beat} - generateBeatDigest returned ${beatDigest.articles.length} articles`);
 
-    // Try to cache, but still return articles even if caching fails
-    try {
-      await Promise.all([
-        kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, beatDigest.articles),
-        kv.setex(beatMetadataKey(beat), BEAT_CACHE_TTL, {
-          timestamp: new Date().toISOString(),
-          articleCount: beatDigest.articles.length,
-        }),
-      ]);
-      console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
-    } catch (cacheErr) {
-      console.warn(`[beat-digests] Cache write failed for ${beat} (will return articles anyway):`, cacheErr instanceof Error ? cacheErr.message : String(cacheErr));
+    if (KV_CONFIGURED) {
+      try {
+        await Promise.all([
+          kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, beatDigest.articles),
+          kv.setex(beatMetadataKey(beat), BEAT_CACHE_TTL, {
+            timestamp: new Date().toISOString(),
+            articleCount: beatDigest.articles.length,
+          }),
+        ]);
+        console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
+      } catch (cacheErr) {
+        console.warn(`[beat-digests] Cache write failed for ${beat}:`, cacheErr instanceof Error ? cacheErr.message : String(cacheErr));
+      }
     }
 
     return beatDigest.articles;
@@ -53,6 +56,7 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 }
 
 export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
+  if (!KV_CONFIGURED) return [];
   try {
     const cached = await kv.get<DigestArticle[]>(beatCacheKey(beat));
     if (cached) {
@@ -67,18 +71,36 @@ export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   return [];
 }
 
+async function generateFreshAllBeats(beats: Beat[]): Promise<DigestArticle[]> {
+  console.log("[beat-digests] KV not configured — fetching fresh (single Exa pass)");
+  const allNews = await fetchAllNews();
+  const beatResults = await Promise.all(
+    beats.map(async beat => {
+      const beatArticles = allNews.filter(a => a.beatHint === beat);
+      const beatDigest = await generateBeatDigest(beatArticles, beat);
+      return beatDigest.articles;
+    })
+  );
+  return beatResults.flat();
+}
+
 export async function aggregateDigestFromBeats(): Promise<Digest> {
   const beats: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
 
-  const beatResults = await Promise.all(
-    beats.map(beat =>
-      getBeatArticles(beat).catch(err => {
-        console.error(`[beat-digests] Failed to fetch ${beat}:`, err);
-        return [] as DigestArticle[];
-      })
-    )
-  );
-  const allArticles = beatResults.flat();
+  let allArticles: DigestArticle[];
+  if (KV_CONFIGURED) {
+    const beatResults = await Promise.all(
+      beats.map(beat =>
+        getBeatArticles(beat).catch(err => {
+          console.error(`[beat-digests] Failed to read ${beat}:`, err instanceof Error ? err.message : String(err));
+          return [] as DigestArticle[];
+        })
+      )
+    );
+    allArticles = beatResults.flat();
+  } else {
+    allArticles = await generateFreshAllBeats(beats);
+  }
 
   allArticles.sort((a, b) => {
     const dateA = new Date(a.publishedAt).getTime();
@@ -91,20 +113,27 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
   });
 
   let synthesis: Digest["synthesis"] | undefined;
-  try {
-    const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);
-    if (cachedSynthesis) {
-      synthesis = cachedSynthesis;
-      console.log("[beat-digests] Synthesis cache HIT:", synthesis?.emailSubject);
-    } else if (allArticles.length > 0) {
-      synthesis = await generateEditorialSynthesis(allArticles);
-      if (synthesis) {
-        await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
-        console.log("[beat-digests] Synthesis generated and cached:", synthesis.emailSubject);
+  if (allArticles.length > 0) {
+    try {
+      if (KV_CONFIGURED) {
+        const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);
+        if (cachedSynthesis) {
+          synthesis = cachedSynthesis;
+          console.log("[beat-digests] Synthesis cache HIT:", synthesis.emailSubject);
+        } else {
+          synthesis = await generateEditorialSynthesis(allArticles);
+          if (synthesis) {
+            await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
+            console.log("[beat-digests] Synthesis cached:", synthesis.emailSubject);
+          }
+        }
+      } else {
+        synthesis = await generateEditorialSynthesis(allArticles);
+        if (synthesis) console.log("[beat-digests] Synthesis generated (no KV):", synthesis.emailSubject);
       }
+    } catch (err) {
+      console.warn("[beat-digests] Synthesis failed:", err instanceof Error ? err.message : String(err));
     }
-  } catch (err) {
-    console.warn("[beat-digests] Synthesis failed (non-fatal):", err instanceof Error ? err.message : String(err));
   }
 
   return {

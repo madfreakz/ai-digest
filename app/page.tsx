@@ -2,7 +2,8 @@ import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
 import { aggregateDigestFromBeats } from "@/lib/beat-digests";
 
-export const dynamic = "force-dynamic";
+// ISR: regenerate at most every 12 hours; avoids Exa+Gemini on every page load
+export const revalidate = 43200;
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
