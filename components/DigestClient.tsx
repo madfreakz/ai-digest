@@ -11,7 +11,6 @@ import {
   type Theme,
 } from "@/lib/themes";
 import CinematicLayout from "./CinematicLayout";
-import TweaksPanel from "./TweaksPanel";
 
 interface ThemeCtxValue {
   t: Theme;
