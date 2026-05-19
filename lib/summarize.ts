@@ -93,7 +93,6 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
   } as any,
 };
 
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
 const GEMINI_MODEL = "gemini-2.5-flash";
 
 export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
@@ -314,6 +313,7 @@ export async function generateEditorialSynthesis(
 ): Promise<DigestSynthesis | undefined> {
   if (articles.length === 0) return undefined;
 
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
   const top = articles.slice(0, 10);
   const articleList = top
     .map(
@@ -353,6 +353,7 @@ Return a JSON object with:
 }
 
 export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {
+  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
   // Filter articles by beat if specified
   const filtered = beatFilter
     ? articles.filter(a => a.beatHint === beatFilter)
