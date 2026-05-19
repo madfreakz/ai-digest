@@ -108,7 +108,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
           WebkitBackdropFilter: 'blur(16px)',
           background: `linear-gradient(180deg, ${theme.tabBlurBg}, rgba(250, 248, 244, 0.88))`,
           borderBottom: `1px solid rgba(27, 58, 107, 0.10)`,
-          padding: '0 var(--page-pad-x)',
+          padding: '16px var(--page-pad-x)',
           boxShadow: '0 2px 8px rgba(27, 58, 107, 0.04)',
         }}
       >
