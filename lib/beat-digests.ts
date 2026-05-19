@@ -1,6 +1,6 @@
 import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
-import type { DigestArticle, Digest } from "./summarize";
+import type { DigestArticle, Digest, DigestSynthesis } from "./summarize";
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
 import { fetchAllNews } from "./exa";
 
@@ -37,15 +37,11 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
     // Try to cache, but still return articles even if caching fails
     try {
       await Promise.all([
-        kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, JSON.stringify(beatDigest.articles)),
-        kv.setex(
-          beatMetadataKey(beat),
-          BEAT_CACHE_TTL,
-          JSON.stringify({
-            timestamp: new Date().toISOString(),
-            articleCount: beatDigest.articles.length,
-          })
-        ),
+        kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, beatDigest.articles),
+        kv.setex(beatMetadataKey(beat), BEAT_CACHE_TTL, {
+          timestamp: new Date().toISOString(),
+          articleCount: beatDigest.articles.length,
+        }),
       ]);
       console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
     } catch (cacheErr) {
@@ -61,10 +57,10 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 
 export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
-    const cached = await kv.get<string>(beatCacheKey(beat));
+    const cached = await kv.get<DigestArticle[]>(beatCacheKey(beat));
     if (cached) {
       console.log(`[beat-digests] Cache HIT for ${beat}`);
-      return JSON.parse(cached);
+      return cached;
     }
   } catch (err) {
     console.warn(`[beat-digests] Cache read error for ${beat}:`, err);
@@ -78,10 +74,10 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
   const beats: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
 
   try {
-    const cached = await kv.get<string>(AGGREGATOR_KEY);
+    const cached = await kv.get<Digest>(AGGREGATOR_KEY);
     if (cached) {
       console.log("[beat-digests] Aggregator cache HIT");
-      return JSON.parse(cached);
+      return cached;
     }
   } catch (err) {
     console.warn("[beat-digests] Aggregator cache read error:", err instanceof Error ? err.message : String(err));
@@ -97,9 +93,9 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
       const articles = await getBeatArticles(beat);
       allArticles.push(...articles);
 
-      const metadata = await kv.get<string>(beatMetadataKey(beat));
+      const metadata = await kv.get<BeatCacheMetadata>(beatMetadataKey(beat));
       if (metadata) {
-        beatMetadata[beat] = JSON.parse(metadata);
+        beatMetadata[beat] = metadata;
       }
     } catch (err) {
       console.error(`[beat-digests] Failed to fetch ${beat}:`, err);
@@ -118,14 +114,14 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
 
   let synthesis: Digest["synthesis"] | undefined;
   try {
-    const cachedSynthesis = await kv.get<string>(SYNTHESIS_KEY);
+    const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);
     if (cachedSynthesis) {
-      synthesis = JSON.parse(cachedSynthesis);
+      synthesis = cachedSynthesis;
       console.log("[beat-digests] Synthesis cache HIT:", synthesis?.emailSubject);
     } else {
       synthesis = await generateEditorialSynthesis(allArticles);
       if (synthesis) {
-        await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, JSON.stringify(synthesis));
+        await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
         console.log("[beat-digests] Synthesis generated and cached:", synthesis.emailSubject);
       }
     }
@@ -141,8 +137,8 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
 
   try {
     await Promise.all([
-      kv.setex(AGGREGATOR_KEY, AGGREGATOR_CACHE_TTL, JSON.stringify(digest)),
-      kv.setex(AGGREGATOR_METADATA_KEY, AGGREGATOR_CACHE_TTL, JSON.stringify(beatMetadata)),
+      kv.setex(AGGREGATOR_KEY, AGGREGATOR_CACHE_TTL, digest),
+      kv.setex(AGGREGATOR_METADATA_KEY, AGGREGATOR_CACHE_TTL, beatMetadata),
     ]);
   } catch (err) {
     console.warn("[beat-digests] Failed to cache aggregated digest:", err instanceof Error ? err.message : String(err));
