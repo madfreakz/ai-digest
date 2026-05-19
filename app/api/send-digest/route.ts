@@ -168,7 +168,18 @@ export async function GET(req: Request) {
     }
   }
 
+  const url = new URL(req.url);
+  const skipEmail = url.searchParams.get("skipEmail") === "true";
+
   try {
+    // Bust stale synthesis cache so fresh content gets a fresh synthesis
+    if (skipEmail) {
+      try {
+        const { kv } = await import("@vercel/kv");
+        await kv.del("digest:synthesis");
+      } catch {}
+    }
+
     const { aggregateDigestFromBeats, publishFinalDigest } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();
     if (!digest || digest.articles.length === 0) {
@@ -178,6 +189,10 @@ export async function GET(req: Request) {
     // Publish to stable KV key so the page only changes when this cron runs
     await publishFinalDigest(digest);
     revalidatePath("/");
+
+    if (skipEmail) {
+      return NextResponse.json({ success: true, published: true, emailSent: false, articleCount: digest.articles.length });
+    }
 
     const html = buildEmailHtml(digest);
 
