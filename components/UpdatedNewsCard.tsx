@@ -171,6 +171,37 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
             >
               {article.summary}
             </p>
+
+            {article.bdRelevance && (
+              <div style={{
+                borderLeft: `2px solid ${theme.accent}`,
+                paddingLeft: '10px',
+              }}>
+                <span style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: '9px',
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: theme.accent,
+                  display: 'block',
+                  marginBottom: '3px',
+                }}>
+                  So What?
+                </span>
+                <p style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: '12px',
+                  lineHeight: 1.55,
+                  color: theme.textMid,
+                  fontStyle: 'italic',
+                  fontWeight: 300,
+                  margin: 0,
+                }}>
+                  {article.bdRelevance}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </a>

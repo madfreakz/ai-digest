@@ -143,6 +143,41 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
           >
             {article.summary}
           </p>
+
+          {article.bdRelevance && (
+            <div
+              className={isVisible ? 'hero-anim hero-anim-5' : ''}
+              style={{
+                borderLeft: `2px solid ${theme.accent}`,
+                paddingLeft: '12px',
+                opacity: isVisible ? 1 : 0,
+              }}
+            >
+              <span style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: '10px',
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: theme.accent,
+                display: 'block',
+                marginBottom: '4px',
+              }}>
+                So What?
+              </span>
+              <p style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: '14px',
+                lineHeight: 1.65,
+                color: theme.textMid,
+                fontStyle: 'italic',
+                fontWeight: 300,
+                margin: 0,
+              }}>
+                {article.bdRelevance}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -164,6 +199,7 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
         .hero-anim-2 { animation-delay: 0.15s; }
         .hero-anim-3 { animation-delay: 0.2s; }
         .hero-anim-4 { animation-delay: 0.25s; }
+        .hero-anim-5 { animation-delay: 0.3s; }
       `}</style>
     </a>
   );
