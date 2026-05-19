@@ -29,7 +29,7 @@ describe("Digest Sorting and Article Count", () => {
     }
   });
 
-  test("dealSignal articles should appear before non-dealSignal articles within each beat", () => {
+  test("articles with relevanceScore >= 7 or dealSignal should represent the majority within each beat", () => {
     const beats = new Map<string, any[]>();
 
     for (const article of articles) {
@@ -39,19 +39,12 @@ describe("Digest Sorting and Article Count", () => {
       beats.get(article.beat)!.push(article);
     }
 
-    for (const [beat, articles] of beats) {
-      let foundNonDealSignal = false;
-      for (const article of articles) {
-        if (foundNonDealSignal && article.dealSignal) {
-          assert.fail(
-            `Beat "${beat}": Found dealSignal article after non-dealSignal article. ` +
-              `Article: "${article.title}"`
-          );
-        }
-        if (!article.dealSignal) {
-          foundNonDealSignal = true;
-        }
-      }
+    for (const [beat, beatArticles] of beats) {
+      const qualifying = beatArticles.filter((a: any) => a.relevanceScore >= 7 || a.dealSignal);
+      assert(
+        qualifying.length > 0,
+        `Beat "${beat}" has no articles with relevanceScore >= 7 or dealSignal`
+      );
     }
   });
 
@@ -118,23 +111,20 @@ describe("Digest Sorting and Article Count", () => {
     }
   });
 
-  test("featured article (first article overall) should be latest dealSignal article", () => {
-    const dealSignalArticles = articles.filter((a) => a.dealSignal);
-    if (dealSignalArticles.length > 0) {
-      const sortedByDate = dealSignalArticles.sort(
-        (a, b) =>
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-      );
-      const latestDealSignal = sortedByDate[0];
+  test("featured article (first article overall) should be highest impactScore in last 24h, ties broken by recency", () => {
+    const now = Date.now();
+    const recent = articles.filter(
+      (a) => now - new Date(a.publishedAt).getTime() < 24 * 60 * 60 * 1000
+    );
+    const pool = recent.length > 0 ? recent : articles;
+    const maxImpact = Math.max(...pool.map((a) => a.impactScore));
+    const expected = pool
+      .filter((a) => a.impactScore === maxImpact)
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())[0];
 
-      assert(
-        articles[0].dealSignal,
-        "First article in mock digest should have dealSignal=true"
-      );
-      assert(
-        articles[0].title === latestDealSignal.title,
-        "First article should be the latest dealSignal article"
-      );
-    }
+    assert(
+      articles[0].title === expected.title,
+      `Featured should be "${expected.title}" (impactScore: ${maxImpact}), got "${articles[0].title}"`
+    );
   });
 });

@@ -131,15 +131,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     allArticles = await generateFreshAllBeats(beats);
   }
 
-  allArticles.sort((a, b) => {
-    const dateA = new Date(a.publishedAt).getTime();
-    const dateB = new Date(b.publishedAt).getTime();
-    if (dateA !== dateB) return dateB - dateA;
-    if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
-    const scoreA = a.relevanceScore * 0.7 + a.impactScore * 0.3;
-    const scoreB = b.relevanceScore * 0.7 + b.impactScore * 0.3;
-    return scoreB - scoreA;
-  });
+  allArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   let synthesis: Digest["synthesis"] | undefined;
   if (allArticles.length > 0) {

@@ -93,8 +93,15 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
   } as any,
 };
 
-function compositeScore(a: Pick<DigestArticle, "relevanceScore" | "impactScore">): number {
-  return a.relevanceScore * 0.7 + a.impactScore * 0.3;
+export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
+  const now = Date.now();
+  const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 24 * 60 * 60 * 1000);
+  const pool = recent.length > 0 ? recent : articles;
+  return pool.reduce<DigestArticle | undefined>((best, a) => {
+    if (!best) return a;
+    if (a.impactScore !== best.impactScore) return a.impactScore > best.impactScore ? a : best;
+    return new Date(a.publishedAt).getTime() > new Date(best.publishedAt).getTime() ? a : best;
+  }, undefined);
 }
 
 async function summarizeBeat(
@@ -185,7 +192,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
 
   const exaByUrl = new Map(articles.map(a => [a.url, a]));
 
-  return parsed.data.articles.map(a => {
+  const enriched = parsed.data.articles.map(a => {
     const exa = exaByUrl.get(a.url);
     return {
       ...a,
@@ -193,6 +200,8 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
       ogImage:     exa?.ogImage ?? null,
     };
   });
+
+  return enriched.filter(a => a.relevanceScore >= 7 || a.dealSignal);
 }
 
 const DOMAIN_ALIASES: Record<string, string> = {
@@ -345,14 +354,7 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
   for (const [beat, items] of beatEntries) {
     try {
       const result = await summarizeBeat(beat, items, model);
-      // Sort within each beat: dealSignal first, then by publishedAt descending (latest first), then by composite score
-      result.sort((a, b) => {
-        const dateA = new Date(a.publishedAt).getTime();
-        const dateB = new Date(b.publishedAt).getTime();
-        if (dateA !== dateB) return dateB - dateA;
-        if (a.dealSignal !== b.dealSignal) return a.dealSignal ? -1 : 1;
-        return compositeScore(b) - compositeScore(a);
-      });
+      result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
       allArticles.push(...result);
     } catch (err) {
       console.error(`Beat summarization failed (${beat}):`, err);

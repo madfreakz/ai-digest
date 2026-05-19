@@ -1,6 +1,7 @@
 'use client';
 
 import type { Digest } from '@/lib/summarize';
+import { pickFeaturedArticle } from '@/lib/summarize';
 import { useTheme } from './DigestClient';
 import ScrollProgressBar from './ScrollProgressBar';
 import DigestHeader from './DigestHeader';
@@ -14,8 +15,7 @@ interface CinematicLayoutProps {
 export default function CinematicLayout({ digest }: CinematicLayoutProps) {
   const { t: theme } = useTheme();
 
-  // Find featured article (dealSignal + highest composite score)
-  const featured = digest.articles.find((a) => a.dealSignal) || digest.articles[0];
+  const featured = pickFeaturedArticle(digest.articles) ?? digest.articles[0];
   const remaining = digest.articles.filter((a) => a !== featured);
 
   return (

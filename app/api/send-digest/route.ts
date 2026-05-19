@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import type { DigestArticle } from "@/lib/summarize";
+import { pickFeaturedArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -79,10 +80,9 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
-  const sorted = [...digest.articles]; // already sorted by dealSignal + composite score
+  const sorted = [...digest.articles];
 
-  // Featured: highest relevance deal-signal article, else top article
-  const featured = sorted.find(a => a.dealSignal) ?? sorted[0];
+  const featured = pickFeaturedArticle(sorted) ?? sorted[0];
   const quickHits = sorted.filter(a => a !== featured).slice(0, 9);
 
   const thesisBlock = digest.synthesis?.thesis
