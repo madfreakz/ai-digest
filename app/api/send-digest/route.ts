@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import type { DigestArticle } from "@/lib/summarize";
 import { pickFeaturedArticle } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
+import { escapeHtml } from "@/lib/html";
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 const PAGE_BG   = "#FAF8F4";
@@ -33,14 +34,18 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 // ── Email builder ─────────────────────────────────────────────────────────────
 function pill(label: string, color: string): string {
-  return `<span style="background:${color}18;color:${color};font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid ${color}33;white-space:nowrap;">${label}</span>`;
+  return `<span style="background:${color}18;color:${color};font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid ${color}33;white-space:nowrap;">${escapeHtml(label)}</span>`;
 }
 
 function featuredBlock(a: DigestArticle): string {
   const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
   const catColor  = CATEGORY_COLORS[a.category] ?? "#6b7280";
+  const url       = escapeHtml(a.url);
+  const title     = escapeHtml(a.title);
+  const summary   = escapeHtml(a.summary);
+  const bdRel     = escapeHtml(a.bdRelevance);
   const imgBlock  = a.ogImage
-    ? `<a href="${a.url}" style="display:block;text-decoration:none;"><img src="${a.ogImage}" alt="" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" /></a>`
+    ? `<a href="${url}" style="display:block;text-decoration:none;"><img src="${escapeHtml(a.ogImage)}" alt="" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" /></a>`
     : "";
 
   return `
@@ -52,10 +57,10 @@ function featuredBlock(a: DigestArticle): string {
         ${pill(a.beat, beatColor)}
         ${pill(a.category, catColor)}
       </div>
-      <a href="${a.url}" style="display:block;color:${TEXT_HIGH};font-size:18px;font-weight:600;text-decoration:none;line-height:1.35;margin-bottom:10px;">${a.title}</a>
-      <p style="color:${TEXT_MID};font-size:13px;line-height:1.65;margin:0 0 12px;">${a.summary}</p>
+      <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:18px;font-weight:600;text-decoration:none;line-height:1.35;margin-bottom:10px;">${title}</a>
+      <p style="color:${TEXT_MID};font-size:13px;line-height:1.65;margin:0 0 12px;">${summary}</p>
       <div style="border-left:2px solid ${beatColor};padding-left:10px;">
-        <p style="color:${TEXT_LOW};font-size:12px;line-height:1.55;margin:0;font-style:italic;">${a.bdRelevance}</p>
+        <p style="color:${TEXT_LOW};font-size:12px;line-height:1.55;margin:0;font-style:italic;">${bdRel}</p>
       </div>
     </div>
   </td></tr>
@@ -65,12 +70,15 @@ function featuredBlock(a: DigestArticle): string {
 function quickHitRow(a: DigestArticle, last: boolean): string {
   const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
   const borderStyle = last ? "none" : `1px solid ${BORDER}`;
+  const url = escapeHtml(a.url);
+  const title = escapeHtml(a.title);
+  const summaryLead = escapeHtml(a.summary.split(". ")[0]);
   return `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0;border-collapse:collapse;">
   <tr><td style="padding:12px 0;border-bottom:${borderStyle};">
     <div style="margin-bottom:5px;">${pill(a.beat, beatColor)}</div>
-    <a href="${a.url}" style="display:block;color:${TEXT_HIGH};font-size:14px;font-weight:500;text-decoration:none;line-height:1.4;margin-bottom:4px;">${a.title}</a>
-    <p style="color:${TEXT_LOW};font-size:12px;line-height:1.5;margin:0;">${a.summary.split(". ")[0]}.</p>
+    <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:14px;font-weight:500;text-decoration:none;line-height:1.4;margin-bottom:4px;">${title}</a>
+    <p style="color:${TEXT_LOW};font-size:12px;line-height:1.5;margin:0;">${summaryLead}.</p>
   </td></tr>
 </table>`;
 }
@@ -88,7 +96,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
   const thesisBlock = digest.synthesis?.thesis
     ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
   <tr><td style="background:#1B3A6B0D;border-left:3px solid ${ACCENT};border-radius:0 4px 4px 0;padding:12px 16px;">
-    <p style="color:${TEXT_MID};font-size:13px;line-height:1.65;margin:0;font-style:italic;">${digest.synthesis.thesis}</p>
+    <p style="color:${TEXT_MID};font-size:13px;line-height:1.65;margin:0;font-style:italic;">${escapeHtml(digest.synthesis.thesis)}</p>
   </td></tr>
 </table>`
     : "";
@@ -161,11 +169,13 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
 
 export async function GET(req: Request) {
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!cronSecret) {
+    console.error("[auth] CRON_SECRET not configured — refusing request");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(req.url);

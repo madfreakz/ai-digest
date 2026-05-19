@@ -15,6 +15,11 @@ const SYNTHESIS_TTL = 24 * 60 * 60;
 const PUBLISHED_DIGEST_KEY = "digest:published";
 const PUBLISHED_DIGEST_TTL = 25 * 60 * 60; // 25 hours — outlasts daily cron cycle
 
+// Freshness sentinel — written on every successful beat refresh, lives well past
+// the cache TTL so we can distinguish "expired cache" from "never refreshed".
+const BEAT_FRESHNESS_TTL = 7 * 24 * 60 * 60;
+const BEAT_STALE_AFTER_HOURS = 25;
+
 // KV is optional — if env vars are absent, fall back to direct Exa+Gemini generation
 const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
 
@@ -24,6 +29,10 @@ function beatCacheKey(beat: Beat): string {
 
 function beatMetadataKey(beat: Beat): string {
   return `beat:${beat}:metadata`;
+}
+
+function beatFreshnessKey(beat: Beat): string {
+  return `beat:${beat}:lastSuccess`;
 }
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
@@ -36,12 +45,14 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 
     if (KV_CONFIGURED) {
       try {
+        const now = new Date().toISOString();
         await Promise.all([
           kv.setex(beatCacheKey(beat), BEAT_CACHE_TTL, beatDigest.articles),
           kv.setex(beatMetadataKey(beat), BEAT_CACHE_TTL, {
-            timestamp: new Date().toISOString(),
+            timestamp: now,
             articleCount: beatDigest.articles.length,
           }),
+          kv.setex(beatFreshnessKey(beat), BEAT_FRESHNESS_TTL, now),
         ]);
         console.log(`[beat-digests] Cached ${beatDigest.articles.length} articles for ${beat}`);
       } catch (cacheErr) {
@@ -148,6 +159,27 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
       )
     );
     allArticles = beatResults.flat();
+
+    // Surface stale beats so silent refresh failures don't ship a half-empty digest
+    const staleReports: string[] = [];
+    for (const beat of beats) {
+      try {
+        const lastSuccess = await kv.get<string>(beatFreshnessKey(beat));
+        if (!lastSuccess) {
+          staleReports.push(`${beat} (never recorded)`);
+        } else {
+          const ageHours = (Date.now() - new Date(lastSuccess).getTime()) / 3_600_000;
+          if (ageHours > BEAT_STALE_AFTER_HOURS) {
+            staleReports.push(`${beat} (last refresh ${ageHours.toFixed(1)}h ago)`);
+          }
+        }
+      } catch (err) {
+        staleReports.push(`${beat} (freshness-check error: ${err instanceof Error ? err.message : String(err)})`);
+      }
+    }
+    if (staleReports.length > 0) {
+      console.error(`[beat-digests] STALE BEATS — refresh failed or overdue: ${staleReports.join("; ")}`);
+    }
   } else {
     allArticles = await generateFreshAllBeats(beats);
   }
