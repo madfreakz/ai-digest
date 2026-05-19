@@ -20,8 +20,10 @@ function beatMetadataKey(beat: Beat): string {
   return `beat:${beat}:metadata`;
 }
 
-const AGGREGATOR_KEY = "digest:aggregated";
-const AGGREGATOR_METADATA_KEY = "digest:aggregated:metadata";
+const AGGREGATOR_KEY = "digest:aggregated:v2";
+const AGGREGATOR_METADATA_KEY = "digest:aggregated:v2:metadata";
+const SYNTHESIS_KEY = "digest:synthesis";
+const SYNTHESIS_TTL = 24 * 60 * 60; // 24 hours, matches beat TTL
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
@@ -82,7 +84,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
       return JSON.parse(cached);
     }
   } catch (err) {
-    console.warn("[beat-digests] Aggregator cache read error:", err);
+    console.warn("[beat-digests] Aggregator cache read error:", err instanceof Error ? err.message : String(err));
   }
 
   console.log("[beat-digests] Aggregator cache MISS, rebuilding from beats");
@@ -116,8 +118,17 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
 
   let synthesis: Digest["synthesis"] | undefined;
   try {
-    synthesis = await generateEditorialSynthesis(allArticles);
-    console.log("[beat-digests] Editorial synthesis generated:", synthesis?.emailSubject);
+    const cachedSynthesis = await kv.get<string>(SYNTHESIS_KEY);
+    if (cachedSynthesis) {
+      synthesis = JSON.parse(cachedSynthesis);
+      console.log("[beat-digests] Synthesis cache HIT:", synthesis?.emailSubject);
+    } else {
+      synthesis = await generateEditorialSynthesis(allArticles);
+      if (synthesis) {
+        await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, JSON.stringify(synthesis));
+        console.log("[beat-digests] Synthesis generated and cached:", synthesis.emailSubject);
+      }
+    }
   } catch (err) {
     console.warn("[beat-digests] Synthesis failed (non-fatal):", err instanceof Error ? err.message : String(err));
   }
@@ -134,7 +145,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
       kv.setex(AGGREGATOR_METADATA_KEY, AGGREGATOR_CACHE_TTL, JSON.stringify(beatMetadata)),
     ]);
   } catch (err) {
-    console.warn("[beat-digests] Failed to cache aggregated digest:", err);
+    console.warn("[beat-digests] Failed to cache aggregated digest:", err instanceof Error ? err.message : String(err));
   }
 
   return digest;
