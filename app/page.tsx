@@ -2,9 +2,10 @@ import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
 import { getPublishedDigest, aggregateDigestFromBeats } from "@/lib/beat-digests";
 
-// Revalidate hourly so stale content clears quickly, but content only
-// meaningfully changes when send-digest publishes and calls revalidatePath('/').
-export const revalidate = 3600;
+// Force dynamic rendering so the build never makes live Exa/Gemini calls.
+// Content is stable — it only changes when send-digest publishes to
+// digest:published and calls revalidatePath('/') to bust the CDN cache.
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
