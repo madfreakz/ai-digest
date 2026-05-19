@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from 'react';
 import type { DigestArticle } from '@/lib/summarize';
 import { useTheme } from './DigestClient';
 import { formatPublishedAt } from '@/lib/themes';
-import Thumb from './Thumb';
 
 interface HeroFeaturedStoryProps {
   article: DigestArticle;
@@ -73,42 +72,6 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
           transition: 'opacity 0.6s ease',
         }}
       >
-        {/* Thumbnail */}
-        <div
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            borderRadius: '12px',
-            boxShadow: theme.heroShadow,
-            aspectRatio: '16 / 10',
-            transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
-            transform: isVisible ? 'scale(1)' : 'scale(0.98)',
-          }}
-          onMouseEnter={(e) => {
-            const inner = (e.currentTarget as HTMLDivElement).querySelector(
-              '[data-hero-thumb-inner]'
-            ) as HTMLDivElement;
-            if (inner) inner.style.transform = 'scale(1.03)';
-          }}
-          onMouseLeave={(e) => {
-            const inner = (e.currentTarget as HTMLDivElement).querySelector(
-              '[data-hero-thumb-inner]'
-            ) as HTMLDivElement;
-            if (inner) inner.style.transform = 'scale(1)';
-          }}
-        >
-          <div
-            data-hero-thumb-inner
-            style={{
-              width: '100%',
-              height: '100%',
-              transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)',
-            }}
-          >
-            <Thumb ogImage={article.ogImage} companyLogoUrl={article.companyLogoUrl} label={article.beat} height={400} />
-          </div>
-        </div>
-
         {/* Text content */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div
