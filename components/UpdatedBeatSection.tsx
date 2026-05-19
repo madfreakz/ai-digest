@@ -107,9 +107,9 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           background: `linear-gradient(180deg, ${theme.tabBlurBg}, rgba(250, 248, 244, 0.88))`,
-          borderBottom: `2px solid rgba(27, 58, 107, 0.12)`,
-          padding: 'var(--page-pad-x)',
-          boxShadow: '0 4px 12px rgba(27, 58, 107, 0.06)',
+          borderBottom: `1px solid rgba(27, 58, 107, 0.10)`,
+          padding: '0 var(--page-pad-x)',
+          boxShadow: '0 2px 8px rgba(27, 58, 107, 0.04)',
         }}
       >
         <div
@@ -134,17 +134,18 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
                 background: 'none',
                 border: 'none',
                 borderBottom: `1.5px solid ${activeBeat === beat ? theme.accent : 'transparent'}`,
-                padding: '14px 16px',
+                padding: '10px 18px',
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: '12px',
-                fontWeight: activeBeat === beat ? 500 : 300,
+                fontSize: '11.5px',
+                fontWeight: activeBeat === beat ? 500 : 400,
+                letterSpacing: '0.03em',
                 color: activeBeat === beat ? theme.accent : theme.textGhost,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                transition: 'color 0.2s ease, border-color 0.2s ease',
+                transition: 'color 0.18s ease, border-color 0.18s ease',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '5px',
                 outline: 'none',
               }}
               onMouseEnter={(e) => {
@@ -202,14 +203,16 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
                 background: 'none',
                 border: 'none',
                 borderBottom: `1.5px solid ${activeCategory === null ? theme.accent : 'transparent'}`,
-                padding: '10px 16px',
+                padding: '7px 16px',
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: '11px',
-                fontWeight: activeCategory === null ? 500 : 300,
+                fontSize: '10.5px',
+                fontWeight: activeCategory === null ? 500 : 400,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase' as const,
                 color: activeCategory === null ? theme.accent : theme.textGhost,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                transition: 'color 0.2s ease, border-color 0.2s ease',
+                transition: 'color 0.18s ease, border-color 0.18s ease',
                 outline: 'none',
               }}
               onMouseEnter={(e) => {
@@ -236,14 +239,16 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
                   background: 'none',
                   border: 'none',
                   borderBottom: `1.5px solid ${activeCategory === cat ? theme.accent : 'transparent'}`,
-                  padding: '10px 16px',
+                  padding: '7px 16px',
                   fontFamily: "'DM Sans', sans-serif",
-                  fontSize: '11px',
-                  fontWeight: activeCategory === cat ? 500 : 300,
+                  fontSize: '10.5px',
+                  fontWeight: activeCategory === cat ? 500 : 400,
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase' as const,
                   color: activeCategory === cat ? theme.accent : theme.textGhost,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
-                  transition: 'color 0.2s ease, border-color 0.2s ease',
+                  transition: 'color 0.18s ease, border-color 0.18s ease',
                   outline: 'none',
                 }}
                 onMouseEnter={(e) => {
@@ -268,7 +273,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
       <section
         ref={ref}
         style={{
-          padding: `80px var(--page-pad-x) 120px`,
+          padding: `32px var(--page-pad-x) 80px`,
           background: `linear-gradient(180deg, rgba(250, 248, 244, 0.15) 0%, rgba(250, 248, 244, 0.08) 50%, rgba(27, 58, 107, 0.02) 100%)`,
           borderTop: `1px solid rgba(27, 58, 107, 0.06)`,
           borderBottom: `1px solid rgba(27, 58, 107, 0.06)`,
