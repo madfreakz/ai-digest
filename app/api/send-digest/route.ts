@@ -148,7 +148,7 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
           </table>
 
           <!-- Footer -->
-          <p style="color:${FOOTER_CLR};font-size:11px;text-align:center;margin:0;">© Mark Fok · Frontier AI Digest · Powered by Exa + Claude</p>
+          <p style="color:${FOOTER_CLR};font-size:11px;text-align:center;margin:0;">© Mark Fok · Frontier AI Digest · Powered by Exa + Gemini</p>
 
         </td></tr>
       </table>
@@ -158,7 +158,15 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
 </html>`;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    const auth = req.headers.get("authorization");
+    if (auth !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   try {
     const { aggregateDigestFromBeats } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();

@@ -7,6 +7,14 @@ const VALID_BEATS: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Ver
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    const auth = req.headers.get("authorization");
+    if (auth !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   const { searchParams } = new URL(req.url);
   const beat = searchParams.get("beat") as Beat | null;
 
