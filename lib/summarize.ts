@@ -28,9 +28,15 @@ export interface DigestArticle {
   dealSignalType?: DealSignalType;
 }
 
+export interface DigestSynthesis {
+  thesis: string;
+  emailSubject: string;
+}
+
 export interface Digest {
   articles: DigestArticle[];
   generatedAt: string;
+  synthesis?: DigestSynthesis;
 }
 
 const ArticleSchema = z.object({
@@ -105,7 +111,7 @@ async function summarizeBeat(
     .slice(0, 15)
     .map(
       (a, i) =>
-        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 150)}`,
+        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 300)}`,
     )
     .join("\n\n---\n\n");
 
@@ -273,6 +279,47 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
   };
 
   await Promise.all(articles.map(enqueueFetch));
+}
+
+export async function generateEditorialSynthesis(
+  articles: DigestArticle[],
+): Promise<DigestSynthesis | undefined> {
+  if (articles.length === 0) return undefined;
+
+  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  const top = articles.slice(0, 10);
+  const articleList = top
+    .map(
+      (a, i) =>
+        `[${i + 1}] ${a.beat} | ${a.category} | relevance:${a.relevanceScore} impact:${a.impactScore}${a.dealSignal ? " DEAL" : ""}\nTitle: ${a.title}\nSummary: ${a.summary}\nBD angle: ${a.bdRelevance}`,
+    )
+    .join("\n\n");
+
+  const prompt = `You are the editorial lead for Frontier AI Digest, a daily briefing for a BD/partnerships professional across Physical AI, AI Infrastructure, AI Labs, and Vertical AI.
+
+Today's top pre-scored articles:
+${articleList}
+
+Return ONLY a valid JSON object with exactly two string fields:
+- "thesis": 2 sentences identifying the single most important story and what it signals for BD/partnerships practitioners today
+- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")
+
+No markdown, no code fences, no explanation. Just the JSON object.`;
+
+  try {
+    const response = await model.generateContent(prompt);
+    const text = response.response.text().trim()
+      .replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+    const parsed = JSON.parse(text);
+    if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
+      return { thesis: parsed.thesis, emailSubject: parsed.emailSubject };
+    }
+  } catch (err) {
+    console.warn("[summarize] Editorial synthesis failed:", err instanceof Error ? err.message : String(err));
+  }
+  return undefined;
 }
 
 export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {

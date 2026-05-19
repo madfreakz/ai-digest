@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
 import type { DigestArticle, Digest } from "./summarize";
-import { generateDigest as generateBeatDigest } from "./summarize";
+import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
 import { fetchAllNews } from "./exa";
 
 interface BeatCacheMetadata {
@@ -114,9 +114,18 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     return scoreB - scoreA;
   });
 
+  let synthesis: Digest["synthesis"] | undefined;
+  try {
+    synthesis = await generateEditorialSynthesis(allArticles);
+    console.log("[beat-digests] Editorial synthesis generated:", synthesis?.emailSubject);
+  } catch (err) {
+    console.warn("[beat-digests] Synthesis failed (non-fatal):", err instanceof Error ? err.message : String(err));
+  }
+
   const digest: Digest = {
     articles: allArticles,
     generatedAt: new Date().toISOString(),
+    synthesis,
   };
 
   try {

@@ -73,7 +73,7 @@ function quickHitRow(a: DigestArticle, last: boolean): string {
 </table>`;
 }
 
-function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string }): string {
+function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string; synthesis?: { thesis: string; emailSubject: string } }): string {
   const date = new Date(digest.generatedAt).toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
@@ -83,6 +83,14 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
   // Featured: highest relevance deal-signal article, else top article
   const featured = sorted.find(a => a.dealSignal) ?? sorted[0];
   const quickHits = sorted.filter(a => a !== featured).slice(0, 9);
+
+  const thesisBlock = digest.synthesis?.thesis
+    ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
+  <tr><td style="background:#1B3A6B0D;border-left:3px solid ${ACCENT};border-radius:0 4px 4px 0;padding:12px 16px;">
+    <p style="color:${TEXT_MID};font-size:13px;line-height:1.65;margin:0;font-style:italic;">${digest.synthesis.thesis}</p>
+  </td></tr>
+</table>`
+    : "";
 
   if (!featured) return "<p>No articles today.</p>";
 
@@ -117,6 +125,9 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
           <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">Frontier AI Digest</h1>
           <p style="color:${TEXT_LOW};font-size:12px;margin:0 0 28px;">${date}</p>
 
+          <!-- Editor's thesis -->
+          ${thesisBlock}
+
           <!-- Featured story -->
           ${featuredBlock(featured)}
 
@@ -149,21 +160,22 @@ function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string
 
 export async function GET() {
   try {
-    const { getDigest } = await import("@/lib/digest-cache");
-    const digest = await getDigest();
-    if (!digest) {
-      return NextResponse.json({ error: "No digest in KV — run /api/digest first" }, { status: 404 });
+    const { aggregateDigestFromBeats } = await import("@/lib/beat-digests");
+    const digest = await aggregateDigestFromBeats();
+    if (!digest || digest.articles.length === 0) {
+      return NextResponse.json({ error: "No digest available — run /api/beat first" }, { status: 404 });
     }
 
     const html = buildEmailHtml(digest);
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const subject = digest.synthesis?.emailSubject ?? `Frontier AI Digest — ${date}`;
 
     const { data, error } = await resend.emails.send({
       from:    "Frontier AI Digest <onboarding@resend.dev>",
       to:      ["fokjenhong@gmail.com", "sueannlau568@gmail.com"],
-      subject: `Frontier AI Digest — ${date}`,
+      subject,
       html,
     });
 

@@ -49,7 +49,7 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
             borderBottom: `1px solid rgba(27, 58, 107, 0.08)`,
           }}
         >
-          <DigestHeader generatedAt={digest.generatedAt} />
+          <DigestHeader generatedAt={digest.generatedAt} thesis={digest.synthesis?.thesis} />
         </div>
 
         {/* Hero Featured Story Section */}

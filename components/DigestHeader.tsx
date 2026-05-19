@@ -4,9 +4,10 @@ import { useTheme } from "./DigestClient";
 
 interface Props {
   generatedAt: string;
+  thesis?: string;
 }
 
-export default function DigestHeader({ generatedAt }: Props) {
+export default function DigestHeader({ generatedAt, thesis }: Props) {
   const { t, headlineFont, compact } = useTheme();
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -37,9 +38,30 @@ export default function DigestHeader({ generatedAt }: Props) {
         fontSize: 12,
         color: t.textGhost,
         fontWeight: 300,
+        marginBottom: thesis ? 16 : 0,
       }}>
         {today}
       </div>
+
+      {/* Editor's thesis */}
+      {thesis && (
+        <div style={{
+          borderLeft: `2px solid ${t.accent}`,
+          paddingLeft: 12,
+          marginTop: 4,
+        }}>
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: compact ? 13 : 14,
+            color: t.textMid,
+            lineHeight: 1.65,
+            margin: 0,
+            fontStyle: "italic",
+          }}>
+            {thesis}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

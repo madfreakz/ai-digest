@@ -19,31 +19,27 @@ const BEAT_PLACEHOLDERS: Record<Beat, string> = {
 };
 
 const QUERIES_PHYSICAL_AI = [
-  "humanoid robot AI startup funding news 2026",
-  "Figure AI Physical Intelligence 1X Agility Robotics Boston Dynamics news 2026",
-  "Tesla Optimus embodied AI robot update 2026",
-  "physical AI robotics enterprise deployment partnership 2026",
+  "humanoid robotics companies raising capital or announcing commercial partnerships",
+  "embodied AI and physical robotics enterprise deployment contracts and milestones",
+  "robotics company product launches, competitive moves, or strategic hires",
 ];
 
 const QUERIES_AI_INFRASTRUCTURE = [
-  "AI infrastructure developer tools API startup funding 2026",
-  "Exa Modal Pinecone Weaviate LangChain Together AI news 2026",
-  "LLM observability evaluation vector database announcement 2026",
-  "AI compute GPU cloud infrastructure startup deal 2026",
+  "AI developer infrastructure and tooling companies announcing funding or product milestones",
+  "vector databases, LLM observability, and ML platform providers announcing deals or launches",
+  "AI compute and cloud infrastructure companies raising capital or forming partnerships",
 ];
 
 const QUERIES_AI_LABS = [
-  "Anthropic OpenAI Google DeepMind model release announcement 2026",
-  "xAI Mistral Cohere foundation model update launch 2026",
-  "AI research lab funding valuation round 2026",
-  "AI safety alignment research breakthrough partnership 2026",
+  "foundation model laboratories releasing new models or announcing major research breakthroughs",
+  "AI research lab funding rounds, valuations, and strategic partnerships",
+  "AI safety and alignment research announcements and institutional moves",
 ];
 
 const QUERIES_VERTICAL_AI = [
-  "Harvey Rogo Sierra Decagon Glean Writer AI startup news 2026",
-  "vertical AI enterprise deal customer win contract 2026",
-  "AI agent workflow automation SaaS funding ARR 2026",
-  "AI copilot enterprise deployment partnership announcement 2026",
+  "vertical AI software companies signing enterprise customers or announcing ARR growth",
+  "AI agent and workflow automation companies raising capital or announcing partnerships",
+  "AI copilot products winning enterprise contracts or expanding into new verticals",
 ];
 
 const BEAT_QUERIES: [Beat, string[]][] = [
@@ -84,7 +80,8 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
         try {
           const result = await withRetry(() =>
             exa.searchAndContents(query, {
-              numResults: 8,
+              type: "neural",
+              numResults: 10,
               startPublishedDate: startDate,
               text: { maxCharacters: 400 },
             })
