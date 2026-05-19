@@ -59,9 +59,10 @@ export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
       console.log(`[beat-digests] Cache HIT for ${beat}`);
       return cached;
     }
-    console.log(`[beat-digests] Cache MISS for ${beat} (cron not yet run)`);
+    console.log(`[beat-digests] Cache MISS: ${beat}`);
   } catch (err) {
-    console.warn(`[beat-digests] Cache read error for ${beat}:`, err instanceof Error ? err.message : String(err));
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[kv-err:${beat}] ${msg}`);
   }
   return [];
 }
@@ -95,7 +96,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     if (cachedSynthesis) {
       synthesis = cachedSynthesis;
       console.log("[beat-digests] Synthesis cache HIT:", synthesis?.emailSubject);
-    } else {
+    } else if (allArticles.length > 0) {
       synthesis = await generateEditorialSynthesis(allArticles);
       if (synthesis) {
         await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
