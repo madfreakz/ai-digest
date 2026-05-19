@@ -51,7 +51,9 @@ function usePrefersReducedMotion() {
 const BEATS: Beat[] = ['Physical AI', 'AI Infrastructure', 'AI Labs', 'Vertical AI'];
 
 export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps) {
-  const [activeBeat, setActiveBeat] = useState<Beat>('Physical AI');
+  const [activeBeat, setActiveBeat] = useState<Beat>(
+    () => BEATS.find(beat => articles.some(a => a.beat === beat)) ?? 'Physical AI'
+  );
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
@@ -106,7 +108,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
           zIndex: 50,
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
-          background: `linear-gradient(180deg, ${theme.tabBlurBg}, rgba(250, 248, 244, 0.88))`,
+          background: theme.tabBlurBg,
           borderBottom: `1px solid rgba(27, 58, 107, 0.10)`,
           padding: '16px var(--page-pad-x)',
           boxShadow: '0 2px 8px rgba(27, 58, 107, 0.04)',
