@@ -8,11 +8,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes parallaxBg {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-60px); }
-}
-
 /* ── Responsive horizontal padding ── */
 :root { --page-pad-x: 56px; }
 @media (max-width: 600px) {
@@ -36,36 +31,6 @@
 
 html, body { background: var(--page-bg); min-height: 100vh; }
 
-/* ── Tab fade ── */
-@keyframes tabFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.tab-content { animation: tabFadeIn 0.2s ease-out; }
-
-/* ── Article hover ── */
-.article-item { position: relative; transition: background 0.2s ease; }
-.article-item::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 1.5px; background: var(--accent); opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.article-item:hover::before { opacity: 1; }
-.article-item:hover         { background: var(--article-hover-bg); }
-
-.article-link  { text-decoration: none; display: block; color: inherit; }
-.article-title { transition: color 0.16s ease; }
-.article-item:hover .article-title { color: var(--article-hover-clr) !important; }
-
-.ext-arrow {
-  display: inline-block; opacity: 0; margin-left: 6px;
-  transform: translate(-2px, 2px);
-  transition: opacity 0.16s, transform 0.16s;
-  font-size: 12px; vertical-align: middle;
-  color: var(--accent); font-style: normal;
-}
-.article-item:hover .ext-arrow { opacity: 1; transform: translate(0,0); }
-
 /* ── Thumb hover ── */
 .thumb-wrap  { overflow: hidden; }
 .thumb-inner { transition: transform 0.55s ease; }
@@ -75,25 +40,6 @@ html, body { background: var(--page-bg); min-height: 100vh; }
 .article-item:hover .play-ring {
   border-color: var(--play-hover-border) !important;
   background:   var(--play-hover-bg)     !important;
-}
-
-/* ── Featured hover ── */
-.featured-wrap  { overflow: hidden; }
-.featured-inner { transition: transform 0.55s ease; }
-.featured-wrap:hover .featured-inner { transform: scale(1.015); }
-.featured-title { transition: color 0.16s ease; }
-.featured-wrap:hover .featured-title { color: var(--article-hover-clr) !important; }
-.featured-wrap:hover .ext-arrow      { opacity: 1; transform: translate(0,0); }
-
-/* ── Tab hover ── */
-.tab-btn:not(.tab-active):hover .tab-label { color: var(--tab-hover-clr) !important; }
-
-/* ── Sticky tab backdrop ── */
-.tab-bar {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: var(--tab-blur-bg) !important;
-  border-bottom: 1px solid var(--tab-border);
 }
 
 /* ── Keyboard focus states (WCAG 2.1 Level AA) ── */
