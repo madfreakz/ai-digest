@@ -10,7 +10,6 @@ interface BeatCacheMetadata {
 }
 
 const BEAT_CACHE_TTL = 24 * 60 * 60; // 24 hours (beat runs once per day)
-const AGGREGATOR_CACHE_TTL = 24 * 60 * 60; // 24 hours (one digest per day)
 
 function beatCacheKey(beat: Beat): string {
   return `beat:${beat}:articles`;
@@ -20,8 +19,6 @@ function beatMetadataKey(beat: Beat): string {
   return `beat:${beat}:metadata`;
 }
 
-const AGGREGATOR_KEY = "digest:aggregated:v2";
-const AGGREGATOR_METADATA_KEY = "digest:aggregated:v2:metadata";
 const SYNTHESIS_KEY = "digest:synthesis";
 const SYNTHESIS_TTL = 24 * 60 * 60; // 24 hours, matches beat TTL
 
@@ -73,34 +70,15 @@ export async function getBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 export async function aggregateDigestFromBeats(): Promise<Digest> {
   const beats: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
 
-  try {
-    const cached = await kv.get<Digest>(AGGREGATOR_KEY);
-    if (cached) {
-      console.log("[beat-digests] Aggregator cache HIT");
-      return cached;
-    }
-  } catch (err) {
-    console.warn("[beat-digests] Aggregator cache read error:", err instanceof Error ? err.message : String(err));
-  }
-
-  console.log("[beat-digests] Aggregator cache MISS, rebuilding from beats");
-
-  const allArticles: DigestArticle[] = [];
-  const beatMetadata: Record<string, BeatCacheMetadata> = {};
-
-  for (const beat of beats) {
-    try {
-      const articles = await getBeatArticles(beat);
-      allArticles.push(...articles);
-
-      const metadata = await kv.get<BeatCacheMetadata>(beatMetadataKey(beat));
-      if (metadata) {
-        beatMetadata[beat] = metadata;
-      }
-    } catch (err) {
-      console.error(`[beat-digests] Failed to fetch ${beat}:`, err);
-    }
-  }
+  const beatResults = await Promise.all(
+    beats.map(beat =>
+      getBeatArticles(beat).catch(err => {
+        console.error(`[beat-digests] Failed to fetch ${beat}:`, err);
+        return [] as DigestArticle[];
+      })
+    )
+  );
+  const allArticles = beatResults.flat();
 
   allArticles.sort((a, b) => {
     const dateA = new Date(a.publishedAt).getTime();
@@ -129,20 +107,9 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     console.warn("[beat-digests] Synthesis failed (non-fatal):", err instanceof Error ? err.message : String(err));
   }
 
-  const digest: Digest = {
+  return {
     articles: allArticles,
     generatedAt: new Date().toISOString(),
     synthesis,
   };
-
-  try {
-    await Promise.all([
-      kv.setex(AGGREGATOR_KEY, AGGREGATOR_CACHE_TTL, digest),
-      kv.setex(AGGREGATOR_METADATA_KEY, AGGREGATOR_CACHE_TTL, beatMetadata),
-    ]);
-  } catch (err) {
-    console.warn("[beat-digests] Failed to cache aggregated digest:", err instanceof Error ? err.message : String(err));
-  }
-
-  return digest;
 }
