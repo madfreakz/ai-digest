@@ -1,6 +1,6 @@
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
-import { getPublishedDigest, aggregateDigestFromBeats } from "@/lib/beat-digests";
+import { getPublishedDigest } from "@/lib/beat-digests";
 
 // Force dynamic rendering so the build never makes live Exa/Gemini calls.
 // Content is stable — it only changes when send-digest publishes to
@@ -12,9 +12,11 @@ export default async function Home() {
     return <DigestClient digest={MOCK_DIGEST} />;
   }
 
-  // Prefer the stable published digest; fall back to live KV aggregation only
-  // until the first send-digest run seeds digest:published.
-  const digest = (await getPublishedDigest()) ?? (await aggregateDigestFromBeats());
+  // Only serve the published digest. If it's missing, show the empty state
+  // rather than triggering live Exa+Gemini aggregation on a pageview —
+  // that would expose unauthenticated cost (any visitor / scraper could
+  // drive Exa and Gemini spend).
+  const digest = await getPublishedDigest();
 
   if (!digest || digest.articles.length === 0) {
     return (
