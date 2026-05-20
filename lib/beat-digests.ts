@@ -13,7 +13,6 @@ const BEAT_CACHE_TTL = 24 * 60 * 60;
 const SYNTHESIS_KEY = "digest:synthesis";
 const SYNTHESIS_TTL = 24 * 60 * 60;
 const PUBLISHED_DIGEST_KEY = "digest:published";
-const PUBLISHED_DIGEST_TTL = 25 * 60 * 60; // 25 hours — outlasts daily cron cycle
 
 // Freshness sentinel — written on every successful beat refresh, lives well past
 // the cache TTL so we can distinguish "expired cache" from "never refreshed".
@@ -123,7 +122,7 @@ export async function publishFinalDigest(digest: Digest): Promise<void> {
     return;
   }
   try {
-    await kv.setex(PUBLISHED_DIGEST_KEY, PUBLISHED_DIGEST_TTL, digest);
+    await kv.set(PUBLISHED_DIGEST_KEY, digest);
     console.log(`[beat-digests] Published final digest (${digest.articles.length} articles)`);
   } catch (err) {
     console.error("[beat-digests] Failed to publish final digest:", err instanceof Error ? err.message : String(err));
