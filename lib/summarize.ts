@@ -210,7 +210,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     };
   });
 
-  return enriched.filter(a => a.relevanceScore >= 7 || a.dealSignal);
+  return enriched.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
 }
 
 const DOMAIN_ALIASES: Record<string, string> = {
@@ -333,7 +333,7 @@ Return a JSON object with:
 
   try {
     const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
+      model: "gemini-3.5-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
