@@ -77,6 +77,9 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
           <div
             className={isVisible ? 'hero-anim hero-anim-1' : ''}
             style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
               fontFamily: "'DM Sans', sans-serif",
               fontSize: '11px',
               fontWeight: 500,
@@ -87,7 +90,28 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
               opacity: isVisible ? 1 : 0,
             }}
           >
-            Lead Story
+            <span>Lead Story</span>
+            {article.isNew && (
+              <span
+                aria-label="New since last publish"
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  fontVariantCaps: 'normal',
+                  lineHeight: 1,
+                  padding: '4px 7px',
+                  borderRadius: 4,
+                  background: theme.newBadgeBg,
+                  color: theme.newBadgeText,
+                  border: `1px solid ${theme.newBadgeBorder}`,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+                }}
+              >
+                New
+              </span>
+            )}
           </div>
 
           <h1

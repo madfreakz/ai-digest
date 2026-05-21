@@ -34,6 +34,10 @@ export interface Theme {
   cardShadow: string;
   heroShadow: string;
   stoneTextureBg: string;
+  // "NEW" badge — articles new since the previous publish
+  newBadgeBg: string;
+  newBadgeText: string;
+  newBadgeBorder: string;
 }
 
 export const THEMES: Record<ThemeKey, Theme> = {
@@ -59,6 +63,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     cardShadow: '0 8px 32px rgba(24,20,12,0.06), 0 2px 8px rgba(24,20,12,0.04)',
     heroShadow: '0 40px 80px rgba(24,20,12,0.12), 0 8px 16px rgba(24,20,12,0.08)',
     stoneTextureBg: '#FAF8F4',
+    newBadgeBg: '#10b981', newBadgeText: '#FFFFFF', newBadgeBorder: 'rgba(6,95,70,0.20)',
   },
   Ink: {
     bg: '#18150E',           bgDeep: '#130F09',
@@ -82,6 +87,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     cardShadow: '0 8px 32px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15)',
     heroShadow: '0 40px 80px rgba(0,0,0,0.4), 0 8px 16px rgba(0,0,0,0.2)',
     stoneTextureBg: '#18150E',
+    newBadgeBg: '#34d399', newBadgeText: '#08130E', newBadgeBorder: 'rgba(167,243,208,0.35)',
   },
   Press: {
     bg: '#FFFFFF',           bgDeep: '#F2F2F2',
@@ -105,6 +111,7 @@ export const THEMES: Record<ThemeKey, Theme> = {
     cardShadow: '0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)',
     heroShadow: '0 40px 80px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.06)',
     stoneTextureBg: '#FFFFFF',
+    newBadgeBg: '#10b981', newBadgeText: '#FFFFFF', newBadgeBorder: 'rgba(6,78,59,0.30)',
   },
 };
 

@@ -94,6 +94,7 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
           {/* Thumbnail */}
           <div
             style={{
+              position: 'relative',
               flexShrink: 0,
               width: isMobile ? '100%' : '180px',
               height: isMobile ? '160px' : '140px',
@@ -110,6 +111,32 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
                 label={article.beat}
                 height={140}
               />
+            {article.isNew && (
+              <span
+                aria-label="New since last publish"
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  zIndex: 2,
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1,
+                  padding: '4px 7px',
+                  borderRadius: 4,
+                  background: theme.newBadgeBg,
+                  color: theme.newBadgeText,
+                  border: `1px solid ${theme.newBadgeBorder}`,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+                  pointerEvents: 'none',
+                }}
+              >
+                New
+              </span>
+            )}
           </div>
 
           {/* Content */}

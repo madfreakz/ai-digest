@@ -1,6 +1,6 @@
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
-import { getPublishedDigest } from "@/lib/beat-digests";
+import { getPublishedDigest, getPreviousDigest } from "@/lib/beat-digests";
 
 // Force dynamic rendering so the build never makes live Exa/Gemini calls.
 // Content is stable — it only changes when send-digest publishes to
@@ -16,7 +16,10 @@ export default async function Home() {
   // rather than triggering live Exa+Gemini aggregation on a pageview —
   // that would expose unauthenticated cost (any visitor / scraper could
   // drive Exa and Gemini spend).
-  const digest = await getPublishedDigest();
+  const [digest, previous] = await Promise.all([
+    getPublishedDigest(),
+    getPreviousDigest(),
+  ]);
 
   if (!digest || digest.articles.length === 0) {
     return (
@@ -29,5 +32,12 @@ export default async function Home() {
     );
   }
 
-  return <DigestClient digest={digest} />;
+  // First-publish guard: only mark "new" when a previous snapshot exists,
+  // otherwise every article on day one would carry a NEW badge.
+  const priorIds = previous ? new Set(previous.articles.map(a => a.storyId)) : null;
+  const augmented = priorIds
+    ? { ...digest, articles: digest.articles.map(a => ({ ...a, isNew: !priorIds.has(a.storyId) })) }
+    : digest;
+
+  return <DigestClient digest={augmented} />;
 }
