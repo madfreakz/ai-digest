@@ -3,3 +3,15 @@ node_modules
 .vercel
 .env.local
 .env*.local
+.env.local.*
+
+# TS / Next auto-generated artifacts
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Local-only operator scripts (may contain CRON_SECRET literally)
+run-beats.sh
+run-beats.mjs
+trigger-crons.sh
+beat-results.txt
+beat-run.log
