@@ -177,7 +177,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
           thinkingConfig: { thinkingBudget: 128 },
           temperature: 0.1,
-          maxOutputTokens: 4096,
+          maxOutputTokens: 8192,
         },
       });
       break;
