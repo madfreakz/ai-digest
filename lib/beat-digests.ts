@@ -79,7 +79,9 @@ async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): 
     try {
       const existing = await kv.get<DiscoveredCompany>(key);
       if (existing) {
-        await kv.setex(key, DISCOVERED_TTL, { ...existing, lastSeen: now, count: existing.count + 1 });
+        const newDomain = dc.inferredDomain.includes(".") && !dc.inferredDomain.includes(" ")
+          ? dc.inferredDomain : existing.domain;
+        await kv.setex(key, DISCOVERED_TTL, { ...existing, domain: newDomain, lastSeen: now, count: existing.count + 1 });
       } else {
         await kv.setex(key, DISCOVERED_TTL, {
           name: dc.name,
