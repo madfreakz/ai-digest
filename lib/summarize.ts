@@ -62,11 +62,22 @@ const ArticleSchema = z.object({
   storyId: z.string(),
 });
 
-const ToolOutputSchema = z.object({ articles: z.array(ArticleSchema).default([]) });
+const DiscoveredCompanySchema = z.object({
+  name: z.string(),
+  inferredDomain: z.string(),
+  suggestedBeat: z.enum(["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"]),
+});
+
+export type DiscoveredCompanyResult = z.infer<typeof DiscoveredCompanySchema>;
+
+const ToolOutputSchema = z.object({
+  articles: z.array(ArticleSchema).default([]),
+  discoveredCompanies: z.array(DiscoveredCompanySchema).default([]),
+});
 
 const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
   name: "record_articles",
-  description: "Record the analyzed and scored articles for the digest",
+  description: "Record the analyzed and scored articles for the digest, plus any newly discovered companies",
   parameters: {
     type: Type.OBJECT,
     properties: {
@@ -93,8 +104,20 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
           required: ["title", "url", "source", "beat", "category", "companyTags", "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal", "storyId"],
         } as any,
       },
+      discoveredCompanies: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            name:           { type: Type.STRING },
+            inferredDomain: { type: Type.STRING },
+            suggestedBeat:  { type: Type.STRING, enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
+          },
+          required: ["name", "inferredDomain", "suggestedBeat"],
+        } as any,
+      },
     },
-    required: ["articles"],
+    required: ["articles", "discoveredCompanies"],
   } as any,
 };
 
@@ -121,16 +144,22 @@ export function getSynthesisHero(digest: Digest): DigestArticle | undefined {
   return pickFeaturedArticle(digest.articles);
 }
 
+interface SummarizeBeatResult {
+  articles: DigestArticle[];
+  discoveredCompanies: DiscoveredCompanyResult[];
+}
+
 async function summarizeBeat(
   beat: Beat,
   articles: ExaArticle[],
   ai: GoogleGenAI,
   modelName: string,
-): Promise<DigestArticle[]> {
-  if (articles.length === 0) return [];
+): Promise<SummarizeBeatResult> {
+  if (articles.length === 0) return { articles: [], discoveredCompanies: [] };
 
   const companyContext = getCompanyContext(beat);
-  const companyNames = getCompanyNames(beat).slice(0, 25).join(", ");
+  const allCompanyNames = await getCompanyNames();
+  const companyNames = allCompanyNames.join(", ");
 
   const articleList = articles
     .slice(0, 15)
@@ -164,7 +193,10 @@ For each article:
 - dealSignalType: classify if dealSignal=true (funding_round | partnership_announced | customer_win | hiring_signal | positioning_shift | competitive_move | product_launch)
 - storyId: a short lowercase slug identifying the underlying story/event. If two articles cover the same event (e.g. same funding round, same product launch, same partnership), give them the SAME storyId. Format: "company-event-type" (e.g. "exa-series-c", "figure-bmw-deal", "openai-gpt5-release"). If an article covers a unique story, still give it a unique storyId.
 
-Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.`;
+Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.
+Skip articles primarily about: defense/military, healthcare/medical, insurance, government/govtech, education/edtech, cybersecurity, identity/access management, trust & safety, fraud prevention, mental health, adtech/advertising, or crypto/blockchain applications.
+
+Also return discoveredCompanies: for any company in these articles that is NOT in the tracked list above AND is the subject of a funding round, major partnership, or significant product launch, include it with your best guess for its domain and which beat it belongs to. Only include real AI/robotics/infrastructure startups, not Big Tech or generic terms. Skip companies in the excluded industries listed above.`;
 
   let response: any;
   for (let attempt = 0; attempt <= 2; attempt++) {
@@ -192,7 +224,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   }
   if (!response) {
     console.error(`[gemini] ${beat} - No response`);
-    return [];
+    return { articles: [], discoveredCompanies: [] };
   }
 
   const functionCall = response.functionCalls?.[0];
@@ -202,18 +234,18 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
       name: functionCall?.name,
       allCalls: response.functionCalls,
     });
-    return [];
+    return { articles: [], discoveredCompanies: [] };
   }
 
-  console.log(`[gemini] ${beat} - function call received with ${functionCall.args.articles?.length || 0} articles`);
+  console.log(`[gemini] ${beat} - function call received with ${functionCall.args.articles?.length || 0} articles, ${functionCall.args.discoveredCompanies?.length || 0} discovered`);
 
   const parsed = ToolOutputSchema.safeParse(functionCall.args);
   if (!parsed.success) {
     console.error(`[gemini] ${beat} - Zod validation failed:`, parsed.error.message);
-    return [];
+    return { articles: [], discoveredCompanies: [] };
   }
 
-  console.log(`[gemini] ${beat} - parsed ${parsed.data.articles.length} articles`);
+  console.log(`[gemini] ${beat} - parsed ${parsed.data.articles.length} articles, ${parsed.data.discoveredCompanies.length} discovered companies`);
 
   const exaByUrl = new Map(articles.map(a => [a.url, a]));
 
@@ -231,7 +263,10 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     console.log(`[dedup] ${beat} - collapsed ${enriched.length} → ${deduped.length} articles`);
   }
 
-  return deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
+  return {
+    articles: deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6)),
+    discoveredCompanies: parsed.data.discoveredCompanies,
+  };
 }
 
 function deduplicateBySource(articles: DigestArticle[]): DigestArticle[] {
@@ -403,14 +438,17 @@ Return a JSON object with:
   return undefined;
 }
 
-export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<Digest> {
+export interface GenerateDigestResult {
+  digest: Digest;
+  discoveredCompanies: DiscoveredCompanyResult[];
+}
+
+export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<GenerateDigestResult> {
   const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
-  // Filter articles by beat if specified
   const filtered = beatFilter
     ? articles.filter(a => a.beatHint === beatFilter)
     : articles;
 
-  // Group by beatHint
   const groups = new Map<Beat, ExaArticle[]>();
   for (const article of filtered) {
     const beat = article.beatHint;
@@ -418,21 +456,24 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
     groups.get(beat)!.push(article);
   }
 
-  // Sequential Gemini calls
   const beatEntries = Array.from(groups.entries());
   const allArticles: DigestArticle[] = [];
+  const allDiscovered: DiscoveredCompanyResult[] = [];
   for (const [beat, items] of beatEntries) {
     try {
       const result = await summarizeBeat(beat, items, ai, GEMINI_MODEL);
-      result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-      allArticles.push(...result);
+      result.articles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      allArticles.push(...result.articles);
+      allDiscovered.push(...result.discoveredCompanies);
     } catch (err) {
       console.error(`Beat summarization failed (${beat}):`, err);
     }
   }
 
-  // Fetch Clearbit logos for company tags (with concurrency control)
   await fetchClearbitLogos(allArticles);
 
-  return { articles: allArticles, generatedAt: new Date().toISOString() };
+  return {
+    digest: { articles: allArticles, generatedAt: new Date().toISOString() },
+    discoveredCompanies: allDiscovered,
+  };
 }

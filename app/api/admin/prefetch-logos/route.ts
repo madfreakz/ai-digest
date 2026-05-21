@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { COMPANIES, DOMAIN_ALIASES } from "@/lib/companies";
+import type { DiscoveredCompany } from "@/lib/companies";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // needs more than the default 10s
@@ -46,6 +47,21 @@ export async function GET(req: Request) {
     if (seen.has(aliasName)) continue;
     seen.add(aliasName);
     toFetch.push({ name: aliasName, url: `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png` });
+  }
+
+  // Also add KV-discovered companies
+  try {
+    const discoveredKeys = await kv.keys("discovered:*");
+    for (const dKey of discoveredKeys) {
+      const dc = await kv.get<DiscoveredCompany>(dKey);
+      if (!dc?.domain) continue;
+      const key = dc.name.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      toFetch.push({ name: key, url: `https://img.logo.dev/${dc.domain}?token=${logoDevKey}&size=200&format=png` });
+    }
+  } catch {
+    // KV read failed; proceed with static companies only
   }
 
   const logoMap: Record<string, string> = {};

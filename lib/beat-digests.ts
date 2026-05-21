@@ -1,8 +1,9 @@
 import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
-import type { DigestArticle, Digest, DigestSynthesis } from "./summarize";
+import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } from "./summarize";
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
-import { fetchAllNews, fetchBeatNews } from "./exa";
+import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles } from "./exa";
+import type { DiscoveredCompany } from "./companies";
 import { getEffectivePriority } from "./sources";
 
 interface BeatCacheMetadata {
@@ -35,13 +36,90 @@ function beatFreshnessKey(beat: Beat): string {
   return `beat:${beat}:lastSuccess`;
 }
 
+const DISCOVERED_TTL = 30 * 24 * 60 * 60;
+const VC_ARTICLES_KEY = "vc-articles:latest";
+
+async function mergeVcArticles(beat: Beat): Promise<import("./exa").ExaArticle[]> {
+  const day = new Date().getUTCDay();
+  const isTueOrThu = day === 2 || day === 4;
+
+  if (!KV_CONFIGURED) return [];
+
+  if (isTueOrThu) {
+    try {
+      const cached = await kv.get<import("./exa").ExaArticle[]>(VC_ARTICLES_KEY);
+      if (!cached) {
+        console.log("[beat-digests] VC blog query running (Tue/Thu)");
+        const vcArticles = await fetchVcBlogArticles();
+        console.log(`[beat-digests] VC blog query returned ${vcArticles.length} articles`);
+        if (vcArticles.length > 0) {
+          await kv.setex(VC_ARTICLES_KEY, BEAT_CACHE_TTL, vcArticles);
+        }
+        return vcArticles;
+      }
+      return cached;
+    } catch (err) {
+      console.warn("[beat-digests] VC blog fetch failed:", err instanceof Error ? err.message : String(err));
+      return [];
+    }
+  }
+
+  try {
+    return await kv.get<import("./exa").ExaArticle[]>(VC_ARTICLES_KEY) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): Promise<void> {
+  if (!KV_CONFIGURED || discovered.length === 0) return;
+  const now = new Date().toISOString();
+  for (const dc of discovered) {
+    const key = `discovered:${dc.name.toLowerCase().replace(/\s+/g, "-")}`;
+    try {
+      const existing = await kv.get<DiscoveredCompany>(key);
+      if (existing) {
+        await kv.setex(key, DISCOVERED_TTL, { ...existing, lastSeen: now, count: existing.count + 1 });
+      } else {
+        await kv.setex(key, DISCOVERED_TTL, {
+          name: dc.name,
+          domain: dc.inferredDomain,
+          beat: dc.suggestedBeat,
+          firstSeen: now,
+          lastSeen: now,
+          count: 1,
+        });
+      }
+    } catch (err) {
+      console.warn(`[discovered] Failed to store ${dc.name}:`, err instanceof Error ? err.message : String(err));
+    }
+  }
+  console.log(`[discovered] Stored ${discovered.length} discovered companies`);
+}
+
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
-    const beatArticles = await fetchBeatNews(beat);
-    console.log(`[beat-digests] ${beat} - fetched ${beatArticles.length} articles`);
+    const [beatArticles, vcArticles] = await Promise.all([
+      fetchBeatNews(beat),
+      mergeVcArticles(beat),
+    ]);
 
-    const beatDigest = await generateBeatDigest(beatArticles, beat);
+    const seenUrls = new Set(beatArticles.map(a => a.url));
+    const mergedArticles = [...beatArticles];
+    for (const vc of vcArticles) {
+      if (!seenUrls.has(vc.url)) {
+        seenUrls.add(vc.url);
+        mergedArticles.push({ ...vc, beatHint: beat });
+      }
+    }
+    console.log(`[beat-digests] ${beat} - fetched ${beatArticles.length} beat + ${vcArticles.length} VC articles`);
+
+    const { digest: beatDigest, discoveredCompanies } = await generateBeatDigest(mergedArticles, beat);
     console.log(`[beat-digests] ${beat} - generateBeatDigest returned ${beatDigest.articles.length} articles`);
+
+    if (discoveredCompanies.length > 0) {
+      await storeDiscoveredCompanies(discoveredCompanies);
+    }
 
     if (KV_CONFIGURED) {
       try {
@@ -99,7 +177,7 @@ async function generateFreshAllBeats(beats: Beat[]): Promise<DigestArticle[]> {
     beats.map(async beat => {
       const beatArticles = allNews.filter(a => a.beatHint === beat);
       console.log(`[beat-digests] ${beat}: ${beatArticles.length} raw articles to process`);
-      const beatDigest = await generateBeatDigest(beatArticles, beat);
+      const { digest: beatDigest } = await generateBeatDigest(beatArticles, beat);
       console.log(`[beat-digests] ${beat}: ${beatDigest.articles.length} articles after Gemini scoring`);
       return beatDigest.articles;
     })
@@ -184,7 +262,7 @@ function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
       if (articles[i].beat === articles[j].beat) continue;
       const sim = jaccardSimilarity(titleSets[i], titleSets[j]);
       const sharedTag = articles[i].companyTags.some(t => articles[j].companyTags.includes(t));
-      if (sim >= 0.5 || (sim >= 0.35 && sharedTag)) {
+      if (sim >= 0.5 || (sim >= 0.40 && sharedTag)) {
         const prioI = getEffectivePriority(articles[i].source);
         const prioJ = getEffectivePriority(articles[j].source);
         const loser = prioI <= prioJ ? j : i;

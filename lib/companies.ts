@@ -1,3 +1,5 @@
+import { kv } from "@vercel/kv";
+
 export type Beat = "Physical AI" | "AI Infrastructure" | "AI Labs" | "Vertical AI";
 
 export type DealSignalType =
@@ -26,6 +28,17 @@ export interface TrackedCompany {
   domain?: string;
 }
 
+export interface DiscoveredCompany {
+  name: string;
+  domain: string;
+  beat: Beat;
+  firstSeen: string;
+  lastSeen: string;
+  count: number;
+}
+
+const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
+
 // Domain aliases for companies that appear as article tags but may not be in the COMPANIES list,
 // or whose names differ from their domain. Used by logo pre-caching and live Clearbit lookup.
 export const DOMAIN_ALIASES: Record<string, string> = {
@@ -45,6 +58,31 @@ export const DOMAIN_ALIASES: Record<string, string> = {
   "perplexity": "perplexity.ai",
   "runway": "runwayml.com",
   "midjourney": "midjourney.com",
+  "ricursive intelligence": "ricursive.ai",
+  "sunday robotics": "sundayrobotics.com",
+  "zipline": "flyzipline.com",
+  "deep robotics": "deeprobotics.cn",
+  "xpeng robotics": "xpeng.com",
+  "may mobility": "maymobility.com",
+  "locus robotics": "locusrobotics.com",
+  "kind humanoid": "kindhumanoid.com",
+  "etched": "etched.com",
+  "parallel": "parallel.ai",
+  "san francisco compute": "sfcompute.com",
+  "fal": "fal.ai",
+  "lancedb": "lancedb.com",
+  "cleanlab": "cleanlab.ai",
+  "twelve labs": "twelvelabs.io",
+  "contextual ai": "contextual.ai",
+  "goodfire": "goodfire.ai",
+  "matter intelligence": "matterintelligence.com",
+  "dust": "dust.tt",
+  "gamma": "gamma.app",
+  "profound": "profound.co",
+  "factory": "factory.ai",
+  "cline": "cline.bot",
+  "11x": "11x.ai",
+  "vapi": "vapi.ai",
 };
 
 export const COMPANIES: TrackedCompany[] = [
@@ -82,6 +120,17 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Nuro",              beat: "Physical AI", tier: 2, dealVector: ["potential_customer", "strategic_partner"],    vcBacked: ["GV", "NVIDIA"],      addedAt: "2026-05-18", domain: "nuro.ai" },
   { name: "Foxglove",          beat: "Physical AI", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Eclipse Ventures"],  addedAt: "2026-05-18", domain: "foxglove.dev" },
   { name: "Sarcos",            beat: "Physical AI", tier: 3, dealVector: ["strategic_partner"],                         vcBacked: [],                    addedAt: "2024-01-01" },
+  // Physical AI — new additions (2026-05-21)
+  { name: "Ricursive Intelligence", beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: [],                  addedAt: "2026-05-21", domain: "ricursive.ai" },
+  { name: "Sunday Robotics",  beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "sundayrobotics.com" },
+  { name: "Zipline",          beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "flyzipline.com" },
+  { name: "DEEP Robotics",    beat: "Physical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "deeprobotics.cn" },
+  { name: "XPENG Robotics",   beat: "Physical AI", tier: 2, dealVector: ["competitive_threat", "potential_customer"],   vcBacked: [],                    addedAt: "2026-05-21", domain: "xpeng.com" },
+  { name: "May Mobility",     beat: "Physical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "maymobility.com" },
+  { name: "Locus Robotics",   beat: "Physical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "locusrobotics.com" },
+  { name: "Kind Humanoid",    beat: "Physical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "kindhumanoid.com" },
+  { name: "HyperShell",       beat: "Physical AI", tier: 3, dealVector: ["strategic_partner"],                           vcBacked: [],                    addedAt: "2026-05-21" },
+  { name: "NanoClaw",         beat: "Physical AI", tier: 3, dealVector: ["strategic_partner"],                           vcBacked: [],                    addedAt: "2026-05-21" },
 
   // ── AI Infrastructure — tier 1 ────────────────────────────────────────────
   { name: "Exa",               beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Lightspeed"],                        addedAt: "2024-01-01", domain: "exa.ai" },
@@ -112,6 +161,13 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Arize AI",    beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency"],                         vcBacked: [], addedAt: "2024-01-01" },
   { name: "LlamaIndex",  beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency"],                         vcBacked: [], addedAt: "2024-01-01" },
   { name: "Unstructured", beat: "AI Infrastructure", tier: 3, dealVector: ["technology_dependency"],                        vcBacked: [], addedAt: "2024-01-01" },
+  // AI Infrastructure — new additions (2026-05-21)
+  { name: "Etched",                beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "etched.com" },
+  { name: "Parallel",              beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "parallel.ai" },
+  { name: "San Francisco Compute", beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "sfcompute.com" },
+  { name: "fal",                   beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "fal.ai" },
+  { name: "LanceDB",              beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "lancedb.com" },
+  { name: "Cleanlab",             beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency"],                      vcBacked: [],                  addedAt: "2026-05-21", domain: "cleanlab.ai" },
 
   // ── AI Labs — tier 1 ──────────────────────────────────────────────────────
   { name: "Anthropic",       beat: "AI Labs", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Google", "Spark Capital"],       addedAt: "2024-01-01", domain: "anthropic.com" },
@@ -131,6 +187,11 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Inflection AI", beat: "AI Labs", tier: 2, dealVector: ["competitive_threat"],  vcBacked: [], addedAt: "2024-01-01" },
   { name: "Aleph Alpha",  beat: "AI Labs", tier: 2, dealVector: ["strategic_partner"],    vcBacked: [], addedAt: "2024-01-01" },
   { name: "Reka",         beat: "AI Labs", tier: 3, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
+  // AI Labs — new additions (2026-05-21)
+  { name: "Twelve Labs",    beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "twelvelabs.io" },
+  { name: "Contextual AI",  beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "contextual.ai" },
+  { name: "Goodfire",       beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "goodfire.ai" },
+  { name: "Matter Intelligence", beat: "AI Labs", tier: 2, dealVector: ["technology_dependency"],                 vcBacked: [],  addedAt: "2026-05-21" },
 
   // ── Vertical AI — tier 1 ──────────────────────────────────────────────────
   { name: "Harvey",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Sequoia", "OpenAI"],                    addedAt: "2024-01-01", domain: "harvey.ai" },
@@ -149,11 +210,8 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "ElevenLabs",  beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["a16z"],                                 addedAt: "2026-05-18", domain: "elevenlabs.io" },
   { name: "Cognition",   beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"],  vcBacked: ["Lux Capital", "Khosla Ventures"],       addedAt: "2026-05-18", domain: "cognition.ai" },
   { name: "Hebbia",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],  vcBacked: ["Radical Ventures"],                     addedAt: "2026-05-18", domain: "hebbia.ai" },
-  { name: "OpenEvidence", beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"], vcBacked: ["Conviction Capital"],                   addedAt: "2026-05-18", domain: "openevidence.com" },
   // Vertical AI — tier 2–3
   { name: "Ironclad AI", beat: "Vertical AI", tier: 2, dealVector: ["potential_customer", "strategic_partner"], vcBacked: [],                                 addedAt: "2024-01-01" },
-  { name: "Abridge",     beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner"],                       vcBacked: [],                                 addedAt: "2024-01-01" },
-  { name: "Nabla",       beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner"],                       vcBacked: [],                                 addedAt: "2024-01-01" },
   { name: "Cresta",      beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: ["Greylock"],                        addedAt: "2024-01-01" },
   { name: "Observe.AI",  beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: [],                                 addedAt: "2024-01-01" },
   { name: "HeyGen",      beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"], vcBacked: ["Benchmark", "NVIDIA"],            addedAt: "2026-05-18", domain: "heygen.com" },
@@ -161,17 +219,38 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Reducto",     beat: "Vertical AI", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Benchmark"],                   addedAt: "2026-05-18", domain: "reducto.ai" },
   { name: "Bolt.new",    beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: ["GV", "Conviction Capital", "Greylock"], addedAt: "2026-05-18", domain: "bolt.new" },
   { name: "Forethought", beat: "Vertical AI", tier: 3, dealVector: ["competitive_threat"],                      vcBacked: [],                                 addedAt: "2024-01-01" },
+  // Vertical AI — new additions (2026-05-21)
+  { name: "Dust",        beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: ["a16z"],                            addedAt: "2026-05-21", domain: "dust.tt" },
+  { name: "Gamma",       beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "gamma.app" },
+  { name: "Profound",    beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "profound.co" },
+  { name: "Factory",     beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "factory.ai" },
+  { name: "Cline",       beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "cline.bot" },
+  { name: "11x",         beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "11x.ai" },
+  { name: "Vapi",        beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "vapi.ai" },
 ];
 
-export function getCompanyNames(beat?: Beat): string[] {
+export function getStaticCompanyNames(beat?: Beat): string[] {
   return (beat ? COMPANIES.filter(c => c.beat === beat) : COMPANIES).map(c => c.name);
+}
+
+export async function getCompanyNames(beat?: Beat): Promise<string[]> {
+  const staticNames = getStaticCompanyNames(beat);
+  if (!KV_CONFIGURED) return staticNames;
+  try {
+    const keys = await kv.keys("discovered:*");
+    if (keys.length === 0) return staticNames;
+    const discovered = await Promise.all(keys.map(k => kv.get<DiscoveredCompany>(k)));
+    const dynamicNames = discovered.filter(Boolean).map(d => d!.name);
+    return [...new Set([...staticNames, ...dynamicNames])];
+  } catch {
+    return staticNames;
+  }
 }
 
 export function getCompanyRegistry(): TrackedCompany[] {
   return COMPANIES;
 }
 
-// Compressed context for Claude prompt injection — tier 1 + 2 only to keep token count low
 export function getCompanyContext(beat: Beat): string {
   return COMPANIES
     .filter(c => c.beat === beat && c.tier <= 2)

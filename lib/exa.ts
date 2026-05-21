@@ -43,11 +43,20 @@ const QUERIES_VERTICAL_AI = [
 ];
 
 const TC_QUERIES: Record<Beat, string> = {
-  "Physical AI":       "robotics AI companies funding partnerships launches",
-  "AI Infrastructure": "AI infrastructure tooling companies funding product launches",
-  "AI Labs":           "AI lab foundation model research funding partnerships",
-  "Vertical AI":       "vertical AI software companies funding enterprise deals",
+  "Physical AI":       "robotics humanoid AI companies breakthroughs partnerships launches",
+  "AI Infrastructure": "AI infrastructure compute tooling companies product launches partnerships",
+  "AI Labs":           "AI lab foundation model research breakthroughs releases partnerships",
+  "Vertical AI":       "vertical AI software agent companies enterprise launches partnerships",
 };
+
+const VC_DOMAINS = [
+  "a16z.com", "sequoiacap.com", "benchmark.com", "greylock.com",
+  "khoslaventures.com", "luxcapital.com", "eclipse.vc", "radical.vc",
+  "lsvp.com", "redpoint.com", "conviction.com", "nea.com",
+  "indexventures.com", "generalcatalyst.com", "kleinerperkins.com",
+  "insightpartners.com", "dcvc.com", "accel.com", "coatue.com",
+  "menlovc.com", "bvp.com", "sparkcapital.com",
+];
 
 const BEAT_QUERIES: [Beat, string[]][] = [
   ["Physical AI",       QUERIES_PHYSICAL_AI],
@@ -154,4 +163,40 @@ export async function fetchAllNews(): Promise<ExaArticle[]> {
   );
 
   return beatResultArrays.flatMap(r => r.status === "fulfilled" ? r.value : []);
+}
+
+export async function fetchVcBlogArticles(): Promise<ExaArticle[]> {
+  const exa = new Exa(process.env.EXA_API_KEY!);
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const startDate = sevenDaysAgo.toISOString().split("T")[0];
+
+  try {
+    const result = await withRetry(() =>
+      exa.searchAndContents("AI startup portfolio company funding announcement", {
+        type: "neural",
+        numResults: 10,
+        startPublishedDate: startDate,
+        text: { maxCharacters: 400 },
+        includeDomains: VC_DOMAINS,
+      } as any)
+    );
+    console.log(`[exa] VC blog query returned ${result.results.length} results`);
+    return result.results.map(item => {
+      const hostname = new URL(item.url).hostname.replace(/^www\./, "");
+      const image = (item as Record<string, unknown>).image as string | null;
+      return {
+        title: item.title ?? "Untitled",
+        url: item.url,
+        publishedAt: item.publishedDate ?? new Date().toISOString(),
+        text: (item as Record<string, unknown>).text as string | undefined,
+        source: hostname,
+        ogImage: image ?? null,
+        beatHint: "AI Labs" as Beat,
+      };
+    });
+  } catch (err) {
+    console.error("[exa] VC blog query failed:", err instanceof Error ? err.message : String(err));
+    return [];
+  }
 }
