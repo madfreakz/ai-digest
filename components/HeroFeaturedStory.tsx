@@ -205,26 +205,6 @@ export default function HeroFeaturedStory({ article, compact = false }: HeroFeat
         </div>
       </div>
 
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .hero-anim {
-          animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        .hero-anim-1 { animation-delay: 0.1s; }
-        .hero-anim-2 { animation-delay: 0.15s; }
-        .hero-anim-3 { animation-delay: 0.2s; }
-        .hero-anim-4 { animation-delay: 0.25s; }
-        .hero-anim-5 { animation-delay: 0.3s; }
-      `}</style>
     </a>
   );
 }

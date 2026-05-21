@@ -13,7 +13,6 @@ interface UpdatedNewsCardProps {
 
 function useInView<T extends HTMLElement>(ref: React.RefObject<T | null>, threshold = 0.2) {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -30,19 +29,12 @@ function useInView<T extends HTMLElement>(ref: React.RefObject<T | null>, thresh
     return () => obs.disconnect();
   }, [ref, threshold]);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return { isVisible, isMobile };
+  return { isVisible };
 }
 
 export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps) {
   const ref = useRef<HTMLAnchorElement>(null);
-  const { isVisible, isMobile } = useInView(ref);
+  const { isVisible } = useInView(ref);
   const theme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -83,23 +75,11 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div
-          style={{
-            display: 'flex',
-            gap: 'clamp(16px, 4vw, 24px)',
-            padding: 'clamp(20px, 3vw, 28px)',
-            flexDirection: isMobile ? 'column' : 'row',
-          }}
-        >
+        <div className="card-layout">
           {/* Thumbnail */}
           <div
+            className="card-thumb"
             style={{
-              position: 'relative',
-              flexShrink: 0,
-              width: isMobile ? '100%' : '180px',
-              height: isMobile ? '160px' : '140px',
-              borderRadius: '6px',
-              overflow: 'hidden',
               background: `repeating-linear-gradient(-45deg, ${theme.thumbS1} 0px, ${theme.thumbS1} 14px, ${theme.thumbS2} 14px, ${theme.thumbS2} 28px)`,
               transition: 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
               transform: isHovered ? 'scale(1.05)' : 'scale(1)',
@@ -238,22 +218,6 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
         </div>
       </a>
 
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .card-anim {
-          animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-          animation-delay: var(--card-anim-delay, 0ms);
-        }
-      `}</style>
     </>
   );
 }

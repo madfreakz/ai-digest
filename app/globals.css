@@ -8,11 +8,54 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+.hero-anim,
+.beat-anim,
+.card-anim {
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.hero-anim-1 { animation-delay: 0.10s; }
+.hero-anim-2 { animation-delay: 0.15s; }
+.hero-anim-3 { animation-delay: 0.20s; }
+.hero-anim-4 { animation-delay: 0.25s; }
+.hero-anim-5 { animation-delay: 0.30s; }
+.beat-anim   { animation-delay: 0.10s; }
+.card-anim   { animation-delay: var(--card-anim-delay, 0ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim,
+  .beat-anim,
+  .card-anim {
+    animation: none;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* ── Responsive horizontal padding ── */
 :root { --page-pad-x: 56px; }
 @media (max-width: 600px) {
   :root { --page-pad-x: 20px; }
   .digest-title { font-size: clamp(26px, 7vw, 38px) !important; }
+}
+
+/* ── Card layout: row on desktop, column on mobile (no JS, no hydration flash) ── */
+.card-layout {
+  display: flex;
+  gap: clamp(16px, 4vw, 24px);
+  padding: clamp(20px, 3vw, 28px);
+  flex-direction: row;
+}
+.card-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 180px;
+  height: 140px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .card-layout  { flex-direction: column; }
+  .card-thumb   { width: 100%; height: 160px; }
 }
 
 /* ── CSS custom properties (set by DigestClient on theme switch) ── */

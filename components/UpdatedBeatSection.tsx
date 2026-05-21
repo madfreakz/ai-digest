@@ -317,22 +317,6 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
         </div>
       </section>
 
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .beat-anim {
-          animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-          animation-delay: 0.1s;
-        }
-      `}</style>
     </>
   );
 }

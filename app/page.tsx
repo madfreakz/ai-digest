@@ -2,10 +2,11 @@ import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
 import { getPublishedDigest, getPreviousDigest } from "@/lib/beat-digests";
 
-// Force dynamic rendering so the build never makes live Exa/Gemini calls.
-// Content is stable — it only changes when send-digest publishes to
-// digest:published and calls revalidatePath('/') to bust the CDN cache.
-export const dynamic = "force-dynamic";
+// ISR: cache the rendered page at the edge for up to 1h. send-digest calls
+// revalidatePath('/') on publish so fresh content appears immediately when the
+// cron runs. Avoids force-dynamic, which would hit KV on every visitor request.
+// Build never makes live Exa/Gemini calls because the page only reads from KV.
+export const revalidate = 3600;
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
