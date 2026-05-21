@@ -65,6 +65,26 @@ const BEAT_QUERIES: [Beat, string[]][] = [
   ["Vertical AI",       QUERIES_VERTICAL_AI],
 ];
 
+// Strip tracking params, hash, trailing slash, www prefix, lowercase host.
+// Two Exa results pointing at the same canonical article but with different
+// utm tags / trailing slashes were producing duplicate cards. See Backlog 2026-05-21.
+const TRACKING_PARAMS = /^(utm_|ref$|source$|fbclid$|gclid$|mc_(cid|eid)$)/;
+function normalizeUrl(raw: string): string {
+  try {
+    const u = new URL(raw);
+    u.hostname = u.hostname.replace(/^www\./, "").toLowerCase();
+    u.hash = "";
+    for (const key of Array.from(u.searchParams.keys())) {
+      if (TRACKING_PARAMS.test(key)) u.searchParams.delete(key);
+    }
+    let s = u.toString();
+    if (s.endsWith("/") && u.pathname !== "/") s = s.slice(0, -1);
+    return s;
+  } catch {
+    return raw;
+  }
+}
+
 async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3, baseDelay = 500): Promise<T> {
   let lastErr: unknown;
   for (let i = 0; i < maxAttempts; i++) {
@@ -118,8 +138,9 @@ async function runBeatQueries(
         );
         console.log(`[exa] ${beat} - query: ${label} - results: ${result.results.length}`);
         for (const item of result.results) {
-          if (!seenUrls.has(item.url)) {
-            seenUrls.add(item.url);
+          const normalized = normalizeUrl(item.url);
+          if (!seenUrls.has(normalized)) {
+            seenUrls.add(normalized);
             const hostname = new URL(item.url).hostname.replace(/^www\./, "");
             const image = (item as Record<string, unknown>).image as string | null;
             results.push({

@@ -3,7 +3,8 @@ import type { FunctionDeclaration, Schema } from "@google/genai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
-import { getCompanyContext, getCompanyNames, COMPANIES, DOMAIN_ALIASES } from "./companies";
+import { getCompanyContext, getCompanyNames, COMPANIES, DOMAIN_ALIASES, resolveCanonicalCompanyName, DISCOVERY_BLOCKLIST } from "./companies";
+import { KV_CONFIGURED } from "./kv-config";
 import { getEffectivePriority } from "./sources";
 
 export type { Beat, DealSignalType };
@@ -199,7 +200,11 @@ For each article:
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.
 Skip articles primarily about: defense/military, healthcare/medical, insurance, government/govtech, education/edtech, cybersecurity, identity/access management, trust & safety, fraud prevention, mental health, adtech/advertising, or crypto/blockchain applications.
 
-Also return discoveredCompanies: for any company in these articles that is NOT in the tracked list above AND is the subject of a funding round, major partnership, or significant product launch, include it. inferredDomain must be a web domain like "example.com" (not a description). suggestedBeat is which of the 4 beats it belongs to. Only include real AI/robotics/infrastructure startups, not Big Tech or generic terms. Skip companies in the excluded industries listed above.`;
+Also return discoveredCompanies: for any company in these articles that is NOT in the tracked list above AND is the subject of a funding round, major partnership, or significant product launch, include it. inferredDomain must be a web domain like "example.com" (not a description). suggestedBeat is which of the 4 beats it belongs to. Only include real AI/robotics/infrastructure startups, not Big Tech or generic terms. Skip companies in the excluded industries listed above.${
+    DISCOVERY_BLOCKLIST.size > 0
+      ? `\nDo NOT include in discoveredCompanies: ${Array.from(DISCOVERY_BLOCKLIST).join(", ")}.`
+      : ""
+  }`;
 
   let response: any;
   for (let attempt = 0; attempt <= 2; attempt++) {
@@ -254,8 +259,12 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
 
   const enriched = parsed.data.articles.map(a => {
     const exa = exaByUrl.get(a.url);
+    const canonicalTags = Array.from(
+      new Set(a.companyTags.map(resolveCanonicalCompanyName)),
+    );
     return {
       ...a,
+      companyTags: canonicalTags,
       publishedAt: exa?.publishedAt ?? new Date().toISOString(),
       ogImage:     exa?.ogImage ?? null,
     };
@@ -298,9 +307,7 @@ function deduplicateBySource(articles: DigestArticle[]): DigestArticle[] {
   return result;
 }
 
-const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
-
-async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
+async function fetchCompanyLogos(articles: DigestArticle[]): Promise<void> {
   // 1. Try KV pre-cache first (populated by /api/admin/prefetch-logos)
   if (KV_CONFIGURED) {
     try {
@@ -473,7 +480,7 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
     }
   }
 
-  await fetchClearbitLogos(allArticles);
+  await fetchCompanyLogos(allArticles);
 
   return {
     digest: { articles: allArticles, generatedAt: new Date().toISOString() },

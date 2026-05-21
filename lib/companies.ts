@@ -1,4 +1,5 @@
 import { kv } from "@vercel/kv";
+import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
 
 export type Beat = "Physical AI" | "AI Infrastructure" | "AI Labs" | "Vertical AI";
 
@@ -37,7 +38,15 @@ export interface DiscoveredCompany {
   count: number;
 }
 
-const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
+// Names Gemini keeps rediscovering that the user has explicitly dismissed.
+// Filtered out of both the discoveredCompanies pipeline and tag matching.
+export const DISCOVERY_BLOCKLIST = new Set<string>([
+  "sigma computing",
+]);
+
+export function isBlockedDiscovery(name: string): boolean {
+  return DISCOVERY_BLOCKLIST.has(name.toLowerCase().trim());
+}
 
 // Domain aliases for companies that appear as article tags but may not be in the COMPANIES list,
 // or whose names differ from their domain. Used by logo pre-caching and live Clearbit lookup.
@@ -59,6 +68,7 @@ export const DOMAIN_ALIASES: Record<string, string> = {
   "runway": "runwayml.com",
   "midjourney": "midjourney.com",
   "ricursive intelligence": "ricursive.ai",
+  "recursive superintelligence": "recursive.com",
   "sunday robotics": "sundayrobotics.com",
   "zipline": "flyzipline.com",
   "deep robotics": "deeprobotics.cn",
@@ -121,7 +131,6 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Foxglove",          beat: "Physical AI", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: ["Eclipse Ventures"],  addedAt: "2026-05-18", domain: "foxglove.dev" },
   { name: "Sarcos",            beat: "Physical AI", tier: 3, dealVector: ["strategic_partner"],                         vcBacked: [],                    addedAt: "2024-01-01" },
   // Physical AI — new additions (2026-05-21)
-  { name: "Ricursive Intelligence", beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: [],                  addedAt: "2026-05-21", domain: "ricursive.ai" },
   { name: "Sunday Robotics",  beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "sundayrobotics.com" },
   { name: "Zipline",          beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "flyzipline.com" },
   { name: "DEEP Robotics",    beat: "Physical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"],     vcBacked: [],                    addedAt: "2026-05-21", domain: "deeprobotics.cn" },
@@ -162,6 +171,7 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "LlamaIndex",  beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency"],                         vcBacked: [], addedAt: "2024-01-01" },
   { name: "Unstructured", beat: "AI Infrastructure", tier: 3, dealVector: ["technology_dependency"],                        vcBacked: [], addedAt: "2024-01-01" },
   // AI Infrastructure — new additions (2026-05-21)
+  { name: "Ricursive Intelligence", beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                addedAt: "2026-05-21", domain: "ricursive.ai" },
   { name: "Etched",                beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "etched.com" },
   { name: "Parallel",              beat: "AI Infrastructure", tier: 1, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "parallel.ai" },
   { name: "San Francisco Compute", beat: "AI Infrastructure", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],                  addedAt: "2026-05-21", domain: "sfcompute.com" },
@@ -188,6 +198,7 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Aleph Alpha",  beat: "AI Labs", tier: 2, dealVector: ["strategic_partner"],    vcBacked: [], addedAt: "2024-01-01" },
   { name: "Reka",         beat: "AI Labs", tier: 3, dealVector: ["technology_dependency"], vcBacked: [], addedAt: "2024-01-01" },
   // AI Labs — new additions (2026-05-21)
+  { name: "Recursive Superintelligence", beat: "AI Labs", tier: 1, dealVector: ["strategic_partner", "competitive_threat"], vcBacked: ["GV", "Greycroft"], addedAt: "2026-05-21", domain: "recursive.com" },
   { name: "Twelve Labs",    beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "twelvelabs.io" },
   { name: "Contextual AI",  beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "contextual.ai" },
   { name: "Goodfire",       beat: "AI Labs", tier: 2, dealVector: ["technology_dependency", "strategic_partner"], vcBacked: [],  addedAt: "2026-05-21", domain: "goodfire.ai" },
@@ -237,18 +248,24 @@ export async function getCompanyNames(beat?: Beat): Promise<string[]> {
   const staticNames = getStaticCompanyNames(beat);
   if (!KV_CONFIGURED) return staticNames;
   try {
+    // Fast path: read a single index key maintained by storeDiscoveredCompanies.
+    const indexed = await kv.get<string[]>(DISCOVERED_INDEX_KEY);
+    if (indexed && indexed.length > 0) {
+      return [...new Set([...staticNames, ...indexed])];
+    }
+    // Cold path (index missing or empty): rebuild it by scanning, write it back.
     const keys = await kv.keys("discovered:*");
-    if (keys.length === 0) return staticNames;
-    const discovered = await Promise.all(keys.map(k => kv.get<DiscoveredCompany>(k)));
+    const relevantKeys = keys.filter(k => k !== DISCOVERED_INDEX_KEY);
+    if (relevantKeys.length === 0) return staticNames;
+    const discovered = await Promise.all(relevantKeys.map(k => kv.get<DiscoveredCompany>(k)));
     const dynamicNames = discovered.filter(Boolean).map(d => d!.name);
+    if (dynamicNames.length > 0) {
+      try { await kv.set(DISCOVERED_INDEX_KEY, dynamicNames); } catch {}
+    }
     return [...new Set([...staticNames, ...dynamicNames])];
   } catch {
     return staticNames;
   }
-}
-
-export function getCompanyRegistry(): TrackedCompany[] {
-  return COMPANIES;
 }
 
 export function getCompanyContext(beat: Beat): string {
@@ -256,4 +273,47 @@ export function getCompanyContext(beat: Beat): string {
     .filter(c => c.beat === beat && c.tier <= 2)
     .map(c => `${c.name}: ${c.dealVector.join(", ")}`)
     .join("\n");
+}
+
+// Normalize: lowercase, collapse whitespace, drop punctuation.
+// "Hugging-Face" → "hugging face", "Exa Labs" → "exa labs".
+function normalizeForMatch(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Tokens shorter than this length are not considered safe to standalone-match.
+// Avoids "AI" matching "AI21 Labs", "ML" matching anything, etc.
+const MIN_MATCH_LEN = 3;
+
+/**
+ * Resolve an arbitrary tag (whatever Gemini returned, e.g. "Exa Labs") to a
+ * canonical tracked company name (e.g. "Exa") when possible. Matches in order:
+ *   1. case-insensitive exact
+ *   2. normalized exact (whitespace/punctuation collapsed)
+ *   3. word-boundary prefix: tag starts with canonical name + space (catches
+ *      "Exa Labs" → "Exa") provided canonical name is >= MIN_MATCH_LEN
+ * Only matches against COMPANIES, not DOMAIN_ALIASES — so "Google DeepMind"
+ * won't collapse to "Google" (Google lives only in aliases).
+ * Returns the input tag unchanged if no match.
+ */
+export function resolveCanonicalCompanyName(tag: string): string {
+  const lowered = tag.toLowerCase();
+  for (const c of COMPANIES) {
+    if (c.name.toLowerCase() === lowered) return c.name;
+  }
+  const normTag = normalizeForMatch(tag);
+  if (normTag.length === 0) return tag;
+  for (const c of COMPANIES) {
+    if (normalizeForMatch(c.name) === normTag) return c.name;
+  }
+  for (const c of COMPANIES) {
+    const normCanon = normalizeForMatch(c.name);
+    if (normCanon.length < MIN_MATCH_LEN) continue;
+    if (normTag.startsWith(normCanon + " ")) return c.name;
+  }
+  return tag;
 }

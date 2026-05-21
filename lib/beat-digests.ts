@@ -4,6 +4,8 @@ import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } 
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
 import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles } from "./exa";
 import type { DiscoveredCompany } from "./companies";
+import { isBlockedDiscovery } from "./companies";
+import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
 import { getEffectivePriority } from "./sources";
 
 interface BeatCacheMetadata {
@@ -21,9 +23,6 @@ const PREVIOUS_DIGEST_KEY = "digest:previous";
 // the cache TTL so we can distinguish "expired cache" from "never refreshed".
 const BEAT_FRESHNESS_TTL = 7 * 24 * 60 * 60;
 const BEAT_STALE_AFTER_HOURS = 25;
-
-// KV is optional — if env vars are absent, fall back to direct Exa+Gemini generation
-const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
 
 function beatCacheKey(beat: Beat): string {
   return `beat:${beat}:articles`;
@@ -74,8 +73,14 @@ async function mergeVcArticles(beat: Beat): Promise<import("./exa").ExaArticle[]
 
 async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): Promise<void> {
   if (!KV_CONFIGURED || discovered.length === 0) return;
+  const filtered = discovered.filter(dc => !isBlockedDiscovery(dc.name));
+  if (filtered.length < discovered.length) {
+    console.log(`[discovered] Filtered ${discovered.length - filtered.length} blocked entries`);
+  }
+  if (filtered.length === 0) return;
   const now = new Date().toISOString();
-  for (const dc of discovered) {
+  const addedNames: string[] = [];
+  for (const dc of filtered) {
     const key = `discovered:${dc.name.toLowerCase().replace(/\s+/g, "-")}`;
     try {
       const existing = await kv.get<DiscoveredCompany>(key);
@@ -93,11 +98,21 @@ async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): 
           count: 1,
         });
       }
+      addedNames.push(dc.name);
     } catch (err) {
       console.warn(`[discovered] Failed to store ${dc.name}:`, err instanceof Error ? err.message : String(err));
     }
   }
-  console.log(`[discovered] Stored ${discovered.length} discovered companies`);
+  if (addedNames.length > 0) {
+    try {
+      const existingIndex = (await kv.get<string[]>(DISCOVERED_INDEX_KEY)) ?? [];
+      const merged = Array.from(new Set([...existingIndex, ...addedNames]));
+      await kv.set(DISCOVERED_INDEX_KEY, merged);
+    } catch (err) {
+      console.warn("[discovered] Failed to update index:", err instanceof Error ? err.message : String(err));
+    }
+  }
+  console.log(`[discovered] Stored ${filtered.length} discovered companies`);
 }
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
@@ -281,7 +296,7 @@ function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
   for (let i = 0; i < articles.length; i++) {
     if (removed.has(i)) continue;
     for (let j = i + 1; j < articles.length; j++) {
-      if (removed.has(j)) continue;
+      if (removed.has(j) || removed.has(i)) continue;
       if (articles[i].beat === articles[j].beat) continue;
       const sim = jaccardSimilarity(titleSets[i], titleSets[j]);
       const sharedTag = articles[i].companyTags.some(t => articles[j].companyTags.includes(t));

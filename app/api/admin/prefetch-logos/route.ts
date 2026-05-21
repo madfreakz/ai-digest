@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { COMPANIES, DOMAIN_ALIASES } from "@/lib/companies";
 import type { DiscoveredCompany } from "@/lib/companies";
+import { DISCOVERED_INDEX_KEY } from "@/lib/kv-config";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // needs more than the default 10s
@@ -51,7 +52,7 @@ export async function GET(req: Request) {
 
   // Also add KV-discovered companies
   try {
-    const discoveredKeys = await kv.keys("discovered:*");
+    const discoveredKeys = (await kv.keys("discovered:*")).filter(k => k !== DISCOVERED_INDEX_KEY);
     for (const dKey of discoveredKeys) {
       const dc = await kv.get<DiscoveredCompany>(dKey);
       if (!dc?.domain) continue;

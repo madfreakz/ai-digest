@@ -1,8 +1,23 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import type { DiscoveredCompany } from "@/lib/companies";
+import { DISCOVERED_INDEX_KEY } from "@/lib/kv-config";
 
 export const dynamic = "force-dynamic";
+
+async function removeFromIndex(deletedNames: string[]): Promise<void> {
+  if (deletedNames.length === 0) return;
+  try {
+    const existing = (await kv.get<string[]>(DISCOVERED_INDEX_KEY)) ?? [];
+    const lowered = new Set(deletedNames.map(n => n.toLowerCase()));
+    const next = existing.filter(n => !lowered.has(n.toLowerCase()));
+    if (next.length !== existing.length) {
+      await kv.set(DISCOVERED_INDEX_KEY, next);
+    }
+  } catch {
+    // Index will self-heal next time getCompanyNames sees an empty index
+  }
+}
 
 export async function GET(req: Request) {
   const cronSecret = process.env.CRON_SECRET;
@@ -16,7 +31,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const keys = await kv.keys("discovered:*");
+    const keys = (await kv.keys("discovered:*")).filter(k => k !== DISCOVERED_INDEX_KEY);
     if (keys.length === 0) {
       return NextResponse.json({ companies: [], total: 0 });
     }
@@ -56,15 +71,18 @@ export async function DELETE(req: Request) {
 
   try {
     if (mode === "bad-domains") {
-      const keys = await kv.keys("discovered:*");
+      const keys = (await kv.keys("discovered:*")).filter(k => k !== DISCOVERED_INDEX_KEY);
       let cleaned = 0;
+      const removed: string[] = [];
       for (const key of keys) {
         const dc = await kv.get<DiscoveredCompany>(key);
         if (dc && (!dc.domain.includes(".") || dc.domain.includes(" "))) {
           await kv.del(key);
+          removed.push(dc.name);
           cleaned++;
         }
       }
+      await removeFromIndex(removed);
       return NextResponse.json({ cleaned, checked: keys.length });
     }
 
@@ -74,6 +92,7 @@ export async function DELETE(req: Request) {
     }
     const key = `discovered:${name.toLowerCase().replace(/\s+/g, "-")}`;
     await kv.del(key);
+    await removeFromIndex([name]);
     return NextResponse.json({ deleted: key });
   } catch (err) {
     return NextResponse.json(
