@@ -42,6 +42,13 @@ const QUERIES_VERTICAL_AI = [
   "AI copilot products winning enterprise contracts or expanding into new verticals",
 ];
 
+const TC_QUERIES: Record<Beat, string> = {
+  "Physical AI":       "robotics AI companies funding partnerships launches",
+  "AI Infrastructure": "AI infrastructure tooling companies funding product launches",
+  "AI Labs":           "AI lab foundation model research funding partnerships",
+  "Vertical AI":       "vertical AI software companies funding enterprise deals",
+};
+
 const BEAT_QUERIES: [Beat, string[]][] = [
   ["Physical AI",       QUERIES_PHYSICAL_AI],
   ["AI Infrastructure", QUERIES_AI_INFRASTRUCTURE],
@@ -72,18 +79,35 @@ async function runBeatQueries(
   seenUrls: Set<string>,
 ): Promise<ExaArticle[]> {
   const results: ExaArticle[] = [];
+
+  const allQueries: Array<{ query: string; opts: Record<string, unknown> }> = queries.map(q => ({
+    query: q,
+    opts: { type: "neural", numResults: 10, startPublishedDate: startDate, text: { maxCharacters: 400 } },
+  }));
+
+  const tcQuery = TC_QUERIES[beat];
+  if (tcQuery) {
+    allQueries.push({
+      query: tcQuery,
+      opts: {
+        type: "neural",
+        numResults: 5,
+        startPublishedDate: startDate,
+        text: { maxCharacters: 400 },
+        includeDomains: ["techcrunch.com"],
+      },
+    });
+  }
+
   await Promise.allSettled(
-    queries.map(async (query) => {
+    allQueries.map(async ({ query, opts }) => {
+      const isTc = "includeDomains" in opts;
+      const label = isTc ? `[TC] "${query.slice(0, 40)}..."` : `"${query.slice(0, 40)}..."`;
       try {
         const result = await withRetry(() =>
-          exa.searchAndContents(query, {
-            type: "neural",
-            numResults: 10,
-            startPublishedDate: startDate,
-            text: { maxCharacters: 400 },
-          })
+          exa.searchAndContents(query, opts as any)
         );
-        console.log(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - results: ${result.results.length}`);
+        console.log(`[exa] ${beat} - query: ${label} - results: ${result.results.length}`);
         for (const item of result.results) {
           if (!seenUrls.has(item.url)) {
             seenUrls.add(item.url);
@@ -93,7 +117,7 @@ async function runBeatQueries(
               title: item.title ?? "Untitled",
               url: item.url,
               publishedAt: item.publishedDate ?? new Date().toISOString(),
-              text: item.text ?? undefined,
+              text: (item as Record<string, unknown>).text as string | undefined,
               source: hostname,
               ogImage: image ?? BEAT_PLACEHOLDERS[beat],
               beatHint: beat,
@@ -101,7 +125,7 @@ async function runBeatQueries(
           }
         }
       } catch (err) {
-        console.error(`[exa] ${beat} - query: "${query.slice(0, 40)}..." - error:`, err instanceof Error ? err.message : String(err));
+        console.error(`[exa] ${beat} - query: ${label} - error:`, err instanceof Error ? err.message : String(err));
       }
     })
   );

@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
 import { getCompanyContext, getCompanyNames, COMPANIES, DOMAIN_ALIASES } from "./companies";
+import { getEffectivePriority } from "./sources";
 
 export type { Beat, DealSignalType };
 
@@ -26,6 +27,7 @@ export interface DigestArticle {
   impactReason: string;
   dealSignal: boolean;
   dealSignalType?: DealSignalType;
+  storyId: string;
 }
 
 export interface DigestSynthesis {
@@ -57,6 +59,7 @@ const ArticleSchema = z.object({
     "funding_round", "partnership_announced", "customer_win",
     "hiring_signal", "positioning_shift", "competitive_move", "product_launch",
   ]).optional(),
+  storyId: z.string(),
 });
 
 const ToolOutputSchema = z.object({ articles: z.array(ArticleSchema).default([]) });
@@ -85,8 +88,9 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
             impactReason:  { type: Type.STRING },
             dealSignal:    { type: Type.BOOLEAN },
             dealSignalType: { type: Type.STRING, enum: ["funding_round", "partnership_announced", "customer_win", "hiring_signal", "positioning_shift", "competitive_move", "product_launch"] },
+            storyId:       { type: Type.STRING },
           },
-          required: ["title", "url", "source", "beat", "category", "companyTags", "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal"],
+          required: ["title", "url", "source", "beat", "category", "companyTags", "summary", "bdRelevance", "relevanceScore", "impactScore", "impactReason", "dealSignal", "storyId"],
         } as any,
       },
     },
@@ -132,7 +136,7 @@ async function summarizeBeat(
     .slice(0, 15)
     .map(
       (a, i) =>
-        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 300)}`,
+        `[${i + 1}] Title: ${a.title}\nURL: ${a.url}\nSource: ${a.source ?? "unknown"}\nDate: ${a.publishedAt}\nExcerpt: ${(a.text ?? "").slice(0, 200)}`,
     )
     .join("\n\n---\n\n");
 
@@ -158,6 +162,7 @@ For each article:
 - impactReason: 1 sentence explaining the impactScore
 - dealSignal: true ONLY if the article describes a funding round, partnership, customer win, key BD/sales hire, positioning shift, or competitive move that opens a conversation window
 - dealSignalType: classify if dealSignal=true (funding_round | partnership_announced | customer_win | hiring_signal | positioning_shift | competitive_move | product_launch)
+- storyId: a short lowercase slug identifying the underlying story/event. If two articles cover the same event (e.g. same funding round, same product launch, same partnership), give them the SAME storyId. Format: "company-event-type" (e.g. "exa-series-c", "figure-bmw-deal", "openai-gpt5-release"). If an article covers a unique story, still give it a unique storyId.
 
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.`;
 
@@ -170,9 +175,9 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
         config: {
           tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
-          thinkingConfig: { thinkingBudget: 128 },
+          thinkingConfig: { thinkingBudget: 0 },
           temperature: 0.1,
-          maxOutputTokens: 8192,
+          maxOutputTokens: 4096,
         },
       });
       break;
@@ -221,7 +226,38 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
     };
   });
 
-  return enriched.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
+  const deduped = deduplicateBySource(enriched);
+  if (deduped.length < enriched.length) {
+    console.log(`[dedup] ${beat} - collapsed ${enriched.length} → ${deduped.length} articles`);
+  }
+
+  return deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
+}
+
+function deduplicateBySource(articles: DigestArticle[]): DigestArticle[] {
+  const groups = new Map<string, DigestArticle[]>();
+  for (const article of articles) {
+    const key = article.storyId;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(article);
+  }
+
+  const result: DigestArticle[] = [];
+  for (const [, group] of groups) {
+    if (group.length === 1) {
+      result.push(group[0]);
+      continue;
+    }
+    group.sort((a, b) => {
+      const prioA = getEffectivePriority(a.source);
+      const prioB = getEffectivePriority(b.source);
+      if (prioA !== prioB) return prioA - prioB;
+      return b.impactScore - a.impactScore;
+    });
+    console.log(`[dedup] story "${group[0].storyId}" - picked ${group[0].source} over ${group.slice(1).map(a => a.source).join(", ")}`);
+    result.push(group[0]);
+  }
+  return result;
 }
 
 const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
@@ -353,7 +389,7 @@ Return a JSON object with:
       config: {
         responseMimeType: "application/json",
         responseSchema: SYNTHESIS_RESPONSE_SCHEMA,
-        thinkingConfig: { thinkingBudget: 1024 },
+        thinkingConfig: { thinkingBudget: 512 },
         temperature: 0.4,
       },
     });

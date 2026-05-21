@@ -19,6 +19,7 @@ function mkArticle(partial: Partial<DigestArticle>): DigestArticle {
     impactScore: 5,
     impactReason: "",
     dealSignal: false,
+    storyId: "test-stub",
     ...partial,
   };
 }

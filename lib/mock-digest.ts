@@ -28,6 +28,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Validates commercial viability of embodied AI; positions PI as infrastructure play",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-1",
     },
     {
       title: "Figure AI Completes Humanoid Robot Deployment at BMW Manufacturing",
@@ -46,6 +47,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Fortune 500 manufacturing partnership confirms commercial deployment viability",
       dealSignal: true,
       dealSignalType: "customer_win",
+      storyId: "mock-story-2",
     },
     {
       title: "1X Technologies Secures $100M Investment for Humanoid Robotics",
@@ -64,6 +66,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Multiple humanoid platforms emerging; market validation for physical AI category",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-3",
     },
     // non-dealSignal articles, sorted newest → oldest
     {
@@ -82,6 +85,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 7,
       impactReason: "Demonstrates commercial viability of humanoid robots in controlled environments",
       dealSignal: false,
+      storyId: "mock-story-4",
     },
     {
       title: "Boston Dynamics Announces Commercial Availability of Atlas Humanoid",
@@ -99,6 +103,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 8,
       impactReason: "Established robotics company legitimizes humanoid market; brings manufacturing expertise",
       dealSignal: false,
+      storyId: "mock-story-5",
     },
     {
       title: "Apptronik Secures $23M Series A for Industrial Humanoid Robots",
@@ -116,6 +121,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Real customer deployments with established brands validates industrial robotics segment",
       dealSignal: false,
+      storyId: "mock-story-6",
     },
     {
       title: "Unitree Releases G1 Humanoid Robot with Advanced AI Perception",
@@ -133,6 +139,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Global humanoid robotics market consolidating; multiple viable platforms emerging",
       dealSignal: false,
+      storyId: "mock-story-7",
     },
     {
       title: "Sanctuary AI Demonstrates Humanoid Robot Performing Complex Assembly Tasks",
@@ -150,6 +157,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Progress on complex manipulation tasks expands addressable use cases for humanoids",
       dealSignal: false,
+      storyId: "mock-story-8",
     },
     {
       title: "Covariant Receives $20M Investment for AI-Powered Robotic Automation",
@@ -167,6 +175,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Focused AI approach for specific manipulation tasks; validation of vision-driven robotics",
       dealSignal: false,
+      storyId: "mock-story-9",
     },
     {
       title: "Agility Robotics Partners with DHL for Mobile Manipulation Pilots",
@@ -184,6 +193,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Major logistics company validation; opens supply chain automation market segment",
       dealSignal: false,
+      storyId: "mock-story-10",
     },
 
     // ========== AI INFRASTRUCTURE (10 articles) ==========
@@ -205,6 +215,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Enterprise focus signals infrastructure maturation; creates partnership ecosystem",
       dealSignal: true,
       dealSignalType: "product_launch",
+      storyId: "mock-story-11",
     },
     {
       title: "Replicate Launches Model API with Fine-tuning Support for Enterprise",
@@ -223,6 +234,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Fine-tuning infrastructure lowers barrier for enterprise model customization",
       dealSignal: true,
       dealSignalType: "product_launch",
+      storyId: "mock-story-12",
     },
     {
       title: "Together AI Secures $105M in Series B Funding for AI Infrastructure",
@@ -241,6 +253,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Major funding validates commercial viability of distributed AI infrastructure",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-13",
     },
     // non-dealSignal articles, sorted newest → oldest
     {
@@ -259,6 +272,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Managed service offering expands LangChain's value proposition beyond open source",
       dealSignal: false,
+      storyId: "mock-story-14",
     },
     {
       title: "Weaviate Expands Cloud Infrastructure to Support 10M+ Vector Dimensions",
@@ -276,6 +290,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Technical capability expansion addresses enterprise semantic search needs",
       dealSignal: false,
+      storyId: "mock-story-15",
     },
     {
       title: "Pinecone Releases Vector Database Optimization for Real-time Inference",
@@ -293,6 +308,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Incremental improvement in a foundational technology; enables better real-time experiences",
       dealSignal: false,
+      storyId: "mock-story-16",
     },
     {
       title: "Weights & Biases Raises $49M Series D for ML Infrastructure Platform",
@@ -310,6 +326,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Well-funded infrastructure company; establishes observability as key category",
       dealSignal: false,
+      storyId: "mock-story-17",
     },
     {
       title: "Ray AI Infrastructure Platform Adds Native GPU Sharing for Cost Optimization",
@@ -327,6 +344,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Cost optimization enables broader AI adoption; valuable for price-sensitive deployments",
       dealSignal: false,
+      storyId: "mock-story-18",
     },
     {
       title: "Exa Launches AI Infrastructure Marketplace for Model Hosting and Inference",
@@ -344,6 +362,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Marketplace approach to infrastructure distribution; potential ecosystem standard",
       dealSignal: false,
+      storyId: "mock-story-19",
     },
     {
       title: "Modal Introduces Distributed Training Framework for LLMs",
@@ -361,6 +380,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 7,
       impactReason: "Simplifies distributed training infrastructure; critical for scaling model development",
       dealSignal: false,
+      storyId: "mock-story-20",
     },
 
     // ========== AI LABS (10 articles) ==========
@@ -382,6 +402,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Scientific breakthrough with broad commercial applications; enables new biotech ventures",
       dealSignal: true,
       dealSignalType: "product_launch",
+      storyId: "mock-story-21",
     },
     {
       title: "xAI Releases Grok 2.0 with Advanced Reasoning Capabilities",
@@ -400,6 +421,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Advanced reasoning capabilities in frontier model; signals capability parity with leading labs",
       dealSignal: true,
       dealSignalType: "positioning_shift",
+      storyId: "mock-story-22",
     },
     {
       title: "Anthropic and Google Announce Strategic Partnership on AI Safety Research",
@@ -418,6 +440,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Major AI labs converging on safety research; may establish new industry standards",
       dealSignal: true,
       dealSignalType: "partnership_announced",
+      storyId: "mock-story-23",
     },
     {
       title: "Meta Releases Llama 3.5 with 405B Parameter Model",
@@ -436,6 +459,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Open source frontier model enables competitive alternatives to proprietary services",
       dealSignal: true,
       dealSignalType: "product_launch",
+      storyId: "mock-story-24",
     },
     // non-dealSignal articles, sorted newest → oldest
     {
@@ -454,6 +478,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Open source model efficiency improvements; enables cost-conscious enterprise deployments",
       dealSignal: false,
+      storyId: "mock-story-25",
     },
     {
       title: "OpenAI Releases GPT-4.5 with Improved Reasoning Capabilities",
@@ -471,6 +496,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 7,
       impactReason: "Incremental capability improvement in foundational model; raises bar for AI applications",
       dealSignal: false,
+      storyId: "mock-story-26",
     },
     {
       title: "xAI Releases Grok-2 with Advanced Multimodal Understanding",
@@ -488,6 +514,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Multimodal capabilities becoming standard; enables new application categories",
       dealSignal: false,
+      storyId: "mock-story-27",
     },
     {
       title: "Cohere Launches Command R+ Model for Enterprise Applications",
@@ -505,6 +532,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Enterprise-focused model design addresses reliability concerns in production deployments",
       dealSignal: false,
+      storyId: "mock-story-28",
     },
     {
       title: "Stability AI Releases Stable Image 3 with Higher Fidelity Image Generation",
@@ -522,6 +550,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Image generation capability improvements expand use cases in design and creative workflows",
       dealSignal: false,
+      storyId: "mock-story-29",
     },
     {
       title: "Anthropic Publishes Constitutional AI Research at ACL Conference",
@@ -539,6 +568,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 7,
       impactReason: "Alignment research progress moves toward safer production AI systems; may establish standards",
       dealSignal: false,
+      storyId: "mock-story-30",
     },
 
     // ========== VERTICAL AI (10 articles) ==========
@@ -560,6 +590,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Well-funded vertical AI company; Salesforce backing suggests integration potential",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-31",
     },
     {
       title: "Writer Raises $200M Series C for Enterprise Generative AI",
@@ -578,6 +609,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Well-funded vertical AI company signals strong market demand for enterprise generation",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-32",
     },
     {
       title: "Glean Announces Integration with Microsoft Copilot for Enterprise Search",
@@ -596,6 +628,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Strategic partnership with major platform; accelerates enterprise adoption of AI search",
       dealSignal: true,
       dealSignalType: "partnership_announced",
+      storyId: "mock-story-33",
     },
     {
       title: "Moveworks Secures $300M Funding for Enterprise IT Automation",
@@ -614,6 +647,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Billion-dollar vertical AI validates strong market for IT process automation",
       dealSignal: true,
       dealSignalType: "funding_round",
+      storyId: "mock-story-34",
     },
     {
       title: "Harvey AI Lands Goldman Sachs as Major Enterprise Customer",
@@ -632,6 +666,7 @@ export const MOCK_DIGEST: Digest = {
       impactReason: "Validates enterprise AI adoption in highly regulated industries; opens market opportunities",
       dealSignal: true,
       dealSignalType: "customer_win",
+      storyId: "mock-story-35",
     },
     // non-dealSignal articles, sorted newest → oldest
     {
@@ -650,6 +685,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "Specialized vertical AI solution for high-value insurance process; demonstrates ROI focus",
       dealSignal: false,
+      storyId: "mock-story-36",
     },
     {
       title: "Cognigy Announces AI Contact Center Solution with Sentiment Analysis",
@@ -667,6 +703,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 6,
       impactReason: "AI solution for large contact center market; addressable market of $100B+",
       dealSignal: false,
+      storyId: "mock-story-37",
     },
     {
       title: "Rogo Expands Platform to Support Additional Enterprise Workflows",
@@ -684,6 +721,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Addresses emerging enterprise need in supply chain optimization; expands addressable market",
       dealSignal: false,
+      storyId: "mock-story-38",
     },
     {
       title: "Synthesia Launches AI Video Generation for Enterprise Communications",
@@ -701,6 +739,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "Vertical AI enabling new content creation workflows; expanding addressable market",
       dealSignal: false,
+      storyId: "mock-story-39",
     },
     {
       title: "Levity AI Partners with Klaviyo for E-commerce Automation",
@@ -718,6 +757,7 @@ export const MOCK_DIGEST: Digest = {
       impactScore: 5,
       impactReason: "E-commerce platform partnership enables scaled distribution of vertical AI",
       dealSignal: false,
+      storyId: "mock-story-40",
     },
   ],
 };

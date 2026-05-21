@@ -3,6 +3,7 @@ import type { Beat } from "./companies";
 import type { DigestArticle, Digest, DigestSynthesis } from "./summarize";
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
 import { fetchAllNews, fetchBeatNews } from "./exa";
+import { getEffectivePriority } from "./sources";
 
 interface BeatCacheMetadata {
   timestamp: string;
@@ -144,6 +145,64 @@ export async function getPublishedDigest(): Promise<Digest | null> {
   return null;
 }
 
+const STOP_WORDS = new Set([
+  "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for",
+  "of", "with", "by", "from", "is", "are", "was", "were", "be", "been",
+  "its", "it", "as", "that", "this", "new", "has", "have", "had", "not",
+  "will", "can", "may", "into", "up", "out", "more", "than", "says",
+]);
+
+function titleWords(title: string): Set<string> {
+  return new Set(
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, "")
+      .split(/\s+/)
+      .filter(w => w.length > 1 && !STOP_WORDS.has(w)),
+  );
+}
+
+function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
+  let intersection = 0;
+  for (const word of a) {
+    if (b.has(word)) intersection++;
+  }
+  const union = a.size + b.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
+
+function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
+  if (articles.length <= 1) return articles;
+
+  const titleSets = articles.map(a => titleWords(a.title));
+  const removed = new Set<number>();
+
+  for (let i = 0; i < articles.length; i++) {
+    if (removed.has(i)) continue;
+    for (let j = i + 1; j < articles.length; j++) {
+      if (removed.has(j)) continue;
+      if (articles[i].beat === articles[j].beat) continue;
+      const sim = jaccardSimilarity(titleSets[i], titleSets[j]);
+      const sharedTag = articles[i].companyTags.some(t => articles[j].companyTags.includes(t));
+      if (sim >= 0.5 || (sim >= 0.35 && sharedTag)) {
+        const prioI = getEffectivePriority(articles[i].source);
+        const prioJ = getEffectivePriority(articles[j].source);
+        const loser = prioI <= prioJ ? j : i;
+        console.log(
+          `[cross-beat-dedup] "${articles[loser].title}" (${articles[loser].source}) ` +
+          `removed in favor of "${articles[loser === j ? i : j].title}" (${articles[loser === j ? i : j].source})`,
+        );
+        removed.add(loser);
+      }
+    }
+  }
+
+  if (removed.size > 0) {
+    console.log(`[cross-beat-dedup] removed ${removed.size} cross-beat duplicate(s)`);
+  }
+  return articles.filter((_, idx) => !removed.has(idx));
+}
+
 export async function aggregateDigestFromBeats(): Promise<Digest> {
   const beats: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
 
@@ -183,6 +242,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     allArticles = await generateFreshAllBeats(beats);
   }
 
+  allArticles = deduplicateAcrossBeats(allArticles);
   allArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   let synthesis: Digest["synthesis"] | undefined;
