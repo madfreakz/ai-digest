@@ -98,8 +98,9 @@ const GEMINI_MODEL = "gemini-2.5-flash";
 export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
   const now = Date.now();
   const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 48 * 60 * 60 * 1000);
-  const pool = recent.length > 0 ? recent : articles;
-  return pool.reduce<DigestArticle | undefined>((best, a) => {
+  // If no recent articles qualify, return undefined — callers fall back to articles[0] (sorted by publishedAt desc)
+  if (recent.length === 0) return undefined;
+  return recent.reduce<DigestArticle | undefined>((best, a) => {
     if (!best) return a;
     if (a.impactScore !== best.impactScore) return a.impactScore > best.impactScore ? a : best;
     return new Date(a.publishedAt).getTime() > new Date(best.publishedAt).getTime() ? a : best;
@@ -141,7 +142,7 @@ For each article:
 - category: Funding | Product | AI/Models | Partnerships | Hiring | General
 - companyTags: match to tracked names only (${companyNames}) — empty [] if none match
 - summary: 2 clear sentences
-- bdRelevance: 1 sentence on the partnership/deal angle — use the company's deal_vector as context if tracked
+- bdRelevance: 1 sentence explaining WHY this news is significant from a business/industry perspective — what does it signal about market dynamics, competitive positioning, or strategic direction? Write for a business reader who wants to understand the implication, not what to do about it. Bad: "This is relevant for BD teams." Also bad: "Reach out to X before Y." Good: "Signals that hyperscalers are shifting from raw compute capacity to developer tooling as their primary moat — compressing margins for infrastructure-only vendors."
 - relevanceScore (1–10): how immediately useful for a BD professional? (10 = call someone today)
 - impactScore (1–10): industry significance? (10 = paradigm shift, 1 = minor update)
 - impactReason: 1 sentence explaining the impactScore
@@ -159,7 +160,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
         config: {
           tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
-          thinkingConfig: { thinkingBudget: 0 },
+          thinkingConfig: { thinkingBudget: 128 },
           temperature: 0.1,
           maxOutputTokens: 8192,
         },
