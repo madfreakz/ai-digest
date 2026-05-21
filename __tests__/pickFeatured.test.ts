@@ -38,14 +38,14 @@ describe("pickFeaturedArticle", () => {
     assert.equal(pickFeaturedArticle(articles)?.title, "high");
   });
 
-  test("falls back to the full pool when nothing is within 48h", () => {
+  test("returns undefined when nothing is within 48h (callers fall back)", () => {
     const fiveDays = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
     const tenDays  = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString();
     const articles = [
       mkArticle({ title: "5d/impact6",  impactScore: 6, publishedAt: fiveDays }),
       mkArticle({ title: "10d/impact9", impactScore: 9, publishedAt: tenDays }),
     ];
-    assert.equal(pickFeaturedArticle(articles)?.title, "10d/impact9");
+    assert.equal(pickFeaturedArticle(articles), undefined);
   });
 
   test("breaks impactScore ties by recency (newer wins)", () => {
