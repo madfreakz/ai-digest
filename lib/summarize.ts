@@ -196,7 +196,7 @@ For each article:
 Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated to ${beat}.
 Skip articles primarily about: defense/military, healthcare/medical, insurance, government/govtech, education/edtech, cybersecurity, identity/access management, trust & safety, fraud prevention, mental health, adtech/advertising, or crypto/blockchain applications.
 
-Also return discoveredCompanies: for any company in these articles that is NOT in the tracked list above AND is the subject of a funding round, major partnership, or significant product launch, include it with your best guess for its domain and which beat it belongs to. Only include real AI/robotics/infrastructure startups, not Big Tech or generic terms. Skip companies in the excluded industries listed above.`;
+Also return discoveredCompanies: for any company in these articles that is NOT in the tracked list above AND is the subject of a funding round, major partnership, or significant product launch, include it. inferredDomain must be a web domain like "example.com" (not a description). suggestedBeat is which of the 4 beats it belongs to. Only include real AI/robotics/infrastructure startups, not Big Tech or generic terms. Skip companies in the excluded industries listed above.`;
 
   let response: any;
   for (let attempt = 0; attempt <= 2; attempt++) {
