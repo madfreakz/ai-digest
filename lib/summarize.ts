@@ -3,7 +3,7 @@ import type { FunctionDeclaration, Schema } from "@google/genai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
-import { getCompanyContext, getCompanyNames, COMPANIES } from "./companies";
+import { getCompanyContext, getCompanyNames, COMPANIES, DOMAIN_ALIASES } from "./companies";
 
 export type { Beat, DealSignalType };
 
@@ -224,26 +224,27 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
   return enriched.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
 }
 
-const DOMAIN_ALIASES: Record<string, string> = {
-  "google": "google.com",
-  "meta": "meta.com",
-  "microsoft": "microsoft.com",
-  "nvidia": "nvidia.com",
-  "amazon": "amazon.com",
-  "apple": "apple.com",
-  "stability ai": "stability.ai",
-  "hugging face": "huggingface.co",
-  "databricks": "databricks.com",
-  "scale ai": "scale.com",
-  "inflection": "inflection.ai",
-  "adept": "adept.ai",
-  "character ai": "character.ai",
-  "perplexity": "perplexity.ai",
-  "runway": "runwayml.com",
-  "midjourney": "midjourney.com",
-};
+const KV_CONFIGURED = !!(process.env.KV_REST_API_URL ?? process.env.KV_URL);
 
 async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
+  // 1. Try KV pre-cache first (populated by /api/admin/prefetch-logos)
+  if (KV_CONFIGURED) {
+    try {
+      const { kv } = await import("@vercel/kv");
+      const logoMap = await kv.get<Record<string, string>>("logos:company-map");
+      if (logoMap) {
+        for (const article of articles) {
+          const key = article.companyTags[0]?.toLowerCase();
+          if (key && logoMap[key]) article.companyLogoUrl = logoMap[key];
+        }
+        return; // all done — no live Clearbit calls needed
+      }
+    } catch {
+      // fall through to live fetch
+    }
+  }
+
+  // 2. Fallback: live per-article Clearbit fetch
   const companyDomainMap = new Map<string, string>();
   for (const company of COMPANIES) {
     if (company.domain) {

@@ -104,7 +104,12 @@ export default function UpdatedNewsCard({ article, index }: UpdatedNewsCardProps
               transform: isHovered ? 'scale(1.05)' : 'scale(1)',
             }}
           >
-            <Thumb ogImage={article.ogImage} companyLogoUrl={article.companyLogoUrl} label={article.beat} height={140} />
+            <Thumb
+                ogImage={article.companyTags.length === 0 ? article.ogImage : null}
+                companyLogoUrl={article.companyLogoUrl}
+                label={article.beat}
+                height={140}
+              />
           </div>
 
           {/* Content */}

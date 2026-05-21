@@ -43,8 +43,8 @@ export default function Thumb({ ogImage, companyLogoUrl, label, height }: Props)
               objectFit: companyLogoUrl ? "contain" : "cover",
               objectPosition: "center",
               display: "block",
-              backgroundColor: companyLogoUrl ? "#f3f4f6" : undefined,
-              padding: companyLogoUrl ? "8px" : undefined,
+              backgroundColor: companyLogoUrl ? "#FFFFFF" : undefined,
+              padding: companyLogoUrl ? "16px" : undefined,
             }}
             onError={() => setImgFailed(true)}
           />

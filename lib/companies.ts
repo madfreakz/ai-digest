@@ -26,6 +26,27 @@ export interface TrackedCompany {
   domain?: string;
 }
 
+// Domain aliases for companies that appear as article tags but may not be in the COMPANIES list,
+// or whose names differ from their domain. Used by logo pre-caching and live Clearbit lookup.
+export const DOMAIN_ALIASES: Record<string, string> = {
+  "google": "google.com",
+  "meta": "meta.com",
+  "microsoft": "microsoft.com",
+  "nvidia": "nvidia.com",
+  "amazon": "amazon.com",
+  "apple": "apple.com",
+  "stability ai": "stability.ai",
+  "hugging face": "huggingface.co",
+  "databricks": "databricks.com",
+  "scale ai": "scale.com",
+  "inflection": "inflection.ai",
+  "adept": "adept.ai",
+  "character ai": "character.ai",
+  "perplexity": "perplexity.ai",
+  "runway": "runwayml.com",
+  "midjourney": "midjourney.com",
+};
+
 export const COMPANIES: TrackedCompany[] = [
   // ── Physical AI — tier 1 ──────────────────────────────────────────────────
   { name: "Physical Intelligence", beat: "Physical AI", tier: 1, dealVector: ["strategic_partner", "technology_dependency"], vcBacked: ["Sequoia", "Lux Capital"],           addedAt: "2024-01-01", domain: "physicalintelligence.com" },
