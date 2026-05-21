@@ -3,8 +3,8 @@ import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
-import type { DigestArticle } from "@/lib/summarize";
-import { pickFeaturedArticle } from "@/lib/summarize";
+import type { Digest, DigestArticle } from "@/lib/summarize";
+import { getSynthesisHero } from "@/lib/summarize";
 import type { Beat } from "@/lib/companies";
 import { escapeHtml } from "@/lib/html";
 
@@ -85,14 +85,14 @@ function quickHitRow(a: DigestArticle, last: boolean): string {
 </table>`;
 }
 
-function buildEmailHtml(digest: { articles: DigestArticle[]; generatedAt: string; synthesis?: { thesis: string; emailSubject: string } }): string {
+function buildEmailHtml(digest: Digest): string {
   const date = new Date(digest.generatedAt).toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
   const sorted = [...digest.articles];
 
-  const featured = pickFeaturedArticle(sorted) ?? sorted[0];
+  const featured = getSynthesisHero(digest) ?? sorted[0];
   const quickHits = sorted.filter(a => a !== featured).slice(0, 9);
 
   const thesisBlock = digest.synthesis?.thesis

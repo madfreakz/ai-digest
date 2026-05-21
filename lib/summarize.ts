@@ -31,6 +31,7 @@ export interface DigestArticle {
 export interface DigestSynthesis {
   thesis: string;
   emailSubject: string;
+  featuredArticleUrl?: string;
 }
 
 export interface Digest {
@@ -105,6 +106,15 @@ export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | 
     if (a.impactScore !== best.impactScore) return a.impactScore > best.impactScore ? a : best;
     return new Date(a.publishedAt).getTime() > new Date(best.publishedAt).getTime() ? a : best;
   }, undefined);
+}
+
+export function getSynthesisHero(digest: Digest): DigestArticle | undefined {
+  const url = digest.synthesis?.featuredArticleUrl;
+  if (url) {
+    const match = digest.articles.find(a => a.url === url);
+    if (match) return match;
+  }
+  return pickFeaturedArticle(digest.articles);
 }
 
 async function summarizeBeat(
@@ -305,8 +315,9 @@ const SYNTHESIS_RESPONSE_SCHEMA: Schema = {
   properties: {
     thesis: { type: Type.STRING },
     emailSubject: { type: Type.STRING },
+    featuredArticleUrl: { type: Type.STRING },
   },
-  required: ["thesis", "emailSubject"],
+  required: ["thesis", "emailSubject", "featuredArticleUrl"],
 };
 
 export async function generateEditorialSynthesis(
@@ -319,7 +330,7 @@ export async function generateEditorialSynthesis(
   const articleList = top
     .map(
       (a, i) =>
-        `[${i + 1}] ${a.beat} | ${a.category} | relevance:${a.relevanceScore} impact:${a.impactScore}${a.dealSignal ? " DEAL" : ""}\nTitle: ${a.title}\nSummary: ${a.summary}\nBD angle: ${a.bdRelevance}`,
+        `[${i + 1}] ${a.beat} | ${a.category} | relevance:${a.relevanceScore} impact:${a.impactScore}${a.dealSignal ? " DEAL" : ""}\nTitle: ${a.title}\nURL: ${a.url}\nSummary: ${a.summary}\nBD angle: ${a.bdRelevance}`,
     )
     .join("\n\n");
 
@@ -330,7 +341,8 @@ ${articleList}
 
 Return a JSON object with:
 - "thesis": 2 sentences identifying the single most important story and what it signals for BD/partnerships practitioners today
-- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")`;
+- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")
+- "featuredArticleUrl": the exact URL of the article you identified as the single most important story`;
 
   try {
     const response = await ai.models.generateContent({
@@ -343,9 +355,9 @@ Return a JSON object with:
         temperature: 0.4,
       },
     });
-    const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string };
+    const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string; featuredArticleUrl?: string };
     if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
-      return { thesis: parsed.thesis, emailSubject: parsed.emailSubject };
+      return { thesis: parsed.thesis, emailSubject: parsed.emailSubject, featuredArticleUrl: parsed.featuredArticleUrl };
     }
   } catch (err) {
     console.warn("[summarize] Editorial synthesis failed:", err instanceof Error ? err.message : String(err));
