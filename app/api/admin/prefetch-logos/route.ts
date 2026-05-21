@@ -23,7 +23,12 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Build list of (companyNameLower, clearbitUrl) to verify
+  const logoDevKey = process.env.LOGO_DEV_KEY;
+  if (!logoDevKey) {
+    return NextResponse.json({ error: "LOGO_DEV_KEY not configured" }, { status: 500 });
+  }
+
+  // Build list of (companyNameLower, logoDevUrl) to verify
   const toFetch: Array<{ name: string; url: string }> = [];
   const seen = new Set<string>();
 
@@ -33,14 +38,14 @@ export async function GET(req: Request) {
     const key = company.name.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    toFetch.push({ name: key, url: `https://logo.clearbit.com/${domain}` });
+    toFetch.push({ name: key, url: `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png` });
   }
 
   // Also add DOMAIN_ALIASES entries not already covered by COMPANIES
   for (const [aliasName, domain] of Object.entries(DOMAIN_ALIASES)) {
     if (seen.has(aliasName)) continue;
     seen.add(aliasName);
-    toFetch.push({ name: aliasName, url: `https://logo.clearbit.com/${domain}` });
+    toFetch.push({ name: aliasName, url: `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png` });
   }
 
   const logoMap: Record<string, string> = {};

@@ -244,7 +244,10 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
     }
   }
 
-  // 2. Fallback: live per-article Clearbit fetch
+  // 2. Fallback: live per-article Logo.dev fetch
+  const logoDevKey = process.env.LOGO_DEV_KEY;
+  if (!logoDevKey) return; // no logo source available
+
   const companyDomainMap = new Map<string, string>();
   for (const company of COMPANIES) {
     if (company.domain) {
@@ -257,7 +260,7 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
     return companyDomainMap.get(key) ?? DOMAIN_ALIASES[key];
   }
 
-  // Concurrency control: max 5 parallel Clearbit requests
+  // Concurrency control: max 5 parallel Logo.dev requests
   const maxConcurrent = 5;
   let activeCount = 0;
   const queue: Array<() => Promise<void>> = [];
@@ -270,24 +273,22 @@ async function fetchClearbitLogos(articles: DigestArticle[]): Promise<void> {
           if (firstCompany) {
             const domain = resolveDomain(firstCompany);
             if (domain) {
-              const url = `https://logo.clearbit.com/${domain}`;
-              // Fetch with 1s timeout
+              const url = `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png`;
               const controller = new AbortController();
-              const timeoutId = setTimeout(() => controller.abort(), 1000);
+              const timeoutId = setTimeout(() => controller.abort(), 2000);
               try {
                 const response = await fetch(url, { signal: controller.signal });
                 clearTimeout(timeoutId);
                 if (response.ok) {
                   article.companyLogoUrl = url;
                 }
-              } catch (err) {
+              } catch {
                 clearTimeout(timeoutId);
-                // Clearbit fetch failed, leave companyLogoUrl undefined
               }
             }
           }
         } catch {
-          // Silently fail if anything goes wrong
+          // Silently fail
         }
 
         activeCount--;
