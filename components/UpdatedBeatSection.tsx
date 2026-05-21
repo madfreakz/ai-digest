@@ -48,11 +48,11 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-const BEATS: Beat[] = ['Physical AI', 'AI Infrastructure', 'AI Labs', 'Vertical AI'];
+const BEATS: Beat[] = ['AI Labs', 'Physical AI', 'AI Infrastructure', 'Vertical AI'];
 
 export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps) {
   const [activeBeat, setActiveBeat] = useState<Beat>(
-    () => BEATS.find(beat => articles.some(a => a.beat === beat)) ?? 'Physical AI'
+    () => BEATS.find(beat => articles.some(a => a.beat === beat)) ?? 'AI Labs'
   );
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [fadeIn, setFadeIn] = useState(true);
