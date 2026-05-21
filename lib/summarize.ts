@@ -175,7 +175,7 @@ Skip pure opinion pieces, low-signal blog posts, and articles clearly unrelated 
         config: {
           tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
-          thinkingConfig: { thinkingBudget: 0 },
+          thinkingConfig: { thinkingBudget: 128 },
           temperature: 0.1,
           maxOutputTokens: 4096,
         },
