@@ -15,6 +15,7 @@ const BEAT_CACHE_TTL = 24 * 60 * 60;
 const SYNTHESIS_KEY = "digest:synthesis";
 const SYNTHESIS_TTL = 24 * 60 * 60;
 const PUBLISHED_DIGEST_KEY = "digest:published";
+const PREVIOUS_DIGEST_KEY = "digest:previous";
 
 // Freshness sentinel — written on every successful beat refresh, lives well past
 // the cache TTL so we can distinguish "expired cache" from "never refreshed".
@@ -203,6 +204,16 @@ export async function publishFinalDigest(digest: Digest): Promise<void> {
     return;
   }
   try {
+    // Rotate the currently published digest into digest:previous, but only when
+    // the new publish is from a different UTC calendar date. This protects the
+    // previous snapshot from being clobbered by same-day re-runs (manual
+    // retries, cron retries, the second daily refresh).
+    const existing = await kv.get<Digest>(PUBLISHED_DIGEST_KEY);
+    if (existing && existing.generatedAt.slice(0, 10) !== digest.generatedAt.slice(0, 10)) {
+      await kv.set(PREVIOUS_DIGEST_KEY, existing);
+      console.log(`[beat-digests] Rotated previous digest (${existing.articles.length} articles, ${existing.generatedAt.slice(0, 10)})`);
+    }
+
     await kv.set(PUBLISHED_DIGEST_KEY, digest);
     console.log(`[beat-digests] Published final digest (${digest.articles.length} articles)`);
   } catch (err) {
@@ -223,6 +234,16 @@ export async function getPublishedDigest(): Promise<Digest | null> {
     console.error("[beat-digests] Failed to read published digest:", err instanceof Error ? err.message : String(err));
   }
   return null;
+}
+
+export async function getPreviousDigest(): Promise<Digest | null> {
+  if (!KV_CONFIGURED) return null;
+  try {
+    return (await kv.get<Digest>(PREVIOUS_DIGEST_KEY)) ?? null;
+  } catch (err) {
+    console.error("[beat-digests] Failed to read previous digest:", err instanceof Error ? err.message : String(err));
+    return null;
+  }
 }
 
 const STOP_WORDS = new Set([

@@ -28,6 +28,9 @@ export interface DigestArticle {
   dealSignal: boolean;
   dealSignalType?: DealSignalType;
   storyId: string;
+  // Transient flag set in the server component when this article is new
+  // since the previous publish. Not persisted to KV.
+  isNew?: boolean;
 }
 
 export interface DigestSynthesis {
