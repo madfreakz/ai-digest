@@ -69,7 +69,7 @@ const BEAT_QUERIES: [Beat, string[]][] = [
 // Two Exa results pointing at the same canonical article but with different
 // utm tags / trailing slashes were producing duplicate cards. See Backlog 2026-05-21.
 const TRACKING_PARAMS = /^(utm_|ref$|source$|fbclid$|gclid$|mc_(cid|eid)$)/;
-function normalizeUrl(raw: string): string {
+export function normalizeUrl(raw: string): string {
   try {
     const u = new URL(raw);
     u.hostname = u.hostname.replace(/^www\./, "").toLowerCase();

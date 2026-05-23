@@ -2,6 +2,7 @@ import { GoogleGenAI, FunctionCallingConfigMode, Type } from "@google/genai";
 import type { FunctionDeclaration, Schema } from "@google/genai";
 import { z } from "zod";
 import type { ExaArticle } from "./exa";
+import { normalizeUrl } from "./exa";
 import type { Beat, DealSignalType } from "./companies";
 import { getCompanyContext, getCompanyNames, COMPANIES, DOMAIN_ALIASES, resolveCanonicalCompanyName, DISCOVERY_BLOCKLIST } from "./companies";
 import { KV_CONFIGURED } from "./kv-config";
@@ -139,11 +140,20 @@ export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | 
   }, undefined);
 }
 
+// Hero freshness ceiling: 48h. If synthesis picked a stale article (e.g.
+// Gemini fixated on a big-number story from earlier in the week), fall back
+// to pickFeaturedArticle which enforces its own 48h window.
+const HERO_FRESHNESS_MS = 48 * 60 * 60 * 1000;
+
 export function getSynthesisHero(digest: Digest): DigestArticle | undefined {
   const url = digest.synthesis?.featuredArticleUrl;
   if (url) {
     const match = digest.articles.find(a => a.url === url);
-    if (match) return match;
+    if (match) {
+      const ageMs = Date.now() - new Date(match.publishedAt).getTime();
+      if (ageMs < HERO_FRESHNESS_MS) return match;
+      console.log(`[hero] synthesis pick "${match.title.slice(0, 60)}" is ${(ageMs / 3_600_000).toFixed(1)}h old — falling back to pickFeaturedArticle`);
+    }
   }
   return pickFeaturedArticle(digest.articles);
 }
@@ -282,15 +292,40 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
 }
 
 function deduplicateBySource(articles: DigestArticle[]): DigestArticle[] {
-  const groups = new Map<string, DigestArticle[]>();
+  // Pass 1: collapse exact-URL duplicates. Gemini sometimes returns the same
+  // article URL multiple times in one scoring call with different storyIds
+  // (e.g. "hark-series-a" + "hark-series-a-funding"). storyId grouping alone
+  // misses those — URL identity is the most reliable signal.
+  const byUrl = new Map<string, DigestArticle[]>();
   for (const article of articles) {
+    const key = normalizeUrl(article.url);
+    if (!byUrl.has(key)) byUrl.set(key, []);
+    byUrl.get(key)!.push(article);
+  }
+  const urlDeduped: DigestArticle[] = [];
+  for (const [, group] of byUrl) {
+    if (group.length === 1) {
+      urlDeduped.push(group[0]);
+      continue;
+    }
+    group.sort((a, b) => {
+      if (a.relevanceScore !== b.relevanceScore) return b.relevanceScore - a.relevanceScore;
+      return b.impactScore - a.impactScore;
+    });
+    console.log(`[dedup] URL "${group[0].url}" - ${group.length} entries with storyIds [${group.map(a => a.storyId).join(", ")}] -> kept score ${group[0].relevanceScore}/${group[0].impactScore}`);
+    urlDeduped.push(group[0]);
+  }
+
+  // Pass 2: collapse storyId duplicates from different sources (cross-source coverage).
+  const byStory = new Map<string, DigestArticle[]>();
+  for (const article of urlDeduped) {
     const key = article.storyId;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(article);
+    if (!byStory.has(key)) byStory.set(key, []);
+    byStory.get(key)!.push(article);
   }
 
   const result: DigestArticle[] = [];
-  for (const [, group] of groups) {
+  for (const [, group] of byStory) {
     if (group.length === 1) {
       result.push(group[0]);
       continue;
@@ -409,7 +444,13 @@ export async function generateEditorialSynthesis(
   if (articles.length === 0) return undefined;
 
   const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
-  const top = articles.slice(0, 10);
+  // Restrict synthesis to last 48h so Gemini doesn't anchor on a splashy older
+  // story (e.g. a $1.25B funding deal from 3 days ago) when picking the hero.
+  // Fall back to the full set only when nothing fresh qualifies.
+  const now = Date.now();
+  const fresh = articles.filter(a => now - new Date(a.publishedAt).getTime() < HERO_FRESHNESS_MS);
+  const pool = fresh.length > 0 ? fresh : articles;
+  const top = pool.slice(0, 10);
   const articleList = top
     .map(
       (a, i) =>

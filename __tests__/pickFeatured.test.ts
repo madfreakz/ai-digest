@@ -1,7 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
-import { pickFeaturedArticle } from "../lib/summarize";
-import type { DigestArticle } from "../lib/summarize";
+import { pickFeaturedArticle, getSynthesisHero } from "../lib/summarize";
+import type { Digest, DigestArticle } from "../lib/summarize";
 
 function mkArticle(partial: Partial<DigestArticle>): DigestArticle {
   return {
@@ -65,5 +65,46 @@ describe("pickFeaturedArticle", () => {
       mkArticle({ title: "recent low",      impactScore: 4,  publishedAt: new Date(now - 1_000).toISOString() }),
     ];
     assert.equal(pickFeaturedArticle(articles)?.title, "recent low");
+  });
+});
+
+describe("getSynthesisHero freshness guard", () => {
+  function mkDigest(articles: DigestArticle[], featuredUrl?: string): Digest {
+    return {
+      articles,
+      generatedAt: new Date().toISOString(),
+      synthesis: featuredUrl
+        ? { thesis: "stub", emailSubject: "stub", featuredArticleUrl: featuredUrl }
+        : undefined,
+    };
+  }
+
+  test("returns synthesis pick when it's within 48h", () => {
+    const now = Date.now();
+    const fresh = mkArticle({
+      title: "fresh",
+      url: "https://example.com/fresh",
+      publishedAt: new Date(now - 6 * 60 * 60 * 1000).toISOString(),
+    });
+    const digest = mkDigest([fresh], "https://example.com/fresh");
+    assert.equal(getSynthesisHero(digest)?.title, "fresh");
+  });
+
+  test("falls back to pickFeaturedArticle when synthesis pick is stale", () => {
+    const now = Date.now();
+    const stale = mkArticle({
+      title: "stale-synthesis-pick",
+      url: "https://example.com/stale",
+      impactScore: 10,
+      publishedAt: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    const recent = mkArticle({
+      title: "recent-fallback",
+      url: "https://example.com/recent",
+      impactScore: 6,
+      publishedAt: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
+    });
+    const digest = mkDigest([stale, recent], "https://example.com/stale");
+    assert.equal(getSynthesisHero(digest)?.title, "recent-fallback");
   });
 });
