@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
 import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } from "./summarize";
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
-import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles } from "./exa";
+import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles, normalizeUrl } from "./exa";
 import type { DiscoveredCompany } from "./companies";
 import { isBlockedDiscovery } from "./companies";
 import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
@@ -287,6 +287,39 @@ function jaccardSimilarity(a: Set<string>, b: Set<string>): number {
   return union === 0 ? 0 : intersection / union;
 }
 
+// Pre-pass: collapse exact-URL duplicates regardless of beat. The same article
+// can land in multiple beat caches because Gemini's `beat` field is an LLM
+// reassignment, not the cache-key origin — e.g. a Hark TC article surfaces in
+// 4 beat-query passes and Gemini tags all of them as "AI Labs", so they all
+// look same-beat to the title-similarity dedup below and slip through.
+function deduplicateByUrl(articles: DigestArticle[]): DigestArticle[] {
+  const byUrl = new Map<string, DigestArticle[]>();
+  for (const article of articles) {
+    const key = normalizeUrl(article.url);
+    if (!byUrl.has(key)) byUrl.set(key, []);
+    byUrl.get(key)!.push(article);
+  }
+  const result: DigestArticle[] = [];
+  for (const [, group] of byUrl) {
+    if (group.length === 1) {
+      result.push(group[0]);
+      continue;
+    }
+    group.sort((a, b) => {
+      const prioA = getEffectivePriority(a.source);
+      const prioB = getEffectivePriority(b.source);
+      if (prioA !== prioB) return prioA - prioB;
+      if (a.relevanceScore !== b.relevanceScore) return b.relevanceScore - a.relevanceScore;
+      return b.impactScore - a.impactScore;
+    });
+    console.log(
+      `[url-dedup] "${group[0].url}" - ${group.length} copies across beats [${group.map(a => a.beat).join(", ")}] -> kept beat=${group[0].beat}`,
+    );
+    result.push(group[0]);
+  }
+  return result;
+}
+
 function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
   if (articles.length <= 1) return articles;
 
@@ -358,6 +391,11 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     allArticles = await generateFreshAllBeats(beats);
   }
 
+  const beforeUrl = allArticles.length;
+  allArticles = deduplicateByUrl(allArticles);
+  if (allArticles.length < beforeUrl) {
+    console.log(`[aggregate] url-dedup collapsed ${beforeUrl} -> ${allArticles.length} articles`);
+  }
   allArticles = deduplicateAcrossBeats(allArticles);
   allArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
