@@ -240,6 +240,8 @@ export const COMPANIES: TrackedCompany[] = [
   { name: "Vapi",        beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"], vcBacked: [],                                 addedAt: "2026-05-21", domain: "vapi.ai" },
   // Vertical AI — new additions (2026-05-22)
   { name: "Pallet",      beat: "Vertical AI", tier: 1, dealVector: ["strategic_partner", "potential_customer"], vcBacked: ["General Catalyst", "Bain Capital Ventures", "Bessemer", "Activant Capital"], addedAt: "2026-05-22", domain: "pallet.com" },
+  // Vertical AI — new additions (2026-05-27)
+  { name: "Altara",      beat: "Vertical AI", tier: 2, dealVector: ["strategic_partner", "potential_customer"], vcBacked: ["Greylock", "Neo", "BoxGroup"],    addedAt: "2026-05-27", domain: "altara.co" },
 ];
 
 export function getStaticCompanyNames(beat?: Beat): string[] {
