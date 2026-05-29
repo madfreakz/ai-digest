@@ -468,24 +468,43 @@ Return a JSON object with:
 - "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")
 - "featuredArticleUrl": the exact URL of the article you identified as the single most important story`;
 
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: SYNTHESIS_RESPONSE_SCHEMA,
-        thinkingConfig: { thinkingBudget: 512 },
-        temperature: 0.4,
-      },
-    });
-    const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string; featuredArticleUrl?: string };
-    if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
-      return { thesis: parsed.thesis, emailSubject: parsed.emailSubject, featuredArticleUrl: parsed.featuredArticleUrl };
+  // gemini-3.5-flash is the most 503-prone model in this app. Retry it, then
+  // fall back to gemini-2.5-flash-lite (separate capacity pool, stays healthy
+  // during "high demand" spikes) so the daily email keeps its thesis + subject
+  // instead of silently dropping to a generic subject and heuristic hero.
+  const synthesisAttempts: Array<{ model: string; thinkingBudget?: number }> = [
+    { model: "gemini-3.5-flash", thinkingBudget: 512 },
+    { model: "gemini-3.5-flash", thinkingBudget: 512 },
+    { model: "gemini-2.5-flash-lite" },
+  ];
+  for (let i = 0; i < synthesisAttempts.length; i++) {
+    const { model, thinkingBudget } = synthesisAttempts[i];
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: SYNTHESIS_RESPONSE_SCHEMA,
+          ...(thinkingBudget ? { thinkingConfig: { thinkingBudget } } : {}),
+          temperature: 0.4,
+        },
+      });
+      const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string; featuredArticleUrl?: string };
+      if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
+        if (i > 0) console.log(`[summarize] synthesis recovered via ${model} on attempt ${i + 1}`);
+        return { thesis: parsed.thesis, emailSubject: parsed.emailSubject, featuredArticleUrl: parsed.featuredArticleUrl };
+      }
+      console.warn(`[summarize] synthesis attempt ${i + 1} (${model}) returned unusable JSON`);
+    } catch (err) {
+      console.warn(`[summarize] synthesis attempt ${i + 1} (${model}) failed:`, err instanceof Error ? err.message : String(err));
     }
-  } catch (err) {
-    console.warn("[summarize] Editorial synthesis failed:", err instanceof Error ? err.message : String(err));
+    // Brief backoff before the next attempt (not after the last).
+    if (i < synthesisAttempts.length - 1) {
+      await new Promise(r => setTimeout(r, 3000));
+    }
   }
+  console.warn("[summarize] Editorial synthesis failed after all attempts — email will use generic subject + heuristic hero");
   return undefined;
 }
 
