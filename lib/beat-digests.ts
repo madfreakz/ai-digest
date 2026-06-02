@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
 import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } from "./summarize";
-import { generateDigest as generateBeatDigest, generateEditorialSynthesis } from "./summarize";
+import { generateDigest as generateBeatDigest, generateEditorialSynthesis, pickFeaturedArticle } from "./summarize";
 import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles, normalizeUrl } from "./exa";
 import type { DiscoveredCompany } from "./companies";
 import { isBlockedDiscovery } from "./companies";
@@ -401,21 +401,34 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
 
   let synthesis: Digest["synthesis"] | undefined;
   if (allArticles.length > 0) {
+    // Freshness-first: choose the lead story deterministically, THEN synthesize
+    // the thesis + subject about it. The hero (getSynthesisHero) resolves the
+    // same featuredArticleUrl, so the hero and the editorial lead can never
+    // split. articles are already sorted newest-first, so allArticles[0] is the
+    // safe fallback when nothing is within pickFeaturedArticle's 48h window.
+    const featured = pickFeaturedArticle(allArticles) ?? allArticles[0];
     try {
       if (KV_CONFIGURED) {
         const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);
-        if (cachedSynthesis) {
+        // Reuse the cache ONLY if it was written for today's lead story.
+        // Otherwise the article set has moved on (a newer story is now the
+        // freshest high-impact pick) and the cached thesis/subject describe a
+        // stale lead — which is exactly what made the hero and top story diverge.
+        if (cachedSynthesis && cachedSynthesis.featuredArticleUrl === featured.url) {
           synthesis = cachedSynthesis;
-          console.log("[beat-digests] Synthesis cache HIT:", synthesis.emailSubject);
+          console.log("[beat-digests] Synthesis cache HIT (lead unchanged):", synthesis.emailSubject);
         } else {
-          synthesis = await generateEditorialSynthesis(allArticles);
+          if (cachedSynthesis) {
+            console.log(`[beat-digests] Synthesis cache STALE — lead changed to "${featured.title.slice(0, 60)}", regenerating`);
+          }
+          synthesis = await generateEditorialSynthesis(allArticles, featured);
           if (synthesis) {
             await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
             console.log("[beat-digests] Synthesis cached:", synthesis.emailSubject);
           }
         }
       } else {
-        synthesis = await generateEditorialSynthesis(allArticles);
+        synthesis = await generateEditorialSynthesis(allArticles, featured);
         if (synthesis) console.log("[beat-digests] Synthesis generated (no KV):", synthesis.emailSubject);
       }
     } catch (err) {

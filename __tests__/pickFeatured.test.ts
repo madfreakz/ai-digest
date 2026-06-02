@@ -68,7 +68,7 @@ describe("pickFeaturedArticle", () => {
   });
 });
 
-describe("getSynthesisHero freshness guard", () => {
+describe("getSynthesisHero (hero == editorial lead)", () => {
   function mkDigest(articles: DigestArticle[], featuredUrl?: string): Digest {
     return {
       articles,
@@ -79,7 +79,7 @@ describe("getSynthesisHero freshness guard", () => {
     };
   }
 
-  test("returns synthesis pick when it's within 48h", () => {
+  test("returns the article matching featuredArticleUrl", () => {
     const now = Date.now();
     const fresh = mkArticle({
       title: "fresh",
@@ -90,21 +90,40 @@ describe("getSynthesisHero freshness guard", () => {
     assert.equal(getSynthesisHero(digest)?.title, "fresh");
   });
 
-  test("falls back to pickFeaturedArticle when synthesis pick is stale", () => {
+  test("trusts featuredArticleUrl without re-applying a freshness gate (hero must match the thesis)", () => {
+    // The lead is chosen deterministically upstream, so the hero must resolve
+    // the SAME article the thesis describes — never silently swap to a fresher
+    // one. A freshness re-gate here is exactly what split hero from top story.
     const now = Date.now();
-    const stale = mkArticle({
-      title: "stale-synthesis-pick",
-      url: "https://example.com/stale",
-      impactScore: 10,
-      publishedAt: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    const lead = mkArticle({
+      title: "lead-from-thesis",
+      url: "https://example.com/lead",
+      impactScore: 9,
+      publishedAt: new Date(now - 40 * 60 * 60 * 1000).toISOString(), // old-ish but it IS the lead
     });
+    const fresher = mkArticle({
+      title: "fresher-but-not-the-lead",
+      url: "https://example.com/fresher",
+      impactScore: 6,
+      publishedAt: new Date(now - 1 * 60 * 60 * 1000).toISOString(),
+    });
+    const digest = mkDigest([lead, fresher], "https://example.com/lead");
+    assert.equal(getSynthesisHero(digest)?.title, "lead-from-thesis");
+  });
+
+  test("falls back to pickFeaturedArticle when featuredArticleUrl is not in the article set", () => {
+    // Regression for the 2026-06-01 divergence: a stale-cached synthesis pointed
+    // at a winbuzzer URL that had been deduped to a different source, so the hero
+    // could never match it. With the deterministic lead this can't happen, but
+    // the fallback must still stay consistent (freshest high-impact).
+    const now = Date.now();
     const recent = mkArticle({
       title: "recent-fallback",
       url: "https://example.com/recent",
       impactScore: 6,
       publishedAt: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
     });
-    const digest = mkDigest([stale, recent], "https://example.com/stale");
+    const digest = mkDigest([recent], "https://example.com/not-in-set");
     assert.equal(getSynthesisHero(digest)?.title, "recent-fallback");
   });
 });

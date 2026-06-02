@@ -140,22 +140,29 @@ export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | 
   }, undefined);
 }
 
-// Hero freshness ceiling: 48h. If synthesis picked a stale article (e.g.
-// Gemini fixated on a big-number story from earlier in the week), fall back
-// to pickFeaturedArticle which enforces its own 48h window.
+// Freshness window used when CHOOSING the lead story (pickFeaturedArticle) and
+// when scoping the synthesis context pool.
 const HERO_FRESHNESS_MS = 48 * 60 * 60 * 1000;
 
+// The lead/featured article is chosen deterministically at aggregation time
+// (pickFeaturedArticle — freshest high-impact) and the thesis + email subject
+// are written ABOUT it, with synthesis.featuredArticleUrl set to its exact URL.
+// So the hero IS the editorial lead: resolve it by that URL and return it.
+//
+// Do NOT re-apply a freshness gate here. That gate (added with the original
+// "stale hero" fix) is exactly what used to split the hero from the thesis —
+// the hero would fall back to a different article than the thesis described.
+// Freshness is already guaranteed upstream because featuredArticleUrl is set to
+// pickFeaturedArticle's pick. The fallback below only covers legacy/missing
+// synthesis and uses the same deterministic pick, so it stays consistent.
 export function getSynthesisHero(digest: Digest): DigestArticle | undefined {
   const url = digest.synthesis?.featuredArticleUrl;
   if (url) {
     const match = digest.articles.find(a => a.url === url);
-    if (match) {
-      const ageMs = Date.now() - new Date(match.publishedAt).getTime();
-      if (ageMs < HERO_FRESHNESS_MS) return match;
-      console.log(`[hero] synthesis pick "${match.title.slice(0, 60)}" is ${(ageMs / 3_600_000).toFixed(1)}h old — falling back to pickFeaturedArticle`);
-    }
+    if (match) return match;
+    console.log(`[hero] synthesis featuredArticleUrl not found in article set — falling back to pickFeaturedArticle`);
   }
-  return pickFeaturedArticle(digest.articles);
+  return pickFeaturedArticle(digest.articles) ?? digest.articles[0];
 }
 
 interface SummarizeBeatResult {
@@ -428,45 +435,59 @@ async function fetchCompanyLogos(articles: DigestArticle[]): Promise<void> {
   await Promise.all(articles.map(enqueueFetch));
 }
 
+// featuredArticleUrl is NOT returned by Gemini anymore — the lead article is
+// chosen deterministically before synthesis and we set the URL ourselves. This
+// removes the URL-mismatch class of bug (Gemini picking a source URL that later
+// gets deduped to a different source, so the hero could never match it).
 const SYNTHESIS_RESPONSE_SCHEMA: Schema = {
   type: Type.OBJECT,
   properties: {
     thesis: { type: Type.STRING },
     emailSubject: { type: Type.STRING },
-    featuredArticleUrl: { type: Type.STRING },
   },
-  required: ["thesis", "emailSubject", "featuredArticleUrl"],
+  required: ["thesis", "emailSubject"],
 };
 
+// The lead/featured article is chosen by the caller (pickFeaturedArticle —
+// freshness-first) and passed in. Gemini writes the thesis + subject ABOUT that
+// fixed lead; it no longer picks which story leads. This guarantees the hero
+// (which resolves synthesis.featuredArticleUrl) and the editorial narrative
+// always describe the same article. We set featuredArticleUrl = featured.url
+// ourselves so it always matches an article in the published set.
 export async function generateEditorialSynthesis(
   articles: DigestArticle[],
+  featured: DigestArticle,
 ): Promise<DigestSynthesis | undefined> {
-  if (articles.length === 0) return undefined;
+  if (articles.length === 0 || !featured) return undefined;
 
   const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
-  // Restrict synthesis to last 48h so Gemini doesn't anchor on a splashy older
-  // story (e.g. a $1.25B funding deal from 3 days ago) when picking the hero.
-  // Fall back to the full set only when nothing fresh qualifies.
+  // Context pool: the rest of today's fresh, high-signal stories (last 48h) so
+  // Gemini can frame the lead against the day. The lead itself is fixed and
+  // excluded from this list.
   const now = Date.now();
   const fresh = articles.filter(a => now - new Date(a.publishedAt).getTime() < HERO_FRESHNESS_MS);
-  const pool = fresh.length > 0 ? fresh : articles;
-  const top = pool.slice(0, 10);
-  const articleList = top
-    .map(
-      (a, i) =>
-        `[${i + 1}] ${a.beat} | ${a.category} | relevance:${a.relevanceScore} impact:${a.impactScore}${a.dealSignal ? " DEAL" : ""}\nTitle: ${a.title}\nURL: ${a.url}\nSummary: ${a.summary}\nBD angle: ${a.bdRelevance}`,
-    )
-    .join("\n\n");
+  const pool = (fresh.length > 0 ? fresh : articles).filter(a => a.url !== featured.url);
+  const context = pool
+    .slice(0, 9)
+    .map((a, i) => `[${i + 1}] ${a.beat} | ${a.category} | impact:${a.impactScore} | ${a.title}`)
+    .join("\n");
+
+  const lead = `${featured.beat} | ${featured.category} | relevance:${featured.relevanceScore} impact:${featured.impactScore}${featured.dealSignal ? " DEAL" : ""}
+Title: ${featured.title}
+Summary: ${featured.summary}
+BD angle: ${featured.bdRelevance}`;
 
   const prompt = `You are the editorial lead for Frontier AI Digest, a daily briefing for a BD/partnerships professional across Physical AI, AI Infrastructure, AI Labs, and Vertical AI.
 
-Today's top pre-scored articles:
-${articleList}
+TODAY'S LEAD STORY (already chosen — write about THIS one, do not pick another):
+${lead}
+
+Other stories today (context only — do NOT feature these):
+${context}
 
 Return a JSON object with:
-- "thesis": 2 sentences identifying the single most important story and what it signals for BD/partnerships practitioners today
-- "emailSubject": one punchy subject line under 60 chars — specific and concrete (e.g. "Figure raises $675M — infra race heats up")
-- "featuredArticleUrl": the exact URL of the article you identified as the single most important story`;
+- "thesis": 2 sentences on the LEAD STORY above and what it signals for BD/partnerships practitioners today. Lead with this story; do not headline any other.
+- "emailSubject": one punchy subject line under 60 chars about the LEAD STORY — specific and concrete (e.g. "Figure raises $675M — infra race heats up")`;
 
   // gemini-3.5-flash is the most 503-prone model in this app. Retry it, then
   // fall back to gemini-2.5-flash-lite (separate capacity pool, stays healthy
@@ -490,10 +511,11 @@ Return a JSON object with:
           temperature: 0.4,
         },
       });
-      const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string; featuredArticleUrl?: string };
+      const parsed = JSON.parse(response.text ?? "{}") as { thesis?: string; emailSubject?: string };
       if (typeof parsed.thesis === "string" && typeof parsed.emailSubject === "string") {
         if (i > 0) console.log(`[summarize] synthesis recovered via ${model} on attempt ${i + 1}`);
-        return { thesis: parsed.thesis, emailSubject: parsed.emailSubject, featuredArticleUrl: parsed.featuredArticleUrl };
+        // featuredArticleUrl is the deterministically-chosen lead, not Gemini's pick.
+        return { thesis: parsed.thesis, emailSubject: parsed.emailSubject, featuredArticleUrl: featured.url };
       }
       console.warn(`[summarize] synthesis attempt ${i + 1} (${model}) returned unusable JSON`);
     } catch (err) {
