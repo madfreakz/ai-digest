@@ -48,6 +48,17 @@ export function isBlockedDiscovery(name: string): boolean {
   return DISCOVERY_BLOCKLIST.has(name.toLowerCase().trim());
 }
 
+// A discovered company's inferredDomain comes from Gemini and is sometimes a
+// description ("their website") rather than a real domain. Cheap plausibility
+// gate (host.tld shape, no spaces, sane length) used both at write time and by
+// the discovered-stats readout to flag phantom-candidate discoveries.
+export function isPlausibleDomain(d: string): boolean {
+  if (!d) return false;
+  const s = d.trim().toLowerCase();
+  if (s.includes(" ") || s.length < 4 || s.length > 80) return false;
+  return /^([a-z0-9-]+\.)+[a-z]{2,}$/.test(s);
+}
+
 // Domain aliases for companies that appear as article tags but may not be in the COMPANIES list,
 // or whose names differ from their domain. Used by logo pre-caching and live Clearbit lookup.
 export const DOMAIN_ALIASES: Record<string, string> = {

@@ -4,7 +4,7 @@ import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } 
 import { generateDigest as generateBeatDigest, generateEditorialSynthesis, pickFeaturedArticle } from "./summarize";
 import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles, normalizeUrl } from "./exa";
 import type { DiscoveredCompany } from "./companies";
-import { isBlockedDiscovery } from "./companies";
+import { isBlockedDiscovery, isPlausibleDomain } from "./companies";
 import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
 import { getEffectivePriority } from "./sources";
 
@@ -80,10 +80,14 @@ async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): 
   if (filtered.length === 0) return;
   const now = new Date().toISOString();
   const addedNames: string[] = [];
+  let phantomCandidates = 0; // first-seen discoveries whose inferredDomain is implausible
   for (const dc of filtered) {
     const key = `discovered:${dc.name.toLowerCase().replace(/\s+/g, "-")}`;
     try {
       const existing = await kv.get<DiscoveredCompany>(key);
+      const domainOK = isPlausibleDomain(dc.inferredDomain);
+      if (!existing && !domainOK) phantomCandidates++;
+      console.log(`[discovered:quality] ${dc.name} | ${existing ? "recurring" : "new"} | domainOK=${domainOK} | ${dc.suggestedBeat}`);
       if (existing) {
         const newDomain = dc.inferredDomain.includes(".") && !dc.inferredDomain.includes(" ")
           ? dc.inferredDomain : existing.domain;
@@ -112,7 +116,7 @@ async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): 
       console.warn("[discovered] Failed to update index:", err instanceof Error ? err.message : String(err));
     }
   }
-  console.log(`[discovered] Stored ${filtered.length} discovered companies`);
+  console.log(`[discovered] Stored ${filtered.length} discovered companies (${phantomCandidates} phantom-candidate, implausible domain)`);
 }
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
