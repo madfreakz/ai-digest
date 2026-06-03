@@ -212,7 +212,12 @@ export async function GET(req: Request) {
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
-    const subject = digest.synthesis?.emailSubject ?? `Frontier AI Digest — ${date}`;
+    // emailSubject is model-generated from web-derived content. It becomes an
+    // email header (not HTML-escaped body), so collapse any CR/LF (header
+    // injection) and cap the length before handing it to Resend.
+    const rawSubject = digest.synthesis?.emailSubject ?? `Frontier AI Digest — ${date}`;
+    const subject = rawSubject.replace(/[\r\n]+/g, " ").trim().slice(0, 200)
+      || `Frontier AI Digest — ${date}`;
 
     const { data, error } = await resend.emails.send({
       from:    "Frontier AI Digest <onboarding@resend.dev>",
