@@ -70,7 +70,8 @@ Environment (`.env.local`):
 
 | Var | Purpose |
 |-----|---------|
-| `GEMINI_API_KEY` | Scoring + synthesis |
+| `GOOGLE_API_KEY` | Per-beat scoring + discovery |
+| `GOOGLE_API_KEY_SYNTHESIS` | Editorial synthesis (own key for usage tracking; falls back to `GOOGLE_API_KEY`) |
 | `EXA_API_KEY` | Retrieval |
 | `RESEND_API_KEY` | Daily email |
 | `CRON_SECRET` | Guards the cron routes |

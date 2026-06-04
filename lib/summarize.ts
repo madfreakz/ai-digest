@@ -561,7 +561,12 @@ export async function generateEditorialSynthesis(
 ): Promise<DigestSynthesis | undefined> {
   if (articles.length === 0 || !featured) return undefined;
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
+  // Editorial synthesis runs on its own Gemini key so its usage is tracked
+  // separately from the per-beat scoring workhorse. Falls back to the scoring
+  // key (GOOGLE_API_KEY) if the dedicated synthesis key isn't provisioned yet.
+  const ai = new GoogleGenAI({
+    apiKey: (process.env.GOOGLE_API_KEY_SYNTHESIS ?? process.env.GOOGLE_API_KEY)!,
+  });
   // Context pool: the rest of today's fresh, high-signal stories (last 48h) so
   // Gemini can frame the lead against the day. The lead itself is fixed and
   // excluded from this list.
@@ -646,6 +651,8 @@ export interface GenerateDigestResult {
 }
 
 export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat): Promise<GenerateDigestResult> {
+  // Per-beat scoring + discovery (the daily workhorse) runs on GOOGLE_API_KEY.
+  // Editorial synthesis uses a separate key; see generateEditorialSynthesis.
   const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY! });
   const filtered = beatFilter
     ? articles.filter(a => a.beatHint === beatFilter)
