@@ -127,6 +127,14 @@ const RECORD_ARTICLES_TOOL: FunctionDeclaration = {
 };
 
 const GEMINI_MODEL = "gemini-2.5-flash";
+// flash-lite runs on a SEPARATE capacity pool and stays healthy during the
+// intermittent 503 "high demand" spikes that hit gemini-2.5-flash (and 3.5)
+// during the 2–5am UTC beat crons. It is the scoring fallback. Caveat: lite
+// REJECTS thinkingBudget < 512 for function calls (flash uses 128), so we bump
+// the budget when switching to it. See feedback_gemini_503_resilience + the
+// Engineering-Playbook "Gemini" section.
+const SCORING_FALLBACK_MODEL = "gemini-2.5-flash-lite";
+const SCORING_LITE_THINKING_BUDGET = 512;
 
 // ── Prompt-injection hardening ────────────────────────────────────────────────
 // Exa returns real, UNTRUSTED web-page content in `text` (and `title`). A page
@@ -220,11 +228,12 @@ interface SummarizeBeatResult {
   discoveredCompanies: DiscoveredCompanyResult[];
 }
 
-async function summarizeBeat(
+export async function summarizeBeat(
   beat: Beat,
   articles: ExaArticle[],
   ai: GoogleGenAI,
   modelName: string,
+  opts: { baseDelayMs?: number } = {},
 ): Promise<SummarizeBeatResult> {
   if (articles.length === 0) return { articles: [], discoveredCompanies: [] };
 
@@ -281,59 +290,80 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
       : ""
   }`;
 
-  let response: any;
-  for (let attempt = 0; attempt <= 2; attempt++) {
+  // Scoring resilience: gemini-2.5-flash throws intermittent 503 "high demand"
+  // during the 2–5am UTC beat crons. Retry it patiently (escalating backoff to
+  // ride out a sustained spike), then fall back to flash-lite on its separate
+  // capacity pool. Soft failures (no function call / malformed args) are retried
+  // too. On TOTAL exhaustion we THROW — never return empty — because an empty
+  // return would let cacheBeatArticles overwrite a good beat cache with [] AND
+  // stamp the beat as freshly succeeded, silently serving an empty beat for 24h
+  // (the stale-beat detector is defeated by the false freshness stamp). Throwing
+  // makes the caller preserve the previous cache. See feedback_gemini_503_resilience.
+  const baseDelayMs = opts.baseDelayMs ?? 5000;
+  const scoringAttempts: Array<{ model: string; thinkingBudget: number }> = [
+    { model: modelName, thinkingBudget: 128 },
+    { model: modelName, thinkingBudget: 128 },
+    { model: modelName, thinkingBudget: 128 },
+    { model: SCORING_FALLBACK_MODEL, thinkingBudget: SCORING_LITE_THINKING_BUDGET },
+  ];
+
+  let parsed: z.infer<typeof ToolOutputSchema> | undefined;
+  let lastError: unknown;
+  for (let i = 0; i < scoringAttempts.length; i++) {
+    const { model, thinkingBudget } = scoringAttempts[i];
     try {
-      response = await ai.models.generateContent({
-        model: modelName,
+      const response = await ai.models.generateContent({
+        model,
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         config: {
           systemInstruction: SCORING_SYSTEM_INSTRUCTION,
           tools: [{ functionDeclarations: [RECORD_ARTICLES_TOOL] }],
           toolConfig: { functionCallingConfig: { mode: FunctionCallingConfigMode.ANY } },
-          thinkingConfig: { thinkingBudget: 128 },
+          thinkingConfig: { thinkingBudget },
           temperature: 0.1,
           maxOutputTokens: 8192,
         },
       });
-      break;
-    } catch (err: unknown) {
-      if (attempt < 2) {
-        console.warn(`Error on ${beat}, retrying…`);
-        await new Promise(r => setTimeout(r, 5000));
+
+      const functionCall = response.functionCalls?.[0];
+      if (!functionCall || functionCall.name !== "record_articles") {
+        lastError = new Error("no record_articles function call returned");
+        console.warn(`[gemini] ${beat} - no function call (attempt ${i + 1}/${scoringAttempts.length}, ${model})`);
       } else {
-        throw err;
+        const candidate = ToolOutputSchema.safeParse(functionCall.args);
+        if (!candidate.success) {
+          lastError = new Error(`zod validation failed: ${candidate.error.message}`);
+          console.warn(`[gemini] ${beat} - malformed args (attempt ${i + 1}/${scoringAttempts.length}, ${model}):`, candidate.error.message);
+        } else {
+          parsed = candidate.data;
+          if (i > 0) console.log(`[gemini] ${beat} - scoring recovered via ${model} on attempt ${i + 1}`);
+          break;
+        }
       }
+    } catch (err: unknown) {
+      lastError = err;
+      console.warn(`[gemini] ${beat} - scoring attempt ${i + 1}/${scoringAttempts.length} (${model}) failed:`, err instanceof Error ? err.message : String(err));
+    }
+    // Escalating backoff before the next attempt (no wait after the final one).
+    if (i < scoringAttempts.length - 1 && baseDelayMs > 0) {
+      await new Promise(r => setTimeout(r, baseDelayMs * (i + 1)));
     }
   }
-  if (!response) {
-    console.error(`[gemini] ${beat} - No response`);
-    return { articles: [], discoveredCompanies: [] };
+
+  if (!parsed) {
+    // Total failure (503 across flash + lite, or persistently malformed output).
+    // Propagate so cacheBeatArticles preserves the previous cache instead of
+    // overwriting it with an empty result + a false freshness stamp.
+    throw lastError instanceof Error
+      ? lastError
+      : new Error(`[gemini] ${beat} - scoring failed after ${scoringAttempts.length} attempts`);
   }
 
-  const functionCall = response.functionCalls?.[0];
-  if (!functionCall || functionCall.name !== "record_articles") {
-    console.error(`[gemini] ${beat} - No function call returned`, {
-      hasFunctionCall: !!functionCall,
-      name: functionCall?.name,
-      allCalls: response.functionCalls,
-    });
-    return { articles: [], discoveredCompanies: [] };
-  }
-
-  console.log(`[gemini] ${beat} - function call received with ${functionCall.args.articles?.length || 0} articles, ${functionCall.args.discoveredCompanies?.length || 0} discovered`);
-
-  const parsed = ToolOutputSchema.safeParse(functionCall.args);
-  if (!parsed.success) {
-    console.error(`[gemini] ${beat} - Zod validation failed:`, parsed.error.message);
-    return { articles: [], discoveredCompanies: [] };
-  }
-
-  console.log(`[gemini] ${beat} - parsed ${parsed.data.articles.length} articles, ${parsed.data.discoveredCompanies.length} discovered companies`);
+  console.log(`[gemini] ${beat} - parsed ${parsed.articles.length} articles, ${parsed.discoveredCompanies.length} discovered companies`);
 
   const exaByUrl = new Map(articles.map(a => [a.url, a]));
 
-  const enriched = parsed.data.articles
+  const enriched = parsed.articles
     .map(a => {
       const exa = exaByUrl.get(a.url);
       const canonicalTags = Array.from(
@@ -365,7 +395,7 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
 
   return {
     articles: deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6)),
-    discoveredCompanies: parsed.data.discoveredCompanies,
+    discoveredCompanies: parsed.discoveredCompanies,
   };
 }
 
@@ -631,6 +661,7 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
   const beatEntries = Array.from(groups.entries());
   const allArticles: DigestArticle[] = [];
   const allDiscovered: DiscoveredCompanyResult[] = [];
+  let failedBeats = 0;
   for (const [beat, items] of beatEntries) {
     try {
       const result = await summarizeBeat(beat, items, ai, GEMINI_MODEL);
@@ -639,7 +670,17 @@ export async function generateDigest(articles: ExaArticle[], beatFilter?: Beat):
       allDiscovered.push(...result.discoveredCompanies);
     } catch (err) {
       console.error(`Beat summarization failed (${beat}):`, err);
+      failedBeats++;
     }
+  }
+
+  // If every beat we attempted hard-failed (for the per-beat cron path that's the
+  // single requested beat), propagate so cacheBeatArticles preserves the previous
+  // cache instead of overwriting it with an empty result + stamping freshness as
+  // a success. A beat that legitimately scored 0 articles does NOT throw, so a
+  // genuine quiet-news day still caches an empty beat correctly.
+  if (beatEntries.length > 0 && failedBeats === beatEntries.length) {
+    throw new Error(`All ${failedBeats} beat(s) failed during scoring`);
   }
 
   await fetchCompanyLogos(allArticles);

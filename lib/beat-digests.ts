@@ -162,6 +162,13 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
 
     return beatDigest.articles;
   } catch (err) {
+    // LOAD-BEARING: generateBeatDigest throws when scoring totally fails (e.g. a
+    // Gemini 503 spike across flash + flash-lite). The throw lands HERE, BEFORE
+    // the KV write above, so the previous good beat cache is left intact and the
+    // freshness sentinel is NOT stamped — the stale-beat detector in
+    // aggregateDigestFromBeats will then correctly flag the overdue beat. Do NOT
+    // "recover" by writing beatDigest.articles ([]) into the cache here, and do
+    // NOT move the KV write below this catch. See feedback_gemini_503_resilience.
     console.error(`[beat-digests] Failed to fetch/generate articles for ${beat}:`, err);
     return [];
   }
