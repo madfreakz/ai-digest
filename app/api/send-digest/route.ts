@@ -85,7 +85,21 @@ function quickHitRow(a: DigestArticle, last: boolean): string {
 </table>`;
 }
 
-function buildEmailHtml(digest: Digest): string {
+// Renders only when a beat is overdue (see getBeatFreshness). On normal days
+// staleBeats is empty and the email is byte-for-byte unchanged.
+function staleWarningBanner(staleBeats: string[]): string {
+  if (staleBeats.length === 0) return "";
+  const list = staleBeats.map(escapeHtml).join(", ");
+  const plural = staleBeats.length > 1 ? "those beats" : "that beat";
+  return `
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;border-collapse:collapse;">
+  <tr><td style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:6px;padding:10px 14px;">
+    <p style="color:#92400E;font-size:12px;line-height:1.55;margin:0;">⚠️ Some beats didn't refresh in time: <strong>${list}</strong>. Today's digest may be missing recent stories from ${plural}.</p>
+  </td></tr>
+</table>`;
+}
+
+function buildEmailHtml(digest: Digest, staleBeats: string[] = []): string {
   const date = new Date(digest.generatedAt).toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
@@ -135,6 +149,9 @@ function buildEmailHtml(digest: Digest): string {
           <!-- Header -->
           <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">Frontier AI Digest</h1>
           <p style="color:${TEXT_LOW};font-size:12px;margin:0 0 28px;">${date}</p>
+
+          <!-- Stale-beat warning (renders only when a beat is overdue) -->
+          ${staleWarningBanner(staleBeats)}
 
           <!-- Editor's thesis -->
           ${thesisBlock}
@@ -192,7 +209,7 @@ export async function GET(req: Request) {
       } catch {}
     }
 
-    const { aggregateDigestFromBeats, publishFinalDigest } = await import("@/lib/beat-digests");
+    const { aggregateDigestFromBeats, publishFinalDigest, getBeatFreshness } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();
     if (!digest || digest.articles.length === 0) {
       console.error("[send-digest] No articles in digest — check beat caches or KV provisioning");
@@ -208,7 +225,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, published: true, emailSent: false, articleCount: digest.articles.length });
     }
 
-    const html = buildEmailHtml(digest);
+    const staleBeats = (await getBeatFreshness()).filter(f => f.stale).map(f => f.beat);
+    const html = buildEmailHtml(digest, staleBeats);
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });

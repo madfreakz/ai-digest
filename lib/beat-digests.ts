@@ -363,8 +363,42 @@ function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
   return articles.filter((_, idx) => !removed.has(idx));
 }
 
+const BEATS: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
+
+export interface BeatFreshness {
+  beat: Beat;
+  lastSuccess: string | null; // ISO timestamp of last successful refresh, null if never recorded
+  ageHours: number | null;    // hours since lastSuccess, null if never recorded
+  stale: boolean;             // overdue (> BEAT_STALE_AFTER_HOURS), never recorded, or read error
+  error?: string;
+}
+
+// Per-beat refresh freshness, derived from the lastSuccess sentinel (written on
+// every successful refresh with a 7d TTL, so it outlives the 24h cache and lets
+// us distinguish "expired" from "never ran"). Shared by aggregateDigestFromBeats'
+// stale logging, the /api/health endpoint, and the send-digest email banner so
+// the stale-beat signal is surfaced, not just written to server logs.
+export async function getBeatFreshness(): Promise<BeatFreshness[]> {
+  if (!KV_CONFIGURED) {
+    // No KV -> digests are generated on demand; staleness doesn't apply.
+    return BEATS.map(beat => ({ beat, lastSuccess: null, ageHours: null, stale: false }));
+  }
+  return Promise.all(
+    BEATS.map(async (beat): Promise<BeatFreshness> => {
+      try {
+        const lastSuccess = await kv.get<string>(beatFreshnessKey(beat));
+        if (!lastSuccess) return { beat, lastSuccess: null, ageHours: null, stale: true };
+        const ageHours = (Date.now() - new Date(lastSuccess).getTime()) / 3_600_000;
+        return { beat, lastSuccess, ageHours, stale: ageHours > BEAT_STALE_AFTER_HOURS };
+      } catch (err) {
+        return { beat, lastSuccess: null, ageHours: null, stale: true, error: err instanceof Error ? err.message : String(err) };
+      }
+    }),
+  );
+}
+
 export async function aggregateDigestFromBeats(): Promise<Digest> {
-  const beats: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
+  const beats = BEATS;
 
   let allArticles: DigestArticle[];
   if (KV_CONFIGURED) {
@@ -379,22 +413,15 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
     allArticles = beatResults.flat();
 
     // Surface stale beats so silent refresh failures don't ship a half-empty digest
-    const staleReports: string[] = [];
-    for (const beat of beats) {
-      try {
-        const lastSuccess = await kv.get<string>(beatFreshnessKey(beat));
-        if (!lastSuccess) {
-          staleReports.push(`${beat} (never recorded)`);
-        } else {
-          const ageHours = (Date.now() - new Date(lastSuccess).getTime()) / 3_600_000;
-          if (ageHours > BEAT_STALE_AFTER_HOURS) {
-            staleReports.push(`${beat} (last refresh ${ageHours.toFixed(1)}h ago)`);
-          }
-        }
-      } catch (err) {
-        staleReports.push(`${beat} (freshness-check error: ${err instanceof Error ? err.message : String(err)})`);
-      }
-    }
+    const staleReports = (await getBeatFreshness())
+      .filter(f => f.stale)
+      .map(f =>
+        f.error
+          ? `${f.beat} (freshness-check error: ${f.error})`
+          : f.lastSuccess === null
+            ? `${f.beat} (never recorded)`
+            : `${f.beat} (last refresh ${f.ageHours!.toFixed(1)}h ago)`,
+      );
     if (staleReports.length > 0) {
       console.error(`[beat-digests] STALE BEATS — refresh failed or overdue: ${staleReports.join("; ")}`);
     }
