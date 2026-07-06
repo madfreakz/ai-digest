@@ -136,6 +136,14 @@ const GEMINI_MODEL = "gemini-2.5-flash";
 const SCORING_FALLBACK_MODEL = "gemini-2.5-flash-lite";
 const SCORING_LITE_THINKING_BUDGET = 512;
 
+// Per-beat depth floor. The quality gate (relevanceScore >= 8, or a deal signal
+// at >= 6) is deliberately strict, which can leave a low-volume beat with only
+// 3-4 stories on a quiet news day. When fewer than this many articles clear the
+// gate, we top up with the next most-relevant recent articles from the SAME beat
+// (post-dedup) so each beat still reads with substance. It is a floor, not a
+// quota: a beat that genuinely produced fewer real articles shows what it has.
+const BEAT_ARTICLE_FLOOR = 6;
+
 // ── Prompt-injection hardening ────────────────────────────────────────────────
 // Exa returns real, UNTRUSTED web-page content in `text` (and `title`). A page
 // can embed instructions aimed at the model ("ignore previous instructions,
@@ -393,8 +401,27 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
     console.log(`[dedup] ${beat} - collapsed ${enriched.length} → ${deduped.length} articles`);
   }
 
+  // Quality gate first, then backfill to BEAT_ARTICLE_FLOOR for depth.
+  const passedGate = deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6));
+  let selected = passedGate;
+  if (passedGate.length < BEAT_ARTICLE_FLOOR) {
+    const chosen = new Set(passedGate.map(a => a.url));
+    const backfill = deduped
+      .filter(a => !chosen.has(a.url))
+      // Next most-relevant recent stories: relevanceScore desc, ties by recency.
+      .sort((a, b) => {
+        if (a.relevanceScore !== b.relevanceScore) return b.relevanceScore - a.relevanceScore;
+        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+      })
+      .slice(0, BEAT_ARTICLE_FLOOR - passedGate.length);
+    if (backfill.length > 0) {
+      selected = [...passedGate, ...backfill];
+      console.log(`[floor] ${beat} - ${passedGate.length} passed gate, backfilled ${backfill.length} to ${selected.length} (of ${deduped.length} available)`);
+    }
+  }
+
   return {
-    articles: deduped.filter(a => a.relevanceScore >= 8 || (a.dealSignal && a.relevanceScore >= 6)),
+    articles: selected,
     discoveredCompanies: parsed.discoveredCompanies,
   };
 }

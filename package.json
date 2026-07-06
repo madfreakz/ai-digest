@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --import tsx --test __tests__/html.test.ts __tests__/pickFeatured.test.ts __tests__/summarize.test.ts __tests__/companyResolve.test.ts __tests__/sanitize.test.ts __tests__/summarizeResilience.test.ts"
+    "test": "node --import tsx --test __tests__/html.test.ts __tests__/pickFeatured.test.ts __tests__/summarize.test.ts __tests__/companyResolve.test.ts __tests__/sanitize.test.ts __tests__/summarizeResilience.test.ts __tests__/beatFloor.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
