@@ -58,7 +58,7 @@ const VC_DOMAINS = [
   "menlovc.com", "bvp.com", "sparkcapital.com",
 ];
 
-const BEAT_QUERIES: [Beat, string[]][] = [
+export const BEAT_QUERIES: [Beat, string[]][] = [
   ["Physical AI",       QUERIES_PHYSICAL_AI],
   ["AI Infrastructure", QUERIES_AI_INFRASTRUCTURE],
   ["AI Labs",           QUERIES_AI_LABS],
