@@ -24,9 +24,12 @@ export async function GET(req: Request) {
   if (!cronSecret) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
-  const { searchParams } = new URL(req.url);
-  const secret = searchParams.get("secret") ?? req.headers.get("authorization")?.replace("Bearer ", "");
-  if (secret !== cronSecret) {
+  // Header-only, matching every other route. The ?secret= query fallback that
+  // used to be accepted here put CRON_SECRET into Vercel access logs, browser
+  // history and outbound Referer headers — and it is the same secret that
+  // authorizes the cron routes and this route's DELETE. Do not reintroduce it.
+  const auth = req.headers.get("authorization")?.replace("Bearer ", "");
+  if (auth !== cronSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -49,10 +52,8 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ companies, total: companies.length });
   } catch (err) {
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : String(err) },
-      { status: 500 },
-    );
+    console.error("[admin/discovered-companies] GET failed:", err);
+    return NextResponse.json({ error: "Failed to list discovered companies" }, { status: 500 });
   }
 }
 
