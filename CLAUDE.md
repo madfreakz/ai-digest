@@ -9,6 +9,8 @@ If an issue is already tracked there, reference it instead of reinvestigating.
 
 **For backend/pipeline work:** `~/Documents/Obsidian Vault/Projects/Frontier AI Digest/Engineering-Playbook.md`
 
+**Before touching ANY Gemini call:** `~/Documents/Obsidian Vault/Knowledge/Engineering/gemini-production-rules.md` — the rules that apply to every Gemini app, not just this one (output-token budgets sized to worst-case output, thinking-budget floors per model tier, throw-don't-return-empty, fencing untrusted input).
+
 **For recent changes:** `~/Documents/Obsidian Vault/Projects/Frontier AI Digest/Log.md` (last 80 lines)
 
 Present backlog highlights and ask what to work on.
