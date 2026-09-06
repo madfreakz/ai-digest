@@ -1,0 +1,106 @@
+
+A/B: Parallel(base) vs Exa(neural) — window since 2026-05-28
+
+
+=== Physical AI ===
+[exa] Physical AI "humanoid robotics companies raising capital ..." -> 10
+[exa] Physical AI "embodied AI and physical robotics enterprise..." -> 10
+[exa] Physical AI "robotics company product launches, competiti..." -> 10
+[parallel] Physical AI "humanoid robotics companies raising capital ..." -> 0 raw, kept 0 in-window
+[parallel] Physical AI "embodied AI and physical robotics enterprise..." -> 20 raw, kept 10 in-window
+[parallel] Physical AI "robotics company product launches, competiti..." -> 10 raw, kept 10 in-window
+[gemini] Physical AI - function call received with 15 articles, 10 discovered
+[gemini] Physical AI - parsed 15 articles, 10 discovered companies
+[dedup] story "unitree-ipo-approval" - picked humanoidsdaily.com over robotsbeat.com
+[dedup] Physical AI - collapsed 15 → 14 articles
+[judge] Physical AI chunk 1/4 (15 arts) -> 13 digest-worthy
+[gemini] Physical AI - function call received with 15 articles, 8 discovered
+[gemini] Physical AI - parsed 15 articles, 8 discovered companies
+[dedup] story "nvidia-unitree-partnership" - picked financialexpress.com over technode.global, straitstimes.com
+[dedup] story "pudu-d7-product-launch" - picked prnewswire.com over theaiinsider.tech
+[dedup] Physical AI - collapsed 15 → 12 articles
+[judge] Physical AI chunk 2/4 (15 arts) -> 9 digest-worthy
+[gemini] Physical AI - function call received with 15 articles, 3 discovered
+[gemini] Physical AI - parsed 15 articles, 3 discovered companies
+[dedup] story "openai-robotics-hiring-push" - picked startupfortune.com over moomoo.com, linkedin.com, facebook.com, reddit.com
+[dedup] Physical AI - collapsed 15 → 11 articles
+[judge] Physical AI chunk 3/4 (15 arts) -> 6 digest-worthy
+[gemini] Physical AI - function call received with 1 articles, 1 discovered
+[gemini] Physical AI - parsed 1 articles, 1 discovered companies
+[judge] Physical AI chunk 4/4 (1 arts) -> 1 digest-worthy
+
+=== AI Infrastructure ===
+[exa] AI Infrastructure "AI developer infrastructure and tooling comp..." -> 10
+[exa] AI Infrastructure "vector databases, LLM observability, and ML ..." -> 10
+[exa] AI Infrastructure "AI compute and cloud infrastructure companie..." -> 10
+[parallel] AI Infrastructure "AI developer infrastructure and tooling comp..." -> 10 raw, kept 3 in-window
+[parallel] AI Infrastructure "vector databases, LLM observability, and ML ..." -> 20 raw, kept 10 in-window
+[parallel] AI Infrastructure "AI compute and cloud infrastructure companie..." -> 10 raw, kept 9 in-window
+Error on AI Infrastructure, retrying…
+[gemini] AI Infrastructure - function call received with 15 articles, 5 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 5 discovered companies
+[dedup] story "factorial-series-d" - picked tech.eu over prnewswire.co.uk
+[dedup] story "reactor-stealth-launch-funding" - picked lsvp.com over prnewswire.com, prnewswire.com
+[dedup] AI Infrastructure - collapsed 15 → 12 articles
+[judge] AI Infrastructure chunk 1/4 (15 arts) -> 10 digest-worthy
+[gemini] AI Infrastructure - function call received with 15 articles, 11 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 11 discovered companies
+[dedup] story "mistral-vastdata-nvidia-partnership" - picked storagenewsletter.com over vastdata.com
+[dedup] AI Infrastructure - collapsed 15 → 14 articles
+[judge] AI Infrastructure chunk 2/4 (15 arts) -> 13 digest-worthy
+[gemini] AI Infrastructure - function call received with 15 articles, 10 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 10 discovered companies
+[judge] AI Infrastructure chunk 3/4 (15 arts) -> 9 digest-worthy
+[gemini] AI Infrastructure - function call received with 5 articles, 3 discovered
+[gemini] AI Infrastructure - parsed 5 articles, 3 discovered companies
+[judge] AI Infrastructure chunk 4/4 (5 arts) -> 3 digest-worthy
+
+=== AI Labs ===
+[exa] AI Labs "foundation model laboratories releasing new ..." -> 9
+[exa] AI Labs "AI research lab funding rounds, valuations, ..." -> 10
+[exa] AI Labs "AI safety and alignment research announcemen..." -> 10
+[parallel] AI Labs "foundation model laboratories releasing new ..." -> 10 raw, kept 10 in-window
+[parallel] AI Labs "AI research lab funding rounds, valuations, ..." -> 10 raw, kept 9 in-window
+[parallel] AI Labs "AI safety and alignment research announcemen..." -> 20 raw, kept 10 in-window
+Error on AI Labs, retrying…
+Error on AI Labs, retrying…
+[gemini] AI Labs - function call received with 15 articles, 1 discovered
+[gemini] AI Labs - parsed 15 articles, 1 discovered companies
+[dedup] story "minimax-m3-launch" - picked marktechpost.com over minimax.io
+[dedup] story "nvidia-cosmos-3-launch" - picked blogs.nvidia.com over huggingface.co
+[dedup] story "anthropic-series-h" - picked techcrunch.com over aismasher.com, byteiota.com, techfundingnews.com, singularity.kiwi, aichatdaily.com
+[dedup] AI Labs - collapsed 15 → 8 articles
+[judge] AI Labs chunk 1/4 (15 arts) -> 7 digest-worthy
+[gemini] AI Labs - function call received with 15 articles, 3 discovered
+[gemini] AI Labs - parsed 15 articles, 3 discovered companies
+[dedup] story "anthropic-valuation-raise" - picked techstartups.com over aiweekly.co, cryptobriefing.com
+[dedup] story "australian-ai-safety-institute-hiring" - picked abc.net.au over thebusinessinvestor.co.uk, completeaitraining.com
+[dedup] story "cais-devin-kim-hiring" - picked lasvegassun.com over briefglance.com
+[dedup] AI Labs - collapsed 15 → 10 articles
+[judge] AI Labs chunk 2/4 (15 arts) -> 8 digest-worthy
+[gemini] AI Labs - function call received with 15 articles, 5 discovered
+[gemini] AI Labs - parsed 15 articles, 5 discovered companies
+[judge] AI Labs chunk 3/4 (15 arts) -> 6 digest-worthy
+[gemini] AI Labs - function call received with 13 articles, 3 discovered
+[gemini] AI Labs - parsed 13 articles, 3 discovered companies
+[judge] AI Labs chunk 4/4 (13 arts) -> 3 digest-worthy
+
+=== Vertical AI ===
+[exa] Vertical AI "vertical AI software companies signing enter..." -> 9
+[exa] Vertical AI "AI agent and workflow automation companies r..." -> 10
+[exa] Vertical AI "AI copilot products winning enterprise contr..." -> 10
+[parallel] Vertical AI "vertical AI software companies signing enter..." -> 10 raw, kept 9 in-window
+[parallel] Vertical AI "AI agent and workflow automation companies r..." -> 19 raw, kept 10 in-window
+[parallel] Vertical AI "AI copilot products winning enterprise contr..." -> 10 raw, kept 10 in-window
+Error on Vertical AI, retrying…
+Error on Vertical AI, retrying…
+ApiError: {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.","status":"UNAVAILABLE"}}
+    at throwErrorIfNotOK (/Users/markfok/projects/ai-digest/node_modules/@google/genai/dist/node/index.cjs:13434:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async /Users/markfok/projects/ai-digest/node_modules/@google/genai/dist/node/index.cjs:13134:13
+    at async Models.generateContent (/Users/markfok/projects/ai-digest/node_modules/@google/genai/dist/node/index.cjs:14542:24)
+    at async summarizeBeat (/Users/markfok/projects/ai-digest/lib/summarize.ts:287:18)
+    at async judgeBeat (/Users/markfok/projects/ai-digest/scripts/parallel-vs-exa-ab.ts:248:17)
+    at async main (/Users/markfok/projects/ai-digest/scripts/parallel-vs-exa-ab.ts:323:21) {
+  status: 503
+}

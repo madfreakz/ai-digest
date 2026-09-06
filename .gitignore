@@ -15,3 +15,6 @@ run-beats.mjs
 trigger-crons.sh
 beat-results.txt
 beat-run.log
+
+# Playwright CLI session state
+.playwright-cli/
