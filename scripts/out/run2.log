@@ -1,0 +1,203 @@
+
+A/B: Parallel(base) vs Exa(neural) — window since 2026-05-28
+
+
+=== Physical AI ===
+[exa] Physical AI "humanoid robotics companies raising capital ..." -> 10
+[exa] Physical AI "embodied AI and physical robotics enterprise..." -> 10
+[exa] Physical AI "robotics company product launches, competiti..." -> 10
+[parallel] Physical AI "humanoid robotics companies raising capital ..." -> 12 raw, kept 8 in-window
+[parallel] Physical AI "embodied AI and physical robotics enterprise..." -> 20 raw, kept 10 in-window
+[parallel] Physical AI "robotics company product launches, competiti..." -> 10 raw, kept 10 in-window
+Error on Physical AI, retrying…
+Error on Physical AI, retrying…
+[judge] Physical AI model gemini-2.5-flash failed: {"error":{"code":503,"message":"This model is currently experiencing high demand. Spikes i
+[judge] Physical AI cooling down 20s, then falling back to gemini-2.5-flash-lite
+Error on Physical AI, retrying…
+Error on Physical AI, retrying…
+[judge] Physical AI model gemini-2.5-flash-lite failed: {"error":{"code":400,"message":"The thinking budget 128 is invalid. Please choose a value 
+[judge] Physical AI FAILED after model fallbacks — recording as incomplete: {"error":{"code":400,"message":"The thinking budget 128 is invalid. Please choose a value between 512 and 24576.","status":"INVALID_ARGUMENT"}}
+
+=== AI Infrastructure ===
+[exa] AI Infrastructure "AI developer infrastructure and tooling comp..." -> 10
+[exa] AI Infrastructure "vector databases, LLM observability, and ML ..." -> 10
+[exa] AI Infrastructure "AI compute and cloud infrastructure companie..." -> 10
+[parallel] AI Infrastructure "AI developer infrastructure and tooling comp..." -> 10 raw, kept 9 in-window
+[parallel] AI Infrastructure "vector databases, LLM observability, and ML ..." -> 20 raw, kept 10 in-window
+[parallel] AI Infrastructure "AI compute and cloud infrastructure companie..." -> 10 raw, kept 9 in-window
+[gemini] AI Infrastructure - function call received with 15 articles, 5 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 5 discovered companies
+[dedup] story "factorial-series-d" - picked tech.eu over prnewswire.co.uk
+[dedup] story "reactor-stealth-launch-funding" - picked lsvp.com over prnewswire.com, prnewswire.com
+[dedup] AI Infrastructure - collapsed 15 → 12 articles
+[judge] AI Infrastructure chunk 1/4 (15 arts) -> 9 digest-worthy
+Error on AI Infrastructure, retrying…
+[gemini] AI Infrastructure - function call received with 15 articles, 7 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 7 discovered companies
+[dedup] story "mistral-vastdata-nvidia-partnership" - picked storagenewsletter.com over vastdata.com
+[dedup] AI Infrastructure - collapsed 15 → 14 articles
+[judge] AI Infrastructure chunk 2/4 (15 arts) -> 13 digest-worthy
+[gemini] AI Infrastructure - function call received with 15 articles, 3 discovered
+[gemini] AI Infrastructure - parsed 15 articles, 3 discovered companies
+[dedup] story "alphabet-ai-infrastructure-funding" - picked facebook.com over facebook.com
+[dedup] story "azure-general-updates" - picked azure.microsoft.com over azure.microsoft.com
+[dedup] AI Infrastructure - collapsed 15 → 13 articles
+[judge] AI Infrastructure chunk 3/4 (15 arts) -> 2 digest-worthy
+[gemini] AI Infrastructure - function call received with 11 articles, 7 discovered
+[gemini] AI Infrastructure - parsed 11 articles, 7 discovered companies
+[judge] AI Infrastructure chunk 4/4 (11 arts) -> 7 digest-worthy
+
+=== AI Labs ===
+[exa] AI Labs "foundation model laboratories releasing new ..." -> 9
+[exa] AI Labs "AI research lab funding rounds, valuations, ..." -> 10
+[exa] AI Labs "AI safety and alignment research announcemen..." -> 10
+[parallel] AI Labs "foundation model laboratories releasing new ..." -> 10 raw, kept 10 in-window
+[parallel] AI Labs "AI research lab funding rounds, valuations, ..." -> 10 raw, kept 9 in-window
+[parallel] AI Labs "AI safety and alignment research announcemen..." -> 20 raw, kept 10 in-window
+[gemini] AI Labs - function call received with 15 articles, 1 discovered
+[gemini] AI Labs - parsed 15 articles, 1 discovered companies
+[dedup] story "minimax-m3-launch" - picked marktechpost.com over minimax.io
+[dedup] story "nvidia-cosmos-3-launch" - picked blogs.nvidia.com over huggingface.co
+[dedup] story "anthropic-series-h" - picked techcrunch.com over aismasher.com, byteiota.com, techfundingnews.com, singularity.kiwi, aichatdaily.com
+[dedup] AI Labs - collapsed 15 → 8 articles
+[judge] AI Labs chunk 1/4 (15 arts) -> 7 digest-worthy
+[gemini] AI Labs - function call received with 15 articles, 4 discovered
+[gemini] AI Labs - parsed 15 articles, 4 discovered companies
+[dedup] story "anthropic-valuation-raise" - picked techstartups.com over aiweekly.co, cryptobriefing.com
+[dedup] story "australian-ai-safety-institute-hiring" - picked abc.net.au over thebusinessinvestor.co.uk, completeaitraining.com
+[dedup] story "cais-hiring-expansion" - picked lasvegassun.com over briefglance.com
+[dedup] AI Labs - collapsed 15 → 10 articles
+[judge] AI Labs chunk 2/4 (15 arts) -> 8 digest-worthy
+[gemini] AI Labs - function call received with 15 articles, 5 discovered
+[gemini] AI Labs - parsed 15 articles, 5 discovered companies
+[judge] AI Labs chunk 3/4 (15 arts) -> 7 digest-worthy
+[gemini] AI Labs - function call received with 11 articles, 3 discovered
+[gemini] AI Labs - parsed 11 articles, 3 discovered companies
+[judge] AI Labs chunk 4/4 (13 arts) -> 4 digest-worthy
+
+=== Vertical AI ===
+[exa] Vertical AI "vertical AI software companies signing enter..." -> 9
+[exa] Vertical AI "AI agent and workflow automation companies r..." -> 10
+[exa] Vertical AI "AI copilot products winning enterprise contr..." -> 10
+[parallel] Vertical AI "vertical AI software companies signing enter..." -> 10 raw, kept 9 in-window
+[parallel] Vertical AI "AI agent and workflow automation companies r..." -> 19 raw, kept 10 in-window
+[parallel] Vertical AI "AI copilot products winning enterprise contr..." -> 10 raw, kept 10 in-window
+[gemini] Vertical AI - function call received with 15 articles, 6 discovered
+[gemini] Vertical AI - parsed 15 articles, 6 discovered companies
+[dedup] story "factorial-series-d" - picked tech.eu over prnewswire.com, prnewswire.co.uk
+[dedup] story "asana-acquires-stackai" - picked techcrunch.com over siliconangle.com, thenextweb.com, morningstar.com, thelettertwo.com
+[dedup] story "cognition-funding-round" - picked techfundingnews.com over pulse2.com
+[dedup] Vertical AI - collapsed 15 → 8 articles
+[judge] Vertical AI chunk 1/4 (15 arts) -> 8 digest-worthy
+[gemini] Vertical AI - function call received with 15 articles, 6 discovered
+[gemini] Vertical AI - parsed 15 articles, 6 discovered companies
+[dedup] story "accenture-microsoft-copilot-deployment" - picked tech-insider.org over windowsnews.ai
+[dedup] story "infosys-tcs-wipro-microsoft-copilot-deployment" - picked news.microsoft.com over timesofindia.indiatimes.com, fortuneindia.com
+[dedup] Vertical AI - collapsed 15 → 12 articles
+[judge] Vertical AI chunk 2/4 (15 arts) -> 6 digest-worthy
+[gemini] Vertical AI - function call received with 13 articles, 2 discovered
+[gemini] Vertical AI - parsed 13 articles, 2 discovered companies
+[judge] Vertical AI chunk 3/4 (15 arts) -> 6 digest-worthy
+[gemini] Vertical AI - function call received with 5 articles, 3 discovered
+[gemini] Vertical AI - parsed 5 articles, 3 discovered companies
+[judge] Vertical AI chunk 4/4 (6 arts) -> 2 digest-worthy
+
+
+================ RESULTS ================
+beat                 | exaPool parPool overlap | exaOnly parOnly both | exaPrec parPrec
+AI Infrastructure    |      28      28       0 |      20       9    1 |    0.75   0.357
+AI Labs              |      29      29       0 |      13      10    1 |   0.483   0.379
+Vertical AI          |      23      29       1 |      12       9    1 |   0.565   0.345
+----------------------------------------
+AGGREGATE digest-worthy: exaOnly=45  parallelOnly=28  both=3
+NET RECALL GAP (parallelOnly - exaOnly) = -17
+Parallel pool quality: raw=161  null-date=26  out-of-window=0  source_policy server-side date filter used: true
+
+VERDICT RULE: Parallel earns wiring only if parallelOnly >> exaOnly AND precision not far worse AND null-date rate low. Otherwise Exa stays.
+
+--- Parallel-only digest-worthy (hand-verify these are real, recent, on-beat) ---
+  [AI Infrastructure] Anthropic at $965 Billion: What the World's Most Valuable Startup Means for AI Builders | MindStudio
+  [AI Infrastructure] Google's AI ambitions are getting an $80 billion boost. Alphabet is ...
+  [AI Infrastructure] Every extra database is a latency tax on your LLM. Simplify with ...
+  [AI Infrastructure] Azure updates
+  [AI Infrastructure] NVIDIA AI Cloud Ecosystem Expands Worldwide to Meet Global AI Compute Demand | NVIDIA Blog
+  [AI Infrastructure] The company says it will use the resources to "scale AI infrastructure ...
+  [AI Infrastructure] Oracle Cloud Infrastructure joins the Arm AGI CPU ecosystem as agentic AI accelerates - Arm Newsroom
+  [AI Infrastructure] Job Application for Finance Manager, AI Infrastructure at Nscale
+  [AI Infrastructure] Classover Announces Neocloud Infrastructure Partnership With Cyfuture.ai - Classover
+  [AI Labs] NVIDIA Launches Cosmos 3, the Open Frontier Foundation Model for Physical AI | NVIDIA Newsroom
+  [AI Labs] "Cosmos 3 is the frontier of physical AI" ICYMI - Instagram
+  [AI Labs] AI + XR Co-Scientist Built With NVIDIA & Stanford I Dr. le Cong
+  [AI Labs] Robots trained in simulation are moving into the real world. 🌍
+
+At #ICRA2026, NVIDIA Research is presenting 28 accepted papers, 8 tackling sim-to-real transfer across the full robotics stack:
+
+👁️ Perceive through clutter
+🧠 Plan and reason across multi-step tasks
+✋ Grasp novel objects adaptively
+�
+  [AI Labs] Exclusive: AI market-research... - The Wall Street Journal | Facebook
+  [AI Labs] Anthropic Funding Pushed Startup Investment To Near-Record Levels In May As Exit Market Reopened
+  [AI Labs] Ex-DeepMind researchers raise $50m for AI science startup Inherent
+  [AI Labs] AfterQuery — $46M Raised — Reviews & Alternatives | StartupHub.ai
+  [AI Labs] Anthropic Fellows Program for AI safety research - Reddit
+  [AI Labs] Advancing youth safety and opportunity through global leadership | OpenAI
+  [Vertical AI] Cracking The Enterprise AI Sales Code - LinkedIn
+  [Vertical AI] Mark Zuckerberg Wants Meta’s New AI Agents to Run Your Whole Business - WSJ
+  [Vertical AI] AI Agents News Brief: Funding, New Tools, and Security Focus
+  [Vertical AI] AI: Morgan Stanley to open its wealth management funnel to agents
+  [Vertical AI] Daily AI Agent News - Last 7 Days
+  [Vertical AI] Is Microsoft's OpenAI Bet Putting Your AI Contract at Risk? - CX Today
+  [Vertical AI] Introducing Microsoft 365 Business with Copilot: The new standard for small business | Microsoft 365 Blog
+  [Vertical AI] Industry-Specific AI Agent Playbooks (Finance, Healthcare, Legal ...
+  [Vertical AI] Microsoft Introduces Microsoft 365 Copilot to Revolutionize ...
+
+--- Exa-only digest-worthy ---
+  [AI Infrastructure] Archestra raises $10M to broker AI agent access to corporate data - SiliconANGLE
+  [AI Infrastructure] The Developer Platform for World Models: Our Series A in Reactor - Lightspeed Venture Partners
+  [AI Infrastructure] Introducing VIBEshift: from prototype to production-grade app in one command - Opsera
+  [AI Infrastructure] Announcing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud
+  [AI Infrastructure] IBM and Red Hat Commit $5 Billion to Redefine the Future of Open Source in the AI Era
+  [AI Infrastructure] OpenAI models and Codex on Amazon Bedrock are now generally available | Artificial Intelligence
+  [AI Infrastructure] AlloyDB Remote MCP Server GA: Secure AI Agent Access to Your Data | Google Cloud Blog
+  [AI Infrastructure] CoreWeave - CoreWeave Completes Industry-First Bring-Up and Validation of NVIDIA Vera Rubin NVL72
+  [AI Infrastructure] Coralogix Raises $200M to Scale the Observability Backbone for the Age of AI - Coralogix
+  [AI Infrastructure] OpenAI + Dell Codex On-Premises 2026: Architecture Explained
+  [AI Infrastructure] Mistral NOW Summit 2026: Vast Data Helps Power the Data Foundation for Mistral's Nvidia-Accelerated AI Factories in Europe - StorageNewsletter
+  [AI Infrastructure] SoftBank Group and Sesterce to Develop 1 GW AI Data Center in Bosquel, France | SoftBank Group Corp.
+  [AI Infrastructure] Gorilla Technology Announces $2 Billion AI Infrastructure Deal in India with Supermicro, Expanding Strategic Collaboration Across Asia Pacific | Gorilla Technology
+  [AI Infrastructure] IREN signs USD $9.7 billion AI cloud deal with Microsoft
+  [AI Infrastructure] SoftBank Group to Build 5 GW of AI Data Center Capacity in France | SoftBank Group Corp.
+  [AI Infrastructure] IREN closes $3.65 billion GPU financing to back Microsoft AI cloud contract - Blockspace
+  [AI Infrastructure] News: At Choose France, Ardian and Verne announce plans for a digital infrastructure campus in Île-de-France to strengthen Europe’s industrial and AI capacity
+  [AI Infrastructure] Ascenty Secures 150 Megawatts of New AI Contracts
+  [AI Infrastructure] India, UAE partner on AI sovereignty to bypass Google, Microsoft - Rest of World
+  [AI Infrastructure] Bull and Foxconn partner to scale Europe’s manufacturing capabilities for artificial intelligence infrastructures
+  [AI Labs] Building a hill-climbing machine: Launching seven new MAI models | Microsoft AI
+  [AI Labs] Introducing MAI-Thinking-1 | Microsoft AI
+  [AI Labs] MiniMax Releases MiniMax M3 with MSA Architecture Supporting 1M-Token Context, Native Multimodality, and Agentic Coding - MarkTechPost
+  [AI Labs] Holo3.1: Fast & Local Computer Use Agents
+  [AI Labs] How Cosmos 3 Helps Physical AI Think Before It Acts | NVIDIA Blog
+  [AI Labs] Introducing MAI-Code-1-Flash | Microsoft AI
+  [AI Labs] DeepSeek lines up its first outside money: a $7bn round at up to $59bn
+  [AI Labs] Anthropic becomes the world’s most valuable AI startup, nears $1 trillion valuation and surpasses OpenAI - Tech Startups
+  [AI Labs] ROOST and Mila Announce Partnership to Advance Open Source AI Safety, Starting with Youth Safety | Mila
+  [AI Labs] Kate Conroy appointed inaugural general manager of Australian AI Safety Institute - ABC News
+  [AI Labs] Center for AI Safety Names Former xAI Leader Devin Kim President and Establishes Frontier Security Institute in Major Expansion of Leadership and Reach - Las Vegas Sun News
+  [AI Labs] HKUST and CalmCar Establish the Physical AI Innovation Center | The Hong Kong University of Science and Technology
+  [AI Labs] 3D Vision Pioneer Andrea Tagliasacchi Joins Wayve Labs - Wayve
+  [Vertical AI] Parloa deploys $350M with SAP, Microsoft, OpenAI partnerships
+  [Vertical AI] Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu
+  [Vertical AI] Asana acquires no-code agent-builder StackAI | TechCrunch
+  [Vertical AI] Vertice acquires Vendr to create the world's largest procurement intelligence dataset and lead autonomous AI negotiation
+  [Vertical AI] Glean Surpasses $300M ARR: Unrivaled Enterprise Context Fuels AI Adoption | Morningstar
+  [Vertical AI] The AI startup replacing software engineers just raised $1B at $26B valuation and it is already writing 89% of Cognition's own code — TFN
+  [Vertical AI] Geordie AI Raises $30M Series A as Enterprises Race to Secure AI Agents – Unite.AI
+  [Vertical AI] Replit Expands Enterprise Leadership with Visa Investment and Partnership, Payments Expansion, and Solution Partner Program
+  [Vertical AI] Infosys, TCS and Wipro scale Microsoft 365 Copilot to over 300,000 employees - Source Asia
+  [Vertical AI] KPMG rolls out Claude to 276,000 staff in global Anthropic alliance - Tech Three Dots
+  [Vertical AI] Mistral AI signs Airbus and BMW for industrial AI platform
+  [Vertical AI] Wolters Kluwer and OpenAI expand enterprise AI collaboration to advance trusted Expert AI for regulated professionals
+
+Artifact: /Users/markfok/projects/ai-digest/scripts/out/parallel-ab-2026-06-04T03-09-55-629Z.json
+

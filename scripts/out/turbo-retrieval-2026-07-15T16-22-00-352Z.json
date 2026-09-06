@@ -1,0 +1,1445 @@
+{
+  "meta": {
+    "startDate": "2026-07-08",
+    "generatedAt": "2026-07-15T16:22:00.352Z"
+  },
+  "exaSummaries": [
+    {
+      "beat": "Physical AI",
+      "label": "exa",
+      "pool": 27,
+      "primary": 0,
+      "aggregator": 1,
+      "other": 26
+    },
+    {
+      "beat": "AI Infrastructure",
+      "label": "exa",
+      "pool": 28,
+      "primary": 9,
+      "aggregator": 1,
+      "other": 18
+    },
+    {
+      "beat": "AI Labs",
+      "label": "exa",
+      "pool": 30,
+      "primary": 5,
+      "aggregator": 2,
+      "other": 23
+    },
+    {
+      "beat": "Vertical AI",
+      "label": "exa",
+      "pool": 27,
+      "primary": 5,
+      "aggregator": 0,
+      "other": 22
+    }
+  ],
+  "turboSummaries": [
+    {
+      "beat": "Physical AI",
+      "label": "turbo",
+      "pool": 30,
+      "primary": 1,
+      "aggregator": 3,
+      "other": 26
+    },
+    {
+      "beat": "AI Infrastructure",
+      "label": "turbo",
+      "pool": 27,
+      "primary": 0,
+      "aggregator": 1,
+      "other": 26
+    },
+    {
+      "beat": "AI Labs",
+      "label": "turbo",
+      "pool": 26,
+      "primary": 0,
+      "aggregator": 0,
+      "other": 26
+    },
+    {
+      "beat": "Vertical AI",
+      "label": "turbo",
+      "pool": 27,
+      "primary": 0,
+      "aggregator": 0,
+      "other": 27
+    }
+  ],
+  "turboStats": {
+    "raw": 236,
+    "nullDate": 97,
+    "outWindow": 0
+  },
+  "latency": {
+    "exaAvgMs": 300.5833333333333,
+    "turboAvgMs": 380.25
+  },
+  "dump": {
+    "Physical AI": {
+      "exa": [
+        {
+          "url": "https://markets.businessinsider.com/news/stocks/humanoid-global-announces-mbody-ai-s-advancements-in-commercial-expansion-and-proposed-business-combination-with-check-cap-1036321693",
+          "title": "Humanoid Global Announces MBody AI’s Advancements in Commercial Expansion and Proposed Business Combination with Check-Cap | Markets Insider",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "markets.businessinsider.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/galbot-galaxy-general-300m-usd-round-patek-precision-1000-robots-2026",
+          "title": "Galbot Locks Over $300M in Record Single Round, Inks 1,000-Unit Patek Precision Pact at $3B Valuation",
+          "date": "2026-07-10T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://www.rockingrobots.com/holiday-robotics-raises-103-million-to-move-humanoid-into-industrial-production/",
+          "title": "Holiday Robotics Raises $103 Million to Move Humanoid into Industrial Production - Rockingrobots",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "rockingrobots.com"
+        },
+        {
+          "url": "https://robotsbeat.com/limx-200-million-pre-ipo-hong-kong-humanoid-robots-china/",
+          "title": "LimX Raises $200M Pre-IPO Round at $2.21B as China's Humanoid IPO Wave Accelerates | RobotsBeat",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "robotsbeat.com"
+        },
+        {
+          "url": "https://thenextweb.com/news/limx-dynamics-2-2-billion-humanoid-pre-ipo",
+          "title": "LimX Dynamics hits a $2.2bn humanoid valuation",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "thenextweb.com"
+        },
+        {
+          "url": "https://roboticsreports.com/neura-robotics-secures-1-4-billion-from-tech-giants-and-european-investors/",
+          "title": "Neura Robotics Secures $1.4 Billion From Tech Giants and European Investors - roboticsreports.com",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "roboticsreports.com"
+        },
+        {
+          "url": "https://roboticsandautomationnews.com/2026/07/13/robot-com-launches-humanoid-built-for-the-work-that-burns-people-out/103259/",
+          "title": "Robot.com unveils R-noid humanoid robot for logistics, hospitality and manufacturing",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "roboticsandautomationnews.com"
+        },
+        {
+          "url": "https://www.therobotreport.com/ai%C2%B2-robotics-raises-735m-3b-valuation-wheeled-humanoid-robots/",
+          "title": "AI² Robotics raises $735M at $3B valuation for wheeled humanoid robots - The Robot Report",
+          "date": "2026-07-10T00:00:00.000Z",
+          "host": "therobotreport.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/mitsubishi-motors-highlanders-humanoid-robot-mass-production-kyoto-plant-2026",
+          "title": "Mitsubishi, Highlanders Sign First Humanoid Mass-Production MOU",
+          "date": "2026-07-09T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://roboticsandautomationnews.com/2026/07/13/stmicroelectronics-acquires-stake-in-humanoid-robot-developer-oversonic-robotics/103263/",
+          "title": "Oversonic Robotics secures investment from STMicroelectronics and partners",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "roboticsandautomationnews.com"
+        },
+        {
+          "url": "https://aithority.com/robots/robust-ai-introduces-crawl-walk-run-automation-model-with-shiplab-deployment-in-vista-ca/",
+          "title": "Robust.AI Introduces \"Crawl, Walk, Run\" Automation Model with ShipLab Deployment in Vista, CA",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "aithority.com"
+        },
+        {
+          "url": "https://yangtzeer.com/news/startups/jd-lumos-robotics-partnership/",
+          "title": "JD.com deepens embodied AI push with Lumos Robotics partnership - The Yangtzeer",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "yangtzeer.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/pndbotics-beingbeyond-tie-up-adam-u-being-h-waic-2026-industrial-humanoid",
+          "title": "PNDbotics Ties Up With BeingBeyond to Pair Adam-U Half-Body Humanoid With Being-H Dexterous Model, Joint Demo Set for WAIC 2026",
+          "date": "2026-07-10T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://www.automatedwarehouseonline.com/robust-ai-takes-crawl-walk-run-approach-carter-robot-deployment-shiplab/",
+          "title": "Robust.AI takes a 'crawl, walk, run' approach to Carter robot deployment with ShipLab - Automated Warehouse",
+          "date": "2026-07-10T00:00:00.000Z",
+          "host": "automatedwarehouseonline.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/general-intuition-320m-series-b-2-3b-valuation-gaming-data-world-model-2026",
+          "title": "General Intuition Raises $320M at $2.3B for Gaming-Trained Physical AI",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/cognibotics-6-5m-eic-accelerator-eu-horizon-europe-robotics-2026",
+          "title": "Sweden's Cognibotics Wins €6.5M EIC Accelerator Grant to Industrialize HKM1800 Hybrid-Kinematics Robot",
+          "date": "2026-07-11T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://humanoidintel.ai/news/mitsubishi-motors-highlanders-humanoid-robot-production-partnership/",
+          "title": "Mitsubishi Motors Partners With Highlanders on Humanoid Production — humanoidintel.ai",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "humanoidintel.ai"
+        },
+        {
+          "url": "https://www.mitsubishi-motors.com/en/newsroom/newsrelease/2026/20260709_1.html",
+          "title": "Mitsubishi Motors and Highlanders Sign MOU to Establish a New Industrial Foundation Where Humans and Robots Work Together",
+          "date": "2026-07-09T00:00:00.000Z",
+          "host": "mitsubishi-motors.com"
+        },
+        {
+          "url": "https://www.bastillepost.com/global/article/6011502-walden-robotics-launches-with-300-million-to-put-general-purpose-robots-to-work-today",
+          "title": "Walden Robotics Launches with $300 Million to Put General-Purpose Robots to Work Today",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "bastillepost.com"
+        },
+        {
+          "url": "https://robotsbeat.com/robbyant-lingbot-va-2-embodied-native-world-model-ant-group-robotics/",
+          "title": "Ant Group's Robbyant Launches LingBot-VA 2.0, an Embodied-Native World Model Built from Scratch for Robot Control | RobotsBeat",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "robotsbeat.com"
+        },
+        {
+          "url": "https://www.marktechpost.com/2026/07/14/mistral-ai-releases-robostral-navigate-an-8b-model-enabling-robots-to-navigate-complex-environments-using-a-single-rgb-camera/",
+          "title": "Mistral AI Releases Robostral Navigate: An 8B Model Enabling Robots to Navigate Complex Environments Using a Single RGB Camera - MarkTechPost",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "marktechpost.com"
+        },
+        {
+          "url": "https://interestingengineering.com/ai-robotics/china-humanoid-robot-unveiled-nvidia-compute",
+          "title": "Booster T2: A humanoid robot with powerful onboard Nvidia compute",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "interestingengineering.com"
+        },
+        {
+          "url": "https://robotsbeat.com/1x-neo-hands-25-dof-tendon-driven-tactile-humanoid-manipulation/",
+          "title": "1X Unveils NEO Hands, a 25-DoF Tendon-Driven Hand System for Its NEO Home Humanoid | RobotsBeat",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "robotsbeat.com"
+        },
+        {
+          "url": "https://www.techtimes.com/articles/320540/20260715/pentagon-selects-tesseract-ventures-end-drone-operator-bottleneck.htm",
+          "title": "Pentagon Selects Tesseract Ventures To End the Drone Operator Bottleneck",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "techtimes.com"
+        },
+        {
+          "url": "https://robotsbeat.com/simplexity-robotics-100-robots-i7-pro-leaderdrive-production-deployment/",
+          "title": "Simplexity Robotics Ships 100 i7 Pro Robots to Production Lines at 11 Months Old, Deploys at Leaderdrive and AI Infrastructure Factories | RobotsBeat",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "robotsbeat.com"
+        },
+        {
+          "url": "https://www.htx.com/news/Ethereum-mVxOFMeD/",
+          "title": "10000 Hours of Human Data, Trains the World's First Whole-Body Mobile Manipulation Implicit World-Action Model | HTX Insights",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "htx.com"
+        },
+        {
+          "url": "https://hitechub.com/nvidia-and-hugging-face-launch-new-models-and-frameworks-for-lerobot-advancing-open-robotics-community/",
+          "title": "NVIDIA and Hugging Face Launch New Models and Frameworks for LeRobot: Advancing Open Robotics Community - Hitechub",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "hitechub.com"
+        }
+      ],
+      "turbo": [
+        {
+          "url": "https://theaiinsider.tech/2026/07/08/chinas-humanoid-robot-maker-zeroth-announces-74m-in-pre-series-a-funding",
+          "title": "China's Humanoid Robot Maker Zeroth Announces $74M in Pre-Series A Funding",
+          "date": "2026-07-08",
+          "host": "theaiinsider.tech"
+        },
+        {
+          "url": "https://marketchameleon.com/articles/b/2026/7/14/churchill-capital-corp-xi-agility-robotics-merger-humanoid-robotics-milestone",
+          "title": "Churchill Capital Corp XI Advances Toward Humanoid Robotics...",
+          "date": "2026-07-14",
+          "host": "marketchameleon.com"
+        },
+        {
+          "url": "https://parsers.vc/startup/neura-robotics.com",
+          "title": "NEURA Robotics  – Funding, Valuation, Investors, News",
+          "date": "2026-07-09",
+          "host": "parsers.vc"
+        },
+        {
+          "url": "https://wirescreen.ai/briefings/humanoid-robotics-intelligence",
+          "title": "Humanoid Robotics Intelligence | WireScreen Briefings",
+          "date": "2026-07-08",
+          "host": "wirescreen.ai"
+        },
+        {
+          "url": "https://theaiinsider.tech/2026/07/14/agility-robotics-files-for-spac-merger-with-churchill-capital-corp-xi/",
+          "title": "Agility Robotics Files for SPAC Merger with Churchill Capital Corp XI",
+          "date": "2026-07-14",
+          "host": "theaiinsider.tech"
+        },
+        {
+          "url": "https://shopappy.com/logistics/warehousing-inventory/warehouse-humanoid-raas-2026",
+          "title": "Warehouse humanoids reach commercial scale by year-end 2026",
+          "date": "2026-07-09",
+          "host": "shopappy.com"
+        },
+        {
+          "url": "https://www.ipo.club/blog/figure-ai-initiation-of-coverage",
+          "title": "Figure AI’s $39.5 Billion Valuation: A Game-Changer in Humanoid Robotics? — IPO CLUB",
+          "date": "2026-07-12",
+          "host": "ipo.club"
+        },
+        {
+          "url": "https://blog.robozaps.com/b/humanoid-robot-news-week-march-16-22-2026",
+          "title": "This Week in Humanoid Robots: March 16-22, 2026 | RoboZaps Blog",
+          "date": "2026-07-10",
+          "host": "blog.robozaps.com"
+        },
+        {
+          "url": "https://robottoday.com/article/robottoday-weekly-6-10-2026",
+          "title": "ROBOTTODAY Weekly July 6 – 10, 2026 - RobotToday",
+          "date": "2026-07-11",
+          "host": "robottoday.com"
+        },
+        {
+          "url": "https://investorshangout.com/persona-ai-secures-27m-to-revolutionize-humanoid-robotics-284825-",
+          "title": "Persona AI Secures $27M to Revolutionize Humanoid Robotics - Investors Hangout",
+          "date": "2026-07-09",
+          "host": "investorshangout.com"
+        },
+        {
+          "url": "https://developmentstoday.com/ai-robotics/agibot-says-15000th-robot-marks-shift-from-pilot-phase-to-wider-deployment",
+          "title": "AGIBOT Hits 15,000 Robots in Embodied AI Push | Developments ...",
+          "date": "2026-07-09",
+          "host": "developmentstoday.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/us-embodied-ai-companies-tracker-2026",
+          "title": "US Embodied AI Companies Tracker 2026: OpenAI, Tesla, Figure ...",
+          "date": "2026-07-10",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://www.manilatimes.net/2026/06/29/tmt-newswire/pr-newswire/x-square-robot-secures-four-consecutive-financing-rounds-surpasses-us28-billion-valuation-in-push-for-physical-ai-foundation-models/2374773",
+          "title": " X Square Robot Secures Four Consecutive Financing Rounds, Surpasses US$2.8 Billion Valuation in Push for Physical AI Foundation Models\n\n | The Manila Times ",
+          "date": "2026-07-10",
+          "host": "manilatimes.net"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/news/carbonsix-secures-40m-series-a-to-deploy-physical-ai-across-global-manufacturing-h05zvc",
+          "title": "CarbonSix raises $40M Series A to deploy physical AI in global manufacturing | AI Market Watch",
+          "date": "2026-07-12",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://robottoday.com/suppliers-discovery/spirit-ai",
+          "title": "Spirit AI - RobotToday",
+          "date": "2026-07-15",
+          "host": "robottoday.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/generalist-ai-400m-funding-2026",
+          "title": "Generalist AI Raises $400M to Build Foundation Models for Any ...",
+          "date": "2026-07-10",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://www.prnewswire.com/news-releases/from-smart-evs-to-autonomous-vehicles-xpeng-positions-robotaxi-as-a-key-milestone-in-bringing-physical-ai-to-the-real-world-302822753.html",
+          "title": "From Smart EVs to autonomous vehicles: XPENG positions Robotaxi as a key milestone in bringing Physical AI to the real world",
+          "date": "2026-07-10",
+          "host": "prnewswire.com"
+        },
+        {
+          "url": "https://erp.today/agility-robotics-warehouse-humanoids-supply-chain-ipo",
+          "title": "Agility’s $2.5B Wall Street Pitch Puts Warehouse Humanoids to the Test",
+          "date": "2026-07-08",
+          "host": "erp.today"
+        },
+        {
+          "url": "https://www.humanoidhub.ai/news/top-10-robotics-developments-of-june-2026-the-robot-report-37594eed-5b09-43eb-ae8f-62d813d09729",
+          "title": "Top 10 robotics developments of June 2026 - The Robot Report | HumanoidHub",
+          "date": "2026-07-08",
+          "host": "humanoidhub.ai"
+        },
+        {
+          "url": "https://www.aol.com/articles/robbyant-launches-lingbot-va-2-064800000.html",
+          "title": "Robbyant Launches LingBot-VA 2.0 Built Natively for Embodied AI and Physical World Control - AOL",
+          "date": "2026-07-10",
+          "host": "aol.com"
+        },
+        {
+          "url": "https://www.bitget.com/wiki/serve-robotics-stock",
+          "title": "Serve Robotics Stock: Company & Market Guide",
+          "date": "2026-07-08",
+          "host": "bitget.com"
+        },
+        {
+          "url": "https://insights.citeline.com/medtech-insight/business/deals/roche-turns-to-industrial-robotics-partner-abb-in-lab-automation-push-3SSBBO3BANC3PINM36WBV26BFM",
+          "title": "Roche Turns To Industrial Robotics Partner ABB Robotics In Lab Automation Push",
+          "date": "2026-07-09",
+          "host": "insights.citeline.com"
+        },
+        {
+          "url": "https://www.moneycontrol.com/news/business/startup/zetwerk-backs-ai-robotics-startup-launched-by-co-founder-rahul-sharma-who-moves-to-non-executive-role-13971490.html/amp",
+          "title": "Zetwerk backs AI robotics startup launched by co-founder Rahul Sharma, who moves to non-executive role",
+          "date": "2026-07-11",
+          "host": "moneycontrol.com"
+        },
+        {
+          "url": "https://theroboticsmedia.com/article/nvidia-hugging-face-lerobot-isaac-groot-1-7-teleop-july-2026",
+          "title": "NVIDIA, Hugging Face Ship Isaac GR00T 1.7 to LeRobot | The Robotics Media",
+          "date": "2026-07-08",
+          "host": "theroboticsmedia.com"
+        },
+        {
+          "url": "https://runtimewire.com/article/mistral-robostral-navigate-single-camera-robotics-model",
+          "title": "Mistral moves into robotics with a single-camera navigation model - RuntimeWire",
+          "date": "2026-07-10",
+          "host": "runtimewire.com"
+        },
+        {
+          "url": "https://www.distillintelligence.com/news/brain-co",
+          "title": "Latest Brain Co. News & Announcements | Distill",
+          "date": "2026-07-12",
+          "host": "distillintelligence.com"
+        },
+        {
+          "url": "https://www.moneycontrol.com/news/business/startup/zetwerk-backs-ai-robotics-startup-launched-by-co-founder-rahul-sharma-who-moves-to-non-executive-role-13971490.html",
+          "title": "Zetwerk backs AI robotics startup launched by co-founder Rahul Sharma, who moves to non-executive role",
+          "date": "2026-07-11",
+          "host": "moneycontrol.com"
+        },
+        {
+          "url": "https://cfotech.ca/tag/job-moves",
+          "title": "Job moves Stories - CFOtech Canada",
+          "date": "2026-07-14",
+          "host": "cfotech.ca"
+        },
+        {
+          "url": "https://cfotech.news/tag/job-moves",
+          "title": "Job moves Stories - CFOtech US",
+          "date": "2026-07-14",
+          "host": "cfotech.news"
+        },
+        {
+          "url": "https://cmotech.news/tag/digital-twins",
+          "title": "The 2026 Ultimate Guide to Digital twins",
+          "date": "2026-07-08",
+          "host": "cmotech.news"
+        }
+      ],
+      "overlap": 0
+    },
+    "AI Infrastructure": {
+      "exa": [
+        {
+          "url": "https://techcrunch.com/2026/07/15/indian-ai-coding-startup-emergent-becomes-a-unicorn-just-over-a-year-after-launch/",
+          "title": "Indian AI coding startup Emergent becomes a unicorn with $130M Series C | TechCrunch",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://www.accessnewswire.com/newsroom/en/computers-technology-and-internet/instalily-raises-60-million-series-b-and-launches-lily-the-worlds-1190835",
+          "title": "InstaLILY Raises $60 Million Series B and Launches Lily, the World's First AI Forward Deployed Engineer",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "accessnewswire.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/15/emergent-emerges-latest-ai-unicorn-raising-130m-funding/",
+          "title": "Emergent emerges as the latest AI unicorn after raising $130M in funding - SiliconANGLE",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/14/reflection-inks-1b-compute-deal-with-nebius/",
+          "title": "Reflection inks $1B compute deal with Nebius | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://www.upstartsmedia.com/p/deep-dive-adapter-launches-ai-cognition",
+          "title": "Exclusive: Startup Adapter Launches With $17.8M To Bring New 'Cognition' To AI Tools",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "upstartsmedia.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/13/video-generation-startup-pixverse-raises-439m-valuation-soars-past-2b/",
+          "title": "Video-generation startup PixVerse raises $439M, valuation soars past $2B | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/08/prime-intellect-raises-130m-series-a-to-help-enterprises-build-their-own-ai-agents/",
+          "title": "Prime Intellect raises $130M Series A to help enterprises build their own AI agents | TechCrunch",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://www.prnewswire.com/news-releases/port-launches-the-industrys-first-purpose-built-vibe-coding-experience-for-platform-engineering-enabling-teams-to-ship-production-ready-agentic-workflows-in-minutes-302824762.html",
+          "title": "Port Launches the Industry's First Purpose-Built Vibe Coding Experience for Platform Engineering, Enabling Teams to Ship Production-Ready Agentic Workflows in Minutes",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "prnewswire.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/15/backed-by-60m-in-funding-oak-steps-out-of-stealth-to-fix-the-identity-mess-that-ai-agents-are-making-worse/",
+          "title": "Backed by $60M in funding, Oak steps out of stealth to fix the identity mess that AI agents are making worse | TechCrunch",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/15/ai-devops-startup-mydecisive-launches-12m-open-source-smarthub/",
+          "title": "AI DevOps startup MyDecisive launches with $12M and open-source SmartHub - SiliconANGLE",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://www.cloudera.com/about/news-and-blogs/press-releases/2026-07-14-cloudera-and-vast-data-announce-strategic-partnership-to-deliver-ai-data-platform-anywhere.html",
+          "title": "Cloudera and VAST Data Announce Strategic Partnership to Deliver AI Data Platform Anywhere",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "cloudera.com"
+        },
+        {
+          "url": "https://www.digitalocean.com/blog/public-preview-managed-weaviate",
+          "title": "Scale Faster with Managed Weaviate: Now in Public Preview on DigitalOcean | DigitalOcean",
+          "date": "2026-07-09T00:00:00.000Z",
+          "host": "digitalocean.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/14/cloudera-vast-data-partner-accelerate-data-delivery-prevent-gpus-starving/",
+          "title": "Cloudera and Vast Data partner to accelerate data delivery and prevent GPUs from starving - SiliconANGLE",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://www.prnewswire.com/news-releases/teradata-autonomous-knowledge-platform-reaches-general-availability-across-cloud-and-on-premises-302825673.html",
+          "title": "Teradata Autonomous Knowledge Platform Reaches General Availability Across Cloud and On Premises",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "prnewswire.com"
+        },
+        {
+          "url": "https://cxotoday.com/media-coverage/ltm-partners-with-anthropic-to-accelerate-claude-adoption-and-expand-enterprise-delivery/",
+          "title": "LTM Partners with Anthropic to Accelerate Claude Adoption and Expand Enterprise Delivery",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "cxotoday.com"
+        },
+        {
+          "url": "https://grafana.com/blog/stop-switching-tools-to-find-answers-grafana-assistant-now-works-across-30-data-sources/",
+          "title": "Stop switching tools to find answers: Grafana Assistant now works across 30+ data sources | Grafana Labs",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "grafana.com"
+        },
+        {
+          "url": "https://www.prnewswire.com/news-releases/ust-partners-with-anthropic-to-bring-claude-into-usts-platforms-engineering-and-operations-and-train-20-000-ust-employees-globally-302820669.html",
+          "title": "UST Partners with Anthropic to Bring Claude into UST's Platforms, Engineering, and Operations and Train 20,000 UST Employees Globally",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "prnewswire.com"
+        },
+        {
+          "url": "https://www.linkedin.com/news/story/spacexai-releases-first-grok-model-developed-with-cursor-8371321/",
+          "title": "SpaceXAI releases first Grok model developed with Cursor | LinkedIn",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "linkedin.com"
+        },
+        {
+          "url": "https://cloud.google.com/blog/products/identity-security/introducing-k8s-aibom-on-gke-for-automated-ai-bills-of-materials",
+          "title": "Introducing k8s-aibom on GKE for automated AI bills of materials | Google Cloud Blog",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "cloud.google.com"
+        },
+        {
+          "url": "https://www.prnewswire.com/news-releases/cleanspark-secures-twenty-year-lease-with-high-investment-grade-global-technology-company-for-data-center-in-sandersville-georgia-302824483.html",
+          "title": "CleanSpark Secures Twenty-Year Lease with High-Investment Grade Global Technology Company for Data Center in Sandersville, Georgia",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "prnewswire.com"
+        },
+        {
+          "url": "https://startupfortune.com/reflection-ai-secures-over-1-billion-in-nvidia-compute-from-nebius/",
+          "title": "Reflection AI Secures Over $1 Billion in Nvidia Compute From Nebius - Startup Fortune",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "startupfortune.com"
+        },
+        {
+          "url": "https://news.3m.com/2026-07-15-3M-and-Microsoft-announce-strategic-partnership-to-advance-AI-data-center-infrastructure-and-enterprise-transformation",
+          "title": "3M and Microsoft announce strategic partnership to advance AI data center infrastructure and enterprise transformation - Jul 15, 2026",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "news.3m.com"
+        },
+        {
+          "url": "https://bitcoinmagazine.com/news/cleanspark-signs-6-billion-center-lease",
+          "title": "CleanSpark Signs $6.6 Billion Data Center Lease As Bitcoin Miner Pivots To Compute",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "bitcoinmagazine.com"
+        },
+        {
+          "url": "https://cryptobriefing.com/nebius-reflection-ai-billion-computing-deal/",
+          "title": "Nebius lands over $1B computing power deal with Reflection AI, adding to its growing backlog",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "cryptobriefing.com"
+        },
+        {
+          "url": "https://economictimes.indiatimes.com/tech/funding/ai-startup-reflection-signs-over-1-billion-computing-deal-with-nebius/articleshow/132389942.cms",
+          "title": "AI startup Reflection signs over $1 billion computing deal with Nebius - The Economic Times",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "economictimes.indiatimes.com"
+        },
+        {
+          "url": "https://awesomeagents.ai/news/reflection-ai-nebius-billion-compute-deal/",
+          "title": "Reflection AI Buys $1B More Nvidia Compute From Nebius | Awesome Agents",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "awesomeagents.ai"
+        },
+        {
+          "url": "https://capacityglobal.com/news/pure-data-centres-ai-finland-site-largest-in-europe/",
+          "title": "Pure DC launches largest-ever AI data centre project in Finland - Capacity",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "capacityglobal.com"
+        },
+        {
+          "url": "https://phemex.com/blogs/micron-stock-us-investment-anthropic-deal",
+          "title": "Micron Stock Climbs on the $250B US Bet and Anthropic Deal | 2026",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "phemex.com"
+        }
+      ],
+      "turbo": [
+        {
+          "url": "https://cryptobriefing.com/ollama-raises-65m-open-source-ai-local-models/",
+          "title": "Ollama raises $65M to bring local AI to 9 million developers",
+          "date": "2026-07-09",
+          "host": "cryptobriefing.com"
+        },
+        {
+          "url": "https://www.vcbacked.co/directory/industries/ai-infrastructure",
+          "title": "607 AI Infrastructure Startups (2026) — Recently Funded | VCBacked",
+          "date": "2026-07-11",
+          "host": "vcbacked.co"
+        },
+        {
+          "url": "https://pomegra.io/news/ollama-raises-65m-hits-9m-users-in-ai-platform-surge",
+          "title": "Ollama Raises $65M, Hits 9M Users in AI Platform Surge - Pomegra News",
+          "date": "2026-07-09",
+          "host": "pomegra.io"
+        },
+        {
+          "url": "https://www.vcbacked.co/directory/industries/developer-tools",
+          "title": "897 Developer Tools Startups (2026) — Recently Funded | VCBacked",
+          "date": "2026-07-10",
+          "host": "vcbacked.co"
+        },
+        {
+          "url": "https://angelinvestorsnetwork.com/venture-capital/spacex-cursor-acquisition-ai-coding-infrastructure-2026",
+          "title": "SpaceX Acquires Cursor for $60B: AI Coding Infrastructure ...",
+          "date": "2026-07-14",
+          "host": "angelinvestorsnetwork.com"
+        },
+        {
+          "url": "https://globalfintechseries.com/fintech-funding/vermilion-cliffs-ventures-raises-25m-second-fund-for-technical-founders-building-ai-infrastructure-and-dev-tooling",
+          "title": "Vermilion Cliffs Ventures Raises $25M Second Fund for Technical Founders Building AI Infrastructure and Dev Tooling",
+          "date": "2026-07-09",
+          "host": "globalfintechseries.com"
+        },
+        {
+          "url": "https://www.einpresswire.com/article/924904927/vermilion-cliffs-ventures-raises-25m-second-fund-for-technical-founders-building-ai-infrastructure-and-dev-tooling",
+          "title": "\n  Vermilion Cliffs Ventures Raises $25M Second Fund for Technical Founders Building AI Infrastructure and Dev Tooling\n  \n",
+          "date": "2026-07-08",
+          "host": "einpresswire.com"
+        },
+        {
+          "url": "https://finance.einnews.com/pr_news/924904927/vermilion-cliffs-ventures-raises-25m-second-fund-for-technical-founders-building-ai-infrastructure-and-dev-tooling",
+          "title": "Vermilion Cliffs Ventures Raises $25M Second Fund for Technical Founders Building AI Infrastructure and Dev Tooling - Finance Industry Today - EIN Presswire",
+          "date": "2026-07-08",
+          "host": "finance.einnews.com"
+        },
+        {
+          "url": "https://www.botmemo.com/top-ai-infrastructure-startups",
+          "title": "Top 20 AI Infrastructure Startups (2026) - Bot Memo",
+          "date": "2026-07-10",
+          "host": "botmemo.com"
+        },
+        {
+          "url": "https://www.weex.com/news/detail/anthropics-new-product-powerful-enough-to-make-the-ai-agent-infrastructure-team-unemployed-636197",
+          "title": "Anthropic's new product, powerful enough to make the AI Agent Infrastructure team unemployed? | WEEX Crypto News",
+          "date": "2026-07-08",
+          "host": "weex.com"
+        },
+        {
+          "url": "https://wandb.ai/wandb_fc/product-announcements-fc/reports/New-in-W-B-Weave-Observability-and-continuous-improvement-for-production-agents--VmlldzoxNzAzMTcxNg",
+          "title": "New in W&B Weave: Observability and continuous ...",
+          "date": "2026-07-14",
+          "host": "wandb.ai"
+        },
+        {
+          "url": "https://www.dynatrace.com/hub/detail/together-ai",
+          "title": "Together AI monitoring & observability | Dynatrace Hub",
+          "date": "2026-07-14",
+          "host": "dynatrace.com"
+        },
+        {
+          "url": "https://www.dynatrace.com/hub/detail/crewai-observability",
+          "title": "CrewAI monitoring & observability | Dynatrace Hub",
+          "date": "2026-07-15",
+          "host": "dynatrace.com"
+        },
+        {
+          "url": "https://www.dynatrace.com/hub/?filter=ai-ml-observability",
+          "title": "Dynatrace Hub | AI and LLM Observability",
+          "date": "2026-07-13",
+          "host": "dynatrace.com"
+        },
+        {
+          "url": "https://www.dynatrace.com/hub/detail/azure-ai-foundry",
+          "title": "Azure AI Foundry monitoring & observability | Dynatrace Hub",
+          "date": "2026-07-13",
+          "host": "dynatrace.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/news/andreessen-horowitz-leads-16m-seed-round-for-swedish-ai-startup-pit-7taxeo",
+          "title": "Pit Raises $16M Seed from a16z to Build AI-Native Enterprise Workflow Platform | AI Market Watch",
+          "date": "2026-07-13",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://pointofai.com/compare-ai-tools/fiddler-ai-vs-whylabs-status",
+          "title": "Fiddler AI vs WhyLabs (status): AI Tool Comparison 2026",
+          "date": "2026-07-15",
+          "host": "pointofai.com"
+        },
+        {
+          "url": "https://www.dynatrace.com/hub/detail/claude-code-agent-monitoring",
+          "title": "Claude Code Agent monitoring monitoring & observability | Dynatrace Hub",
+          "date": "2026-07-13",
+          "host": "dynatrace.com"
+        },
+        {
+          "url": "https://appsecsanta.com/arize-ai",
+          "title": "Arize AI Review 2026: AI Observability & LLM Evaluation",
+          "date": "2026-07-13",
+          "host": "appsecsanta.com"
+        },
+        {
+          "url": "https://www.project44.com/press-releases/project44-creates-two-businesses-and-launches-lsp44-the-ai-agent-and-api-infrastructure-that-9-of-the-worlds-10-largest-logistics-providers-already-run/",
+          "title": "project44 creates two businesses and launches LSP44, the AI agent and API infrastructure that 9 of the world's 10 largest logistics providers already run | project44",
+          "date": "2026-07-14",
+          "host": "project44.com"
+        },
+        {
+          "url": "https://www.kucoin.com/news/flash/nvidia-spends-27b-on-ai-chip-partnerships-and-acquisitions",
+          "title": "Nvidia Spends $27B on AI Chip Partnerships and Acquisitions | KuCoin",
+          "date": "2026-07-08",
+          "host": "kucoin.com"
+        },
+        {
+          "url": "https://straitsresearch.com/report/ai-servers-market",
+          "title": "AI Servers Market Size, Share, Growth, 2034 - Straits Research",
+          "date": "2026-07-08",
+          "host": "straitsresearch.com"
+        },
+        {
+          "url": "https://www.vastdata.com/press-releases/vast-data-and-nebius-partner-to-accelerate-global-enterprise-ai-adoption",
+          "title": "VAST Data and Nebius Partner to Accelerate Global Enterprise AI Adoption - VAST Data",
+          "date": "2026-07-09",
+          "host": "vastdata.com"
+        },
+        {
+          "url": "https://builtin.com/articles/ai-neocloud-demand",
+          "title": "What Is a Neocloud? How AI Compute Is Changing Cloud Infrastructure | Built In",
+          "date": "2026-07-08",
+          "host": "builtin.com"
+        },
+        {
+          "url": "https://www.manilatimes.net/2026/07/14/tmt-newswire/globenewswire/linkhome-holdings-launches-openlink-ai-compute-platform-and-executes-definitive-us105-million-enterprise-ai-compute-services-agreement/2384064",
+          "title": " Linkhome Holdings Launches OpenLink AI Compute Platform and Executes Definitive US$10.5 Million Enterprise AI Compute Services Agreement\n\n | The Manila Times ",
+          "date": "2026-07-14",
+          "host": "manilatimes.net"
+        },
+        {
+          "url": "https://www.vastdata.com/press-releases/voltage-park-partners-with-vast-to-deliver-high-performance-ai-cloud",
+          "title": "Voltage Park Partners with VAST to Deliver High-Performance AI Cloud - VAST Data",
+          "date": "2026-07-09",
+          "host": "vastdata.com"
+        },
+        {
+          "url": "https://newsroom.arm.com/news/arm-agi-cpu-oracle-cloud-infrastructure-agentic-ai",
+          "title": "Oracle Cloud Infrastructure joins the Arm AGI CPU ecosystem as agentic AI accelerates - Arm Newsroom",
+          "date": "2026-07-10",
+          "host": "newsroom.arm.com"
+        }
+      ],
+      "overlap": 0
+    },
+    "AI Labs": {
+      "exa": [
+        {
+          "url": "https://www.htx.com/news/Ethereum-mVxOFMeD/",
+          "title": "10000 Hours of Human Data, Trains the World's First Whole-Body Mobile Manipulation Implicit World-Action Model | HTX Insights",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "htx.com"
+        },
+        {
+          "url": "https://mpost.io/perplexity-launches-wandr-benchmark-for-measuring-large-scale-research-capabilities-of-ai-agents/",
+          "title": "Perplexity Launches WANDR Benchmark For Measuring Large-Scale Research Capabilities Of AI Agents | Metaverse Post",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "mpost.io"
+        },
+        {
+          "url": "https://venturebeat.com/business/latent-labs-launches-latent-y-to-researchers-worldwide-with-free-daily-access-and-on-demand-credits-for-larger-campaigns",
+          "title": "Latent Labs Launches Latent-Y to Researchers Worldwide — With Free Daily Access and On-Demand Credits for Larger Campaigns | VentureBeat",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "venturebeat.com"
+        },
+        {
+          "url": "https://www.techtimes.com/articles/320519/20260714/chatgpt-turns-searchable-knowledge-base-every-conversation-now-findable.htm",
+          "title": "ChatGPT Turns Into a Searchable Knowledge Base: Every Conversation Now Findable",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "techtimes.com"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41586-026-10689-z",
+          "title": "Universal cell embedding provides a foundation model for cell biology | Nature",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "nature.com"
+        },
+        {
+          "url": "https://www.marktechpost.com/2026/07/14/mistral-ai-releases-robostral-navigate-an-8b-model-enabling-robots-to-navigate-complex-environments-using-a-single-rgb-camera/",
+          "title": "Mistral AI Releases Robostral Navigate: An 8B Model Enabling Robots to Navigate Complex Environments Using a Single RGB Camera - MarkTechPost",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "marktechpost.com"
+        },
+        {
+          "url": "https://usingclaude.com/en/guides/features/gram-ai-dual-use-knowledge-off-switch",
+          "title": "What Is GRAM? Anthropic's New Off Switch for Risky AI Knowledge, Explained | Using Claude",
+          "date": "2026-07-12T00:00:00.000Z",
+          "host": "usingclaude.com"
+        },
+        {
+          "url": "https://benjaminfranklininstitute.org/chatgpt-just-proved-another-50-year-old-math-conjecture/",
+          "title": "ChatGPT just proved another 50-year-old math conjecture – Benjamin Franklin Institute",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "benjaminfranklininstitute.org"
+        },
+        {
+          "url": "https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement",
+          "title": "AIDE²: First Evidence of Recursive Self-Improvement | Weco AI",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "weco.ai"
+        },
+        {
+          "url": "https://www.htx.com/news/nobel-laureate-hassabis-shocks-with-statement-agi-impact-wil-WddDkVpM/",
+          "title": "Nobel Laureate Hassabis Shocks with Statement: AGI Impact Will Be 10 Times That of the Industrial Revolution | HTX Insights",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "htx.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/14/chai-discovery-nabs-400m-series-c-ai-designed-antibodies-reach-big-pharma/",
+          "title": "Chai Discovery nabs $400M Series C as AI-designed antibodies reach Big Pharma - SiliconANGLE",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/14/reflection-inks-1b-compute-deal-with-nebius/",
+          "title": "Reflection inks $1B compute deal with Nebius | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/13/hermes-agent-maker-nous-research-in-talks-for-new-funding-at-1-5b-valuation/",
+          "title": "Hermes agent maker Nous Research in talks for new funding at $1.5B valuation | TechCrunch",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/13/video-generation-startup-pixverse-raises-439m-valuation-soars-past-2b/",
+          "title": "Video-generation startup PixVerse raises $439M, valuation soars past $2B | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/08/prime-intellect-raises-130m-series-a-to-help-enterprises-build-their-own-ai-agents/",
+          "title": "Prime Intellect raises $130M Series A to help enterprises build their own AI agents | TechCrunch",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://embodiedglobal.com/en/article/general-intuition-320m-series-b-2-3b-valuation-gaming-data-world-model-2026",
+          "title": "General Intuition Raises $320M at $2.3B for Gaming-Trained Physical AI",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "embodiedglobal.com"
+        },
+        {
+          "url": "https://hitconsultant.net/2026/07/14/chai-discovery-raises-400-million-series-c/",
+          "title": "Chai Discovery Raises $400M to Accelerate AI-Driven Molecular Design Platform",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "hitconsultant.net"
+        },
+        {
+          "url": "https://startupfortune.com/reflection-ai-secures-over-1-billion-in-nvidia-compute-from-nebius/",
+          "title": "Reflection AI Secures Over $1 Billion in Nvidia Compute From Nebius - Startup Fortune",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "startupfortune.com"
+        },
+        {
+          "url": "https://startupfortune.com/prime-intellect-raises-130-million-to-let-companies-own-their-ai-models/",
+          "title": "Prime Intellect Raises $130 Million to Let Companies Own Their AI Models - Startup Fortune",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "startupfortune.com"
+        },
+        {
+          "url": "https://theaiinsider.tech/2026/07/14/nous-research-nears-75m-funding-round-at-1-5b-valuation-for-open-source-ai-agent-hermes/",
+          "title": "Nous Research Nears $75M Funding Round at $1.5B Valuation for Open-Source AI Agent Hermes",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "theaiinsider.tech"
+        },
+        {
+          "url": "https://www.ucl.ac.uk/engineering/news/2026/jul/ucl-phd-student-awarded-485000-launch-independent-ai-safety-evaluation-organisation",
+          "title": "UCL PhD student awarded $485,000 to launch an independent AI safety evaluation organisation | Faculty of Engineering",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "ucl.ac.uk"
+        },
+        {
+          "url": "https://www.thedeepview.com/articles/demis-hassabis-outlines-ambitious-ai-safety-plan",
+          "title": "Demis Hassabis outlines ambitious AI safety plan | The Deep View",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "thedeepview.com"
+        },
+        {
+          "url": "https://cryptobriefing.com/anthropic-expands-hiring-ai-safety-risks/",
+          "title": "Anthropic expands hiring push to address AI safety risks",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "cryptobriefing.com"
+        },
+        {
+          "url": "https://mlq.ai/news/turing-award-winner-rich-sutton-launches-oak-lab-to-build-continuously-learning-ai-agents/",
+          "title": "Turing Award Winner Rich Sutton Launches Oak Lab to Build Continuously Learning AI Agents | MLQ News",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "mlq.ai"
+        },
+        {
+          "url": "https://news.harvard.edu/gazette/story/newsplus/nada-amin-sitan-chen-appointed-kempner-institute-associate-faculty-members/",
+          "title": "Nada Amin, Sitan Chen appointed Kempner Institute associate faculty members — Harvard Gazette",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "news.harvard.edu"
+        },
+        {
+          "url": "https://stakeandpaper.com/news/openai-safety-chief-exits-amid-restructure",
+          "title": "OpenAI Safety Leadership Departure Signals Governance Shift",
+          "date": "2026-07-12T00:00:00.000Z",
+          "host": "stakeandpaper.com"
+        },
+        {
+          "url": "https://kempnerinstitute.harvard.edu/news/nada-amin-sitan-chen-appointed-kempner-institute-associate-faculty-members/",
+          "title": "Nada Amin, Sitan Chen Appointed Kempner Institute Associate Faculty Members - Kempner Institute",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "kempnerinstitute.harvard.edu"
+        },
+        {
+          "url": "https://tuebingen.ai/news/philipp-hennig-appointed-director-of-the-tuebingen-ai-center",
+          "title": "Philipp Hennig Appointed Director of the Tübingen AI Center - Tübingen AI Center",
+          "date": "2026-07-09T00:00:00.000Z",
+          "host": "tuebingen.ai"
+        },
+        {
+          "url": "https://www.siliconreport.com/openai-merges-safety-and-research-teams-as-head-of-safety-exits-e0ff68bd",
+          "title": "OpenAI Merges Safety and Research Teams as Head of Safety Exits — Silicon Report",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconreport.com"
+        },
+        {
+          "url": "https://www.ibtimes.com/google-deepminds-demis-hassabis-wants-new-ai-watchdog-he-says-us-should-lead-it-3805286",
+          "title": "Google DeepMind's Demis Hassabis Wants A New AI Watchdog. He Says The U.S. Should Lead It. | IBTimes",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "ibtimes.com"
+        }
+      ],
+      "turbo": [
+        {
+          "url": "https://www.ai-market-watch.com/news/ai-releases-open-source-flagship-model-glm-51-enabling-8-hour-sustained-task-exe-yd2u5n",
+          "title": "Zhipu AI (智谱) releases open-source flagship model GLM-5.1 with 8-hour sustained task execution | AI Market Watch",
+          "date": "2026-07-12",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://adam.holter.com/every-ai-model-released-in-february-2026/",
+          "title": "Every AI Model Released in February 2026: Claude, Gemini, GPT, Grok - Adam Holter",
+          "date": "2026-07-13",
+          "host": "adam.holter.com"
+        },
+        {
+          "url": "https://zurich.aitinkerers.org/talks/rsvp_DuQxaJngv4g",
+          "title": "Harness for ARC-AGI-3 | Zürich",
+          "date": "2026-07-14",
+          "host": "zurich.aitinkerers.org"
+        },
+        {
+          "url": "https://pasqualepillitteri.it/en/news/3945/nvidia-cosmos-3-physical-ai",
+          "title": "NVIDIA Cosmos 3: The Open Model for Physical AI (2026)",
+          "date": "2026-07-08",
+          "host": "pasqualepillitteri.it"
+        },
+        {
+          "url": "https://aiagentsdirectory.com/news/ai-agents-directory-daily-brief-july-8-2026",
+          "title": "AI Agents News Brief: OpenAI, Meta, Microsoft, Anthropic Updates - July 8, 2026",
+          "date": "2026-07-12",
+          "host": "aiagentsdirectory.com"
+        },
+        {
+          "url": "https://innovationlabs.harvard.edu/venture/trans-health-hq",
+          "title": "Trans Health HQ",
+          "date": "2026-07-14",
+          "host": "innovationlabs.harvard.edu"
+        },
+        {
+          "url": "https://nitiweb.net/news/2026-02-17/385",
+          "title": "17 US AI Startups Secure $100M+ Funding Rounds in Early 2026: Market Analysis",
+          "date": "2026-07-11",
+          "host": "nitiweb.net"
+        },
+        {
+          "url": "https://www.winzheng.com/en/news/17-us-ai-companies-100m-funding-2026",
+          "title": "Here are the 17 US-based AI companies that have raised $100M or more in 2026 | Winzheng",
+          "date": "2026-07-10",
+          "host": "winzheng.com"
+        },
+        {
+          "url": "https://gravity.fast/blog/ai-agent-startup-funding-tracker-q2-2026",
+          "title": "AI Agent Startup Funding Tracker: Q2 2026 | Gravity",
+          "date": "2026-07-10",
+          "host": "gravity.fast"
+        },
+        {
+          "url": "https://www.wortins.com/blog/ai-agents-funding-2026",
+          "title": "AI Agents Funding 2026: The Startups Raising to Automate Real Work · Wortins · Wortins",
+          "date": "2026-07-08",
+          "host": "wortins.com"
+        },
+        {
+          "url": "https://www.wortins.com/blog",
+          "title": "AI Funding Analysis & Startup Deep-Dives · Wortins Blog · Wortins",
+          "date": "2026-07-08",
+          "host": "wortins.com"
+        },
+        {
+          "url": "https://www.wortins.com/blog/biggest-ai-funding-rounds-2026",
+          "title": "The Biggest AI Funding Rounds of 2026 (Running Tracker) · Wortins · Wortins",
+          "date": "2026-07-08",
+          "host": "wortins.com"
+        },
+        {
+          "url": "https://qubit.capital/blog/ai-startup-fundraising-trends",
+          "title": "AI Startup Funding Trends 2026: Data, Rounds & What's Next",
+          "date": "2026-07-11",
+          "host": "qubit.capital"
+        },
+        {
+          "url": "https://jasonzhu.ai/en/news/2026-07-09",
+          "title": "AI News · 2026-07-09 | JasonZhu.AI",
+          "date": "2026-07-09",
+          "host": "jasonzhu.ai"
+        },
+        {
+          "url": "https://tracxn.com/d/companies/reflectionai/__KVEoLsLZwA5w-u-mA8mUMbw5gQeaFPHv0BYiPPNCtcA/funding-and-investors",
+          "title": "ReflectionAI - 2026 Funding Rounds & List of Investors - Tracxn",
+          "date": "2026-07-09",
+          "host": "tracxn.com"
+        },
+        {
+          "url": "https://www.techinterview.org/post/3233474923/ai-lab-compensation-deep-dive-2026",
+          "title": "AI Lab Compensation Deep Dive 2026: PPUs, Pre-IPO Equity, What’s Real – techinterview",
+          "date": "2026-07-12",
+          "host": "techinterview.org"
+        },
+        {
+          "url": "https://www.analyticsinsight.net/news/openai-safety-chief-departs-as-apple-lawsuit-and-gpt-56-reshape-ai",
+          "title": "OpenAI Safety Chief Departs as Apple Lawsuit and GPT-5.6 Reshape AI",
+          "date": "2026-07-11",
+          "host": "analyticsinsight.net"
+        },
+        {
+          "url": "https://www.aichatdaily.com/ai-business/openai-chief-futurist-joshua-achiam-departs-after-nearly",
+          "title": "OpenAI chief futurist Joshua Achiam departs after nearly nine years — AI Chat Daily",
+          "date": "2026-07-08",
+          "host": "aichatdaily.com"
+        },
+        {
+          "url": "https://www.edtechinnovationhub.com/news/lancaster-university-report-finds-uk-ai-security-research-gaps-as-agentic-ai-grows",
+          "title": "UK report finds AI security research gaps as agentic AI grows | ETIH EdTech News — EdTech Innovation Hub",
+          "date": "2026-07-13",
+          "host": "edtechinnovationhub.com"
+        },
+        {
+          "url": "https://seedfunding.stanford.edu/opportunities/call-hai-hoover-tpa-seed-grants-ai-and-geopolitics",
+          "title": "Call for HAI-Hoover TPA Seed Grants on AI and Geopolitics | Stanford Seed Funding",
+          "date": "2026-07-15",
+          "host": "seedfunding.stanford.edu"
+        },
+        {
+          "url": "https://www.nyas.org/ideas-insights/blog/new-perspectives-on-the-societal-risks-of-ai",
+          "title": "New Perspectives on the Societal Risks of AI - NYAS",
+          "date": "2026-07-09",
+          "host": "nyas.org"
+        },
+        {
+          "url": "https://aipster.com/news/ai-news-2026-07-07",
+          "title": "AI News Roundup — July 7, 2026 - AIpster",
+          "date": "2026-07-08",
+          "host": "aipster.com"
+        },
+        {
+          "url": "https://www.hrgrapevine.com/us/content/article/2026-02-12-google-offers-voluntary-exits-in-business-division-as-ai-adoption-intensifies",
+          "title": "Google offers voluntary exits in business division as AI adoption intensifies | Healthcare & Benefits | HR Grapevine USA | News",
+          "date": "2026-07-15",
+          "host": "hrgrapevine.com"
+        },
+        {
+          "url": "https://theaicronicle.com/en/news/geopolitics/openai-anthropic-g7-geopolitics-of-intelligence",
+          "title": "OpenAI and Anthropic at G7: The New AI Diplomacy — The AI Chronicle",
+          "date": "2026-07-10",
+          "host": "theaicronicle.com"
+        },
+        {
+          "url": "https://www.distillintelligence.com/news/8090",
+          "title": "Latest 8090 News & Announcements - Distill Intelligence",
+          "date": "2026-07-08",
+          "host": "distillintelligence.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/news/ineffable-intelligence-secures-11b-seed-round-at-51b-valuation-yd3e4r",
+          "title": "**Ineffable Intelligence raises $1.1B seed at $5.1B valuation, led by ex-DeepMind researcher** | AI Market Watch",
+          "date": "2026-07-14",
+          "host": "ai-market-watch.com"
+        }
+      ],
+      "overlap": 0
+    },
+    "Vertical AI": {
+      "exa": [
+        {
+          "url": "https://www.accessnewswire.com/newsroom/en/computers-technology-and-internet/instalily-raises-60-million-series-b-and-launches-lily-the-worlds-1190835",
+          "title": "InstaLILY Raises $60 Million Series B and Launches Lily, the World's First AI Forward Deployed Engineer",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "accessnewswire.com"
+        },
+        {
+          "url": "https://saassentinel.com/2026/07/13/minimax-raises-2b-as-enterprise-customer-base-surges-5x-in-six-months/",
+          "title": "MiniMax Raises $2B as Enterprise Customer Base Surges 5x in Six Months - The SaaS Sentinel",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "saassentinel.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/15/indian-ai-coding-startup-emergent-becomes-a-unicorn-just-over-a-year-after-launch/",
+          "title": "Indian AI coding startup Emergent becomes a unicorn with $130M Series C | TechCrunch",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/14/chai-discovery-nabs-400m-series-c-ai-designed-antibodies-reach-big-pharma/",
+          "title": "Chai Discovery nabs $400M Series C as AI-designed antibodies reach Big Pharma - SiliconANGLE",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/13/video-generation-startup-pixverse-raises-439m-valuation-soars-past-2b/",
+          "title": "Video-generation startup PixVerse raises $439M, valuation soars past $2B | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://www.siliconreport.com/prime-intellect-raises-130m-series-a-at-1b-valuation-on-100m-arr-66f6b77e",
+          "title": "Prime Intellect Raises $130M Series a at $1B Valuation on $100M ARR — Silicon Report",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconreport.com"
+        },
+        {
+          "url": "https://payhawk.com/blog/news-payhawk-passes-100m-arr",
+          "title": "Payhawk surpasses $100M ARR after AI-native rebuild | Payhawk",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "payhawk.com"
+        },
+        {
+          "url": "https://startupfortune.com/prime-intellect-raises-130-million-to-let-companies-own-their-ai-models/",
+          "title": "Prime Intellect Raises $130 Million to Let Companies Own Their AI Models - Startup Fortune",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "startupfortune.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/14/reflection-inks-1b-compute-deal-with-nebius/",
+          "title": "Reflection inks $1B compute deal with Nebius | TechCrunch",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/15/emergent-emerges-latest-ai-unicorn-raising-130m-funding/",
+          "title": "Emergent emerges as the latest AI unicorn after raising $130M in funding - SiliconANGLE",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://siliconangle.com/2026/07/14/instalily-developer-ai-teammates-can-automate-complex-business-specific-work-raises-60m/",
+          "title": "InstaLILY, a developer of AI teammates that can automate complex, business-specific work, raises $60M - SiliconANGLE",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "siliconangle.com"
+        },
+        {
+          "url": "https://www.morningstar.com/news/business-wire/20260714608171/thira-raises-21-million-seed-round-led-by-madrona-to-build-the-back-office-that-runs-itself",
+          "title": "Thira Raises $21 Million Seed Round Led by Madrona to Build the Back-Office That Runs Itself | Morningstar",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "morningstar.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/08/prime-intellect-raises-130m-series-a-to-help-enterprises-build-their-own-ai-agents/",
+          "title": "Prime Intellect raises $130M Series A to help enterprises build their own AI agents | TechCrunch",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://techcrunch.com/2026/07/13/hermes-agent-maker-nous-research-in-talks-for-new-funding-at-1-5b-valuation/",
+          "title": "Hermes agent maker Nous Research in talks for new funding at $1.5B valuation | TechCrunch",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "techcrunch.com"
+        },
+        {
+          "url": "https://awesomeagents.ai/news/lyzr-ai-agent-runs-100m-series-b/",
+          "title": "Lyzr Raises $100M - Its Own AI Agent Did the Work | Awesome Agents",
+          "date": "2026-07-10T00:00:00.000Z",
+          "host": "awesomeagents.ai"
+        },
+        {
+          "url": "https://www.geekwire.com/2026/apptio-co-founders-reunite-to-launch-enterprise-ai-startup-thira-with-21m-in-funding-led-by-madrona/",
+          "title": "Apptio co-founders reunite to launch enterprise AI startup Thira with $21M in funding led by Madrona – GeekWire",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "geekwire.com"
+        },
+        {
+          "url": "https://www.eu-startups.com/2026/07/paris-based-mio-emerges-from-stealth-with-e1-9-million-in-funding-to-build-an-ai-colleague-that-lives-inside-slack/",
+          "title": "Paris-based Mio emerges from stealth with €1.9 million to build an AI colleague that lives inside Slack | EU-Startups",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "eu-startups.com"
+        },
+        {
+          "url": "https://www.upstartsmedia.com/p/deep-dive-adapter-launches-ai-cognition",
+          "title": "Exclusive: Startup Adapter Launches With $17.8M To Bring New 'Cognition' To AI Tools",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "upstartsmedia.com"
+        },
+        {
+          "url": "https://www.wownews24x7.com/ltimindtree-to-lead-group-wide-copilot-deployment-at-lt",
+          "title": "LTIMindtree to Lead Group-Wide Copilot Deployment at L&T | Wow News",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "wownews24x7.com"
+        },
+        {
+          "url": "https://sentinel.ht/hcltech-114-billion-ai-operating-model-fortune-global-50-deal/",
+          "title": "HCLTech Wins $1.14B AI Digital Workplace Deal",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "sentinel.ht"
+        },
+        {
+          "url": "https://www.morningstar.com/news/pr-newswire/20260708io00270/ust-partners-with-anthropic-to-bring-claude-into-usts-platforms-engineering-and-operations-and-train-20000-ust-employees-globally",
+          "title": "UST Partners with Anthropic to Bring Claude into UST's Platforms, Engineering, and Operations and Train 20,000 UST Employees Globally | Morningstar",
+          "date": "2026-07-08T00:00:00.000Z",
+          "host": "morningstar.com"
+        },
+        {
+          "url": "https://usabusinesstimes.com/googles-gemini-ultra-3-is-quietly-reshaping-enterprise-ai/",
+          "title": "Google’s Gemini Ultra 3 Is Quietly Reshaping Enterprise AI – USA Business Times",
+          "date": "2026-07-13T00:00:00.000Z",
+          "host": "usabusinesstimes.com"
+        },
+        {
+          "url": "https://enterpriseai.economictimes.indiatimes.com/news/industry/lt-group-implements-microsoft-365-copilot-for-140000-employees/132410461",
+          "title": "L&T Group Implements Microsoft 365 Copilot for 140,000 Employees, ETEnterpriseai",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "enterpriseai.economictimes.indiatimes.com"
+        },
+        {
+          "url": "https://businessupturn.com/brand-post/ltm-to-account-for-the-largest-implementations-as-l-t-drives-an-ai-powered-workplace-transformation-with-microsoft-365-copilot/",
+          "title": "LTM to Account for the Largest Implementations as L&T Drives an AI Powered Workplace Transformation With Microsoft 365 Copilot · Business Upturn",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "businessupturn.com"
+        },
+        {
+          "url": "https://uknewshour.com/ltm-to-account-for-the-largest-implementations-as-lt-drives-an-ai-powered-workplace-transformation-with-microsoft-365-copilot/2026/221814/",
+          "title": "LTM to Account for the Largest Implementations as L&T Drives an AI Powered Workplace Transformation With Microsoft 365 Copilot – UK Newshour",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "uknewshour.com"
+        },
+        {
+          "url": "https://usabusinesstimes.com/googles-gemini-ultra-3-is-quietly-reshaping-enterprise-ai-2/",
+          "title": "Google’s Gemini Ultra 3 Is Quietly Reshaping Enterprise AI – USA Business Times",
+          "date": "2026-07-14T00:00:00.000Z",
+          "host": "usabusinesstimes.com"
+        },
+        {
+          "url": "https://scanx.trade/stock-market-news/companies/ltm-drives-ai-workplace-transformation-for-l-t-group/45637177",
+          "title": "LTM Leads L&T Group's AI Workplace Transformation with Microsoft 365 Copilot",
+          "date": "2026-07-15T00:00:00.000Z",
+          "host": "scanx.trade"
+        }
+      ],
+      "turbo": [
+        {
+          "url": "https://scribe.com/library/100-million-arr-press-release",
+          "title": "Scribe hits $100M in ARR as workflow context becomes the new ...",
+          "date": "2026-07-12",
+          "host": "scribe.com"
+        },
+        {
+          "url": "https://www.manilatimes.net/2026/07/08/tmt-newswire/pr-newswire/bocloud-technology-completes-new-hundreds-of-millions-yuan-financing/2380440",
+          "title": " BoCloud Technology Completes New Hundreds-of-Millions-Yuan Financing\n\n | The Manila Times ",
+          "date": "2026-07-08",
+          "host": "manilatimes.net"
+        },
+        {
+          "url": "https://www.greptile.com/blog/series-a",
+          "title": "Greptile Raises $25M Series A and Launches v3 | Greptile",
+          "date": "2026-07-11",
+          "host": "greptile.com"
+        },
+        {
+          "url": "https://www.manilatimes.net/2026/06/11/tmt-newswire/globenewswire/core-ai-announces-launch-of-ai-home-design-app-homegpt/2363676",
+          "title": " Core AI Announces Launch of AI Home Design App: HomeGPT\n\n | The Manila Times ",
+          "date": "2026-07-10",
+          "host": "manilatimes.net"
+        },
+        {
+          "url": "https://www.cyera.com/blog/how-cyera-went-from-0-to-6b-and-why-were-just-getting-started",
+          "title": "Why $6B Is Just the Beginning for Cyera",
+          "date": "2026-07-08",
+          "host": "cyera.com"
+        },
+        {
+          "url": "https://aimultiple.com/enterprise-ai-companies",
+          "title": "Enterprise AI Companies: Landscape Breakdown in 2026",
+          "date": "2026-07-08",
+          "host": "aimultiple.com"
+        },
+        {
+          "url": "https://soc2auditors.org/insights/drata-review/",
+          "title": "Drata Review (2026): Pricing, AI Agent & Real Costs",
+          "date": "2026-07-08",
+          "host": "soc2auditors.org"
+        },
+        {
+          "url": "https://www.heygen.com/blog/heygen-june-2026-release",
+          "title": "What’s New at HeyGen: June 2026 Product Updates",
+          "date": "2026-07-08",
+          "host": "heygen.com"
+        },
+        {
+          "url": "https://www.manilatimes.net/2026/03/23/tmt-newswire/globenewswire/nowvertical-expands-cloud-migration-engagement-following-ai-powered-delivery-acceleration/2305456",
+          "title": " NowVertical Expands Cloud Migration Engagement Following AI-Powered Delivery Acceleration\n\n | The Manila Times ",
+          "date": "2026-07-12",
+          "host": "manilatimes.net"
+        },
+        {
+          "url": "https://tribecavp.com/",
+          "title": "Tribeca Venture Partners - NY hustle for NY founders",
+          "date": "2026-07-08",
+          "host": "tribecavp.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/news/andreessen-horowitz-leads-16m-seed-round-for-swedish-ai-startup-pit-7taxeo",
+          "title": "Pit Raises $16M Seed from a16z to Build AI-Native Enterprise Workflow Platform | AI Market Watch",
+          "date": "2026-07-13",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://aiagentsdirectory.com/news/ai-agents-news-brief-june-4-2026",
+          "title": "AI Agents News Brief - June 4, 2026: Partnerships, Security, and New Tools",
+          "date": "2026-07-14",
+          "host": "aiagentsdirectory.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/news/company/pit",
+          "title": "Pit News - Latest Updates & Announcements | AI Market Watch",
+          "date": "2026-07-12",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://www.vcbacked.co/directory/industries/agentic-ai",
+          "title": "415 Agentic AI Startups (2026) — Recently Funded | VCBacked",
+          "date": "2026-07-12",
+          "host": "vcbacked.co"
+        },
+        {
+          "url": "https://www.distillintelligence.com/news/superplane",
+          "title": "Latest SuperPlane News & Announcements - Distill Intelligence",
+          "date": "2026-07-12",
+          "host": "distillintelligence.com"
+        },
+        {
+          "url": "https://www.distillintelligence.com/news/stardust-ai",
+          "title": "Latest Stardust AI (Stardust) News & Announcements",
+          "date": "2026-07-14",
+          "host": "distillintelligence.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/company/champ-ai",
+          "title": "Champ AI - AI Startup Profile | AI Market Watch",
+          "date": "2026-07-14",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://www.quorum.us/company-news/campaign-builder-agent-launch/",
+          "title": "Campaign Builder Agent: AI for Grassroots Advocacy",
+          "date": "2026-07-14",
+          "host": "quorum.us"
+        },
+        {
+          "url": "https://www.distillintelligence.com/news/omni-analytics",
+          "title": "Latest Omni Analytics (Omni) News & Announcements - Distill",
+          "date": "2026-07-14",
+          "host": "distillintelligence.com"
+        },
+        {
+          "url": "https://www.ai-market-watch.com/company/worktrace-ai",
+          "title": "Worktrace AI - AI Startup Profile | AI Market Watch",
+          "date": "2026-07-12",
+          "host": "ai-market-watch.com"
+        },
+        {
+          "url": "https://www.workboard.com/news/spm-portfolio-analyst",
+          "title": "AI-native SPM and Portfolio Analyst Agents | WorkBoard News",
+          "date": "2026-07-08",
+          "host": "workboard.com"
+        },
+        {
+          "url": "https://www.contify.com/resources/blog/contify-copilot-feature-guide",
+          "title": "What to know about Contify Copilot",
+          "date": "2026-07-09",
+          "host": "contify.com"
+        },
+        {
+          "url": "https://verticalmag.com/press-releases/archer-announces-zee-ai-foundation-model-purpose-built-for-aviation/",
+          "title": "Archer announces Zee, AI foundation model purpose-built for aviation - Vertical Mag",
+          "date": "2026-07-15",
+          "host": "verticalmag.com"
+        },
+        {
+          "url": "https://verticalmag.com/press-releases/archer-announces-zee-ai-foundation-model-purpose-built-for-aviation/amp/",
+          "title": "Archer announces Zee, AI foundation model purpose-built for aviation - Vertical Mag",
+          "date": "2026-07-15",
+          "host": "verticalmag.com"
+        },
+        {
+          "url": "https://fireworks.ai/blog/gumloop",
+          "title": "How Gumloop Scaled Open-Weight Model Usage 7x in 3 Weeks with Fireworks AI",
+          "date": "2026-07-09",
+          "host": "fireworks.ai"
+        },
+        {
+          "url": "https://www.mindstudio.ai/blog/ai-industry-shift-model-race-no-longer-only-race",
+          "title": "AI Industry Shift: Why the Model Race Is No Longer the Only Race That Matters | MindStudio",
+          "date": "2026-07-08",
+          "host": "mindstudio.ai"
+        },
+        {
+          "url": "https://gagadget.com/en/717700-microsoft-swaps-openai-and-anthropic-for-its-own-ai-in-excel-and-outlook",
+          "title": "Microsoft swaps OpenAI and Anthropic for its own AI in Excel and Outlook",
+          "date": "2026-07-08",
+          "host": "gagadget.com"
+        }
+      ],
+      "overlap": 0
+    }
+  }
+}

@@ -1,0 +1,2117 @@
+{
+  "meta": {
+    "startDate": "2026-05-28",
+    "processor": "base",
+    "judgeModel": "gemini-2.5-flash",
+    "sourcePolicyServerSideDateFilter": true,
+    "generatedAt": "2026-06-04T03:20:13.507Z"
+  },
+  "aggregate": {
+    "worthyExaOnly": 63,
+    "worthyParallelOnly": 38,
+    "worthyBoth": 2,
+    "netRecallGap": -25,
+    "parallelPoolStats": {
+      "raw": 156,
+      "nullDate": 22,
+      "outOfWindow": 0
+    }
+  },
+  "verdicts": [
+    {
+      "beat": "Physical AI",
+      "exaPool": 26,
+      "parallelPool": 20,
+      "rawOverlap": 0,
+      "worthyExaOnly": 19,
+      "worthyParallelOnly": 9,
+      "worthyBoth": 0,
+      "exaOnlyTitles": [
+        "Japan's Atom Raises Nearly $19M in Seed Round Funding for Humanoid Robotics with Goal to 'Create New Species'",
+        "Unitree Clears Major Hurdle with Fast-Track STAR Market IPO Approval | Humanoids Daily",
+        "Nvidia picks Chinese startup Unitree for its first humanoid robot AI platform as physical AI race heats up - Tech Startups",
+        "EngineAI Launches Shenzhen Intelligent Manufacturing Base as First Batch of T800 Humanoid Robots Roll Off the Production Line to Begin Mass Delivery",
+        "Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research",
+        "Mecka AI raises $60M for human-motion robotics data — Silicon Report",
+        "Vingroup invests $12.75m in US-based humanoid robot research company",
+        "RoboStore to Lead U.S. Distribution of the Unitree H2 Plus — The First Humanoid Built on NVIDIA Isaac GR00T",
+        "NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research | INN",
+        "Pudu Robotics and Shenzhen CTID Co. Ltd Launch the World's First Full-Scenario Robot-Serviced Hotel Project",
+        "IntBot and Certis Group Partner to Scale Enterprise Physical AI Across Singapore - Certis",
+        "BMW Deploys Hexagon Robotics' Aeon Humanoid at Leipzig Factory in First European Automotive Humanoid Deployment | RobotsBeat",
+        "Bosch to manufacture Humanoid robots | IN Supply",
+        "Schaeffler Deploys 1,000+ Humanoid Robots: Revolutionizing Global Manufacturing by 2032 (2026)",
+        "The real story behind NVIDIA's Unitree deal is not the robot—it is a massive bet on what is coming next - Business News | The Financial Express",
+        "Figure Moves From Demo Signal to Customer Workflow",
+        "PUDU Embodied Unveils the Next-Generation PUDU D7: Opening a New Chapter for Industrial Semi-Humanoid Robotics",
+        "Waymo's newest robotaxi is Chinese-made, built to make money, and now accepting riders | TechCrunch",
+        "OpenAI Pivots Directly Into Hardware, Launching Internal Robotics Division | Humanoids Daily"
+      ],
+      "parallelOnlyTitles": [
+        "Genisom AI's Embodied Robots Surpass 10,000-unit Production Milestone | Gasgoo",
+        "AI Insider's Robotics Week in Review - LinkedIn",
+        "Vendor Training Robots With Human Data Raises $60 Million",
+        "Today's Daily Sift: AI/Robotics The AI story today is not ... - Instagram",
+        "AD Robotics Planning & Business Strategy - Chewy | Built In Boston",
+        "OpenAI is hiring its way back into robotics - Startup Fortune",
+        "Deployment Strategist @ Foundry Robotics Inc. - Jobs",
+        "Manager, Offer Development & Strategy - MedTech Surgery, Cincinnati / Santa Clara / Raritan | Johnson & Johnson Careers",
+        "Founding Talent Partner at Watney Robotics - Wellfound"
+      ],
+      "exaPrecision": 0.731,
+      "parallelPrecision": 0.45
+    },
+    {
+      "beat": "AI Infrastructure",
+      "exaPool": 28,
+      "parallelPool": 28,
+      "rawOverlap": 0,
+      "worthyExaOnly": 20,
+      "worthyParallelOnly": 11,
+      "worthyBoth": 1,
+      "exaOnlyTitles": [
+        "Archestra raises $10M to broker AI agent access to corporate data - SiliconANGLE",
+        "The Developer Platform for World Models: Our Series A in Reactor - Lightspeed Venture Partners",
+        "Introducing VIBEshift: from prototype to production-grade app in one command - Opsera",
+        "Announcing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud",
+        "IBM and Red Hat Commit $5 Billion to Redefine the Future of Open Source in the AI Era",
+        "OpenAI models and Codex on Amazon Bedrock are now generally available | Artificial Intelligence",
+        "AlloyDB Remote MCP Server GA: Secure AI Agent Access to Your Data | Google Cloud Blog",
+        "CoreWeave - CoreWeave Completes Industry-First Bring-Up and Validation of NVIDIA Vera Rubin NVL72",
+        "Coralogix Raises $200M to Scale the Observability Backbone for the Age of AI - Coralogix",
+        "OpenAI + Dell Codex On-Premises 2026: Architecture Explained",
+        "Mistral NOW Summit 2026: Vast Data Helps Power the Data Foundation for Mistral's Nvidia-Accelerated AI Factories in Europe - StorageNewsletter",
+        "SoftBank Group and Sesterce to Develop 1 GW AI Data Center in Bosquel, France | SoftBank Group Corp.",
+        "Gorilla Technology Announces $2 Billion AI Infrastructure Deal in India with Supermicro, Expanding Strategic Collaboration Across Asia Pacific | Gorilla Technology",
+        "IREN signs USD $9.7 billion AI cloud deal with Microsoft",
+        "SoftBank Group to Build 5 GW of AI Data Center Capacity in France | SoftBank Group Corp.",
+        "IREN closes $3.65 billion GPU financing to back Microsoft AI cloud contract - Blockspace",
+        "News: At Choose France, Ardian and Verne announce plans for a digital infrastructure campus in Île-de-France to strengthen Europe’s industrial and AI capacity",
+        "Ascenty Secures 150 Megawatts of New AI Contracts",
+        "India, UAE partner on AI sovereignty to bypass Google, Microsoft - Rest of World",
+        "Bull and Foxconn partner to scale Europe’s manufacturing capabilities for artificial intelligence infrastructures"
+      ],
+      "parallelOnlyTitles": [
+        "Anthropic at $965 Billion: What the World's Most Valuable Startup Means for AI Builders | MindStudio",
+        "Google's AI ambitions are getting an $80 billion boost. Alphabet is ...",
+        "Every extra database is a latency tax on your LLM. Simplify with ...",
+        "Databricks AI Search | Databricks on AWS - Databricks documentation",
+        "OpenTelemetry Launches \"Blueprints\" Initiative to Simplify…",
+        "Azure updates",
+        "NVIDIA AI Cloud Ecosystem Expands Worldwide to Meet Global AI Compute Demand | NVIDIA Blog",
+        "The company says it will use the resources to \"scale AI infrastructure ...",
+        "Oracle Cloud Infrastructure joins the Arm AGI CPU ecosystem as agentic AI accelerates - Arm Newsroom",
+        "Job Application for Finance Manager, AI Infrastructure at Nscale",
+        "Classover Announces Neocloud Infrastructure Partnership With Cyfuture.ai - Classover"
+      ],
+      "exaPrecision": 0.75,
+      "parallelPrecision": 0.429
+    },
+    {
+      "beat": "AI Labs",
+      "exaPool": 29,
+      "parallelPool": 29,
+      "rawOverlap": 0,
+      "worthyExaOnly": 13,
+      "worthyParallelOnly": 7,
+      "worthyBoth": 0,
+      "exaOnlyTitles": [
+        "Building a hill-climbing machine: Launching seven new MAI models | Microsoft AI",
+        "Introducing MAI-Thinking-1 | Microsoft AI",
+        "MiniMax Releases MiniMax M3 with MSA Architecture Supporting 1M-Token Context, Native Multimodality, and Agentic Coding - MarkTechPost",
+        "Holo3.1: Fast & Local Computer Use Agents",
+        "How Cosmos 3 Helps Physical AI Think Before It Acts | NVIDIA Blog",
+        "Introducing MAI-Code-1-Flash | Microsoft AI",
+        "Anthropic raises $65 billion, nears $1T valuation ahead of IPO | TechCrunch",
+        "DeepSeek lines up its first outside money: a $7bn round at up to $59bn",
+        "Anthropic becomes the world’s most valuable AI startup, nears $1 trillion valuation and surpasses OpenAI - Tech Startups",
+        "ROOST and Mila Announce Partnership to Advance Open Source AI Safety, Starting with Youth Safety | Mila",
+        "Center for AI Safety Names Former xAI Leader Devin Kim President and Establishes Frontier Security Institute in Major Expansion of Leadership and Reach - Las Vegas Sun News",
+        "HKUST and CalmCar Establish the Physical AI Innovation Center | The Hong Kong University of Science and Technology",
+        "3D Vision Pioneer Andrea Tagliasacchi Joins Wayve Labs - Wayve"
+      ],
+      "parallelOnlyTitles": [
+        "We are releasing Cosmos 3 — the frontier foundation model for ...",
+        "Exclusive: AI market-research... - The Wall Street Journal | Facebook",
+        "Anthropic Funding Pushed Startup Investment To Near-Record Levels In May As Exit Market Reopened",
+        "Ex-DeepMind researchers raise $50m for AI science startup Inherent",
+        "Anthropic is now the most valuable artificial intelligence company in Silicon Valley. The AI giant announced a $65 billion Series H financing at a $965 billion valuation on Thursday, putting its value above rival AI lab OpenAI.",
+        "AfterQuery — $46M Raised — Reviews & Alternatives | StartupHub.ai",
+        "Anthropic Fellows Program for AI safety research - Reddit"
+      ],
+      "exaPrecision": 0.448,
+      "parallelPrecision": 0.241
+    },
+    {
+      "beat": "Vertical AI",
+      "exaPool": 23,
+      "parallelPool": 29,
+      "rawOverlap": 1,
+      "worthyExaOnly": 11,
+      "worthyParallelOnly": 11,
+      "worthyBoth": 1,
+      "exaOnlyTitles": [
+        "Parloa deploys $350M with SAP, Microsoft, OpenAI partnerships",
+        "Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu",
+        "Asana acquires no-code agent-builder StackAI | TechCrunch",
+        "Vertice acquires Vendr to create the world's largest procurement intelligence dataset and lead autonomous AI negotiation",
+        "The AI startup replacing software engineers just raised $1B at $26B valuation and it is already writing 89% of Cognition's own code — TFN",
+        "Geordie AI Raises $30M Series A as Enterprises Race to Secure AI Agents – Unite.AI",
+        "Replit Expands Enterprise Leadership with Visa Investment and Partnership, Payments Expansion, and Solution Partner Program",
+        "Infosys, TCS and Wipro scale Microsoft 365 Copilot to over 300,000 employees - Source Asia",
+        "KPMG rolls out Claude to 276,000 staff in global Anthropic alliance - Tech Three Dots",
+        "Mistral AI signs Airbus and BMW for industrial AI platform",
+        "Wolters Kluwer and OpenAI expand enterprise AI collaboration to advance trusted Expert AI for regulated professionals"
+      ],
+      "parallelOnlyTitles": [
+        "Build AI Apps on Your Data, IT Approved From Day One |… - AppDirect",
+        "Cracking The Enterprise AI Sales Code - LinkedIn",
+        "What does the future of enterprise AI look like? Hear Snowflake CEO ...",
+        "Mark Zuckerberg Wants Meta’s New AI Agents to Run Your Whole Business - WSJ",
+        "AI Agents News Brief: Funding, New Tools, and Security Focus",
+        "AI: Morgan Stanley to open its wealth management funnel to agents",
+        "Is Microsoft's OpenAI Bet Putting Your AI Contract at Risk? - CX Today",
+        "Introducing Microsoft 365 Business with Copilot: The new standard for small business | Microsoft 365 Blog",
+        "Industry-Specific AI Agent Playbooks (Finance, Healthcare, Legal ...",
+        "What Features Should an Enterprise AML AI Copilot Include?",
+        "Microsoft Introduces Microsoft 365 Copilot to Revolutionize ..."
+      ],
+      "exaPrecision": 0.522,
+      "parallelPrecision": 0.414
+    }
+  ],
+  "raw": {
+    "Physical AI": {
+      "exa": [
+        {
+          "title": "Japan's Atom Raises Nearly $19M in Seed Round Funding for Humanoid Robotics with Goal to 'Create New Species'",
+          "url": "https://theaiinsider.tech/2026/06/01/japans-atom-raises-nearly-19m-in-seed-round-funding-for-humanoid-robotics-with-goal-to-create-new-species/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Japan's Atom Raises Nearly $19M in Seed Round Funding for Humanoid Robotics with Goal to 'Create New Species'\n\n- Newsletter\n- AI, AI Funding & Investment, Robotics\n\n# Japan’s Atom Raises Nearly $19M in Seed Round Funding for Humanoid Robotics with Goal to ‘Create New Species’\n\n- Greg Bock\n- June 1, 2026\n- 7 min read\n\nInsider Brief\n\n- Japanese humanoid robotics startup Atom has raised 3 billion yen",
+          "source": "theaiinsider.tech",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Unitree Clears Major Hurdle with Fast-Track STAR Market IPO Approval | Humanoids Daily",
+          "url": "https://www.humanoidsdaily.com/news/unitree-clears-major-hurdle-with-fast-track-star-market-ipo-approval",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Unitree Clears Major Hurdle with Fast-Track STAR Market IPO Approval | Humanoids Daily\n\n## Key Takeaways\n\nHide\n\n- Unitree Robotics officially passed its listing committee hearing on June 1, 2026, clearing the path to become the first \"embodied AI\" listing on China's A-share market.\n- The approval was secured in a record-breaking 73 days after its March 20 filing, leveraging the Shanghai Stock Exch",
+          "source": "humanoidsdaily.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Nvidia picks Chinese startup Unitree for its first humanoid robot AI platform as physical AI race heats up - Tech Startups",
+          "url": "https://techstartups.com/2026/06/01/nvidia-picks-chinese-startup-unitree-for-its-first-humanoid-robot-ai-platform-as-physical-ai-race-heats-up/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Nvidia picks Chinese startup Unitree for its first humanoid robot AI platform as physical AI race heats up - Tech Startups\n\n- Trust & Safety\n- Editorial Policy\n\nJune 3, 2026\n\n- Trust & Safety\n- Editorial Policy\n\n- Top Startups\n- Startup List\n- Submit Your Startup\n\n- Free Startup Valuation Calculator\n\n# Nvidia picks Chinese startup Unitree for its first humanoid robot AI platform as physical AI rac",
+          "source": "techstartups.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "EngineAI Launches Shenzhen Intelligent Manufacturing Base as First Batch of T800 Humanoid Robots Roll Off the Production Line to Begin Mass Delivery",
+          "url": "https://www.prnewswire.com/news-releases/engineai-launches-shenzhen-intelligent-manufacturing-base-as-first-batch-of-t800-humanoid-robots-roll-off-the-production-line-to-begin-mass-delivery-302785384.html",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "EngineAI Launches Shenzhen Intelligent Manufacturing Base as First Batch of T800 Humanoid Robots Roll Off the Production Line to Begin Mass Delivery Accessibility Statement Skip Navigation\n\nSHENZHEN, China, May 29, 2026 /PRNewswire/ -- EngineAI Robotics, an innovator in humanoid robots, announced the official launch of EngineAI Intelligent Manufacturing (Honghualing, Shenzhen) Base, alongside the ",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Unitree Clears Shanghai STAR Market IPO Review, Setting Up First A-Share Listing for a Humanoid Robot Maker | RobotsBeat",
+          "url": "https://robotsbeat.com/unitree-shanghai-star-market-ipo-approval-humanoid-robot-listing-wave/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Unitree Clears Shanghai STAR Market IPO Review, Setting Up First A-Share Listing for a Humanoid Robot Maker | RobotsBeat\n\nHangzhou-based Unitree advances toward becoming the first humanoid robot maker listed on China's domestic A-share market. Photo: Unitree\n\nUnitree Robotics passed its Shanghai STAR Market listing committee review on June 1, clearing the key regulatory hurdle that opens the door ",
+          "source": "robotsbeat.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research",
+          "url": "https://www.prnewswire.com/news-releases/unitree-announces-h2-plus-an-nvidia-isaac-gr00t-reference-humanoid-robot-for-academic-research-302786748.html",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research Accessibility Statement Skip Navigation\n\nNews Summary:\n\n- Unitree Robotics introduces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot combining a Unitree H2 humanoid robot, Sharpa five-fingered hands for dexterous manipulation, NVIDIA Jetson Thor for advanced reasoning and control, and the new N",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Mecka AI raises $60M for human-motion robotics data — Silicon Report",
+          "url": "https://www.siliconreport.com/mecka-ai-raises-reported-60-million-for-human-motion-robotics-training-data-7a81ff23ab5b638a",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Mecka AI raises $60M for human-motion robotics data — Silicon Report\n\nTuesday, June 2, 2026Jun 2, 2026Vol. 23 · No. 002San Francisco\n\nMorning Edition\n\nMecka AI raises $60M for human-motion robotics data — Silicon Report\nTuesday, June 2, 2026Jun 2, 2026Vol. 23 · No. 002San Francisco\nMorning Edition◐\n## Navigation\n[SiliconReport](https://www.siliconreport.com/)×\nHome\n* [Today](https://www.siliconrep",
+          "source": "siliconreport.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Vingroup invests $12.75m in US-based humanoid robot research company",
+          "url": "https://vir.com.vn/vingroup-invests-1275m-in-us-based-humanoid-robot-research-company-153860.html",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Vingroup invests $12.75m in US-based humanoid robot research company\n\nJune 04, 2026 00:26\n\n- CEO Talk\n- Biz Link\n- PR Newswire\n- Media OutReach Newswire\n\n- Green Buildings\n- Industrial Properties\n\n- Swing for the Kids\n- CSR\n\n# Vingroup invests $12.75m in US-based humanoid robot research company\n\nJune 02, 2026 | 19:19\n\n(0) user say\n\nVingroup has approved a $12.75 million investment in a US-based hu",
+          "source": "vir.com.vn",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "RoboStore to Lead U.S. Distribution of the Unitree H2 Plus — The First Humanoid Built on NVIDIA Isaac GR00T",
+          "url": "https://www.linkedin.com/pulse/robostore-lead-us-distribution-unitree-h2-plus-first-humanoid-kfvge",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "RoboStore to Lead U.S. Distribution of the Unitree H2 Plus — The First Humanoid Built on NVIDIA Isaac GR00T\n\nAgree & Join LinkedIn\n\nBy clicking Continue to join or sign in, you agree to LinkedIn’s User Agreement, Privacy Policy, and Cookie Policy.\n\nRoboStore, the world's leading distributor of Unitree humanoid robots, is leading the U.S. commercialization and distribution of the Unitree H2 Plus; t",
+          "source": "linkedin.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research | INN",
+          "url": "https://investingnews.com/nvidia-announces-nvidia-isaac-gr00t-reference-humanoid-robot-for-academic-research/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research | INN\n\nAustralia\n\nNorth America\n\nWorld\n\nInvesting News NetworkYour trusted source for investing success\n\n# NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research\n\nMay 31, 2026\n\nNews Summary:\n\n- NVIDIA announces an open humanoid robot reference design built on the NVIDIA Isaac GR00T platfo",
+          "source": "investingnews.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Pudu Robotics and Shenzhen CTID Co. Ltd Launch the World's First Full-Scenario Robot-Serviced Hotel Project",
+          "url": "https://www.prnewswire.com/news-releases/pudu-robotics-and-shenzhen-ctid-co-ltd-launch-the-worlds-first-full-scenario-robot-serviced-hotel-project-302786945.html",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Pudu Robotics and Shenzhen CTID Co. Ltd Launch the World's First Full-Scenario Robot-Serviced Hotel Project Accessibility Statement Skip Navigation\n\nA landmark project at the Shenzhen-Zhongshan Link will bring embodied AI into every stage of the guest experience.\n\nSHENZHEN, China, June 1, 2026 /PRNewswire/ -- Pudu Robotics, a global leader in commercial service robotics, and Shenzhen Culture & Tou",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "IntBot and Certis Group Partner to Scale Enterprise Physical AI Across Singapore - Certis",
+          "url": "https://www.certisgroup.com/intbot-and-certis-group-partner-to-scale-enterprise-physical-ai-across-singapore/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "IntBot and Certis Group Partner to Scale Enterprise Physical AI Across Singapore - Certis\n\n# Latest News\n\nHome» News» IntBot and Certis Group Partner to Scale Enterprise Physical AI Across Singapore\n\n### IntBot and Certis Group Partner to Scale Enterprise Physical AI Across Singapore\n\n- 28 May 2026\n\n26 May 2026, SAN JOSE, Calif. And SINGAPORE – IntBot, the company building the social intelligence ",
+          "source": "certisgroup.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "The Physical AI Reference Stack | Vector™",
+          "url": "https://thefogsignal.substack.com/p/the-physical-ai-reference-stack",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "The Physical AI Reference Stack | Vector™\n\n# The Fog Signal™\n\nSubscribeSign in\n\n# The Physical AI Reference Stack\n\n### Why three commercial humanoid contracts in 2026 decide factory compute through 2030.\n\nMay 28, 2026\n\n∙ Paid\n\n9\n\n1\n\nShare\n\nBy Armando Pereira | Founder, PVentures Consulting | Senior Member IEEE | Co-founder, OpenFog Consortium (IEEE 1934) | President, Autonomous Vehicle Computing C",
+          "source": "thefogsignal.substack.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "BMW Deploys Hexagon Robotics' Aeon Humanoid at Leipzig Factory in First European Automotive Humanoid Deployment | RobotsBeat",
+          "url": "https://robotsbeat.com/bmw-hexagon-aeon-humanoid-robot-leipzig-factory-europe-deployment/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "BMW Deploys Hexagon Robotics' Aeon Humanoid at Leipzig Factory in First European Automotive Humanoid Deployment | RobotsBeat\n\nA wheeled humanoid robot feeding parts to manufacturing tools on an automotive assembly line at a European car factory, operating alongside human workers on a live production floor. Photo: BMW Group\n\nBMW will deploy two Hexagon Robotics Aeon humanoid robots on its productio",
+          "source": "robotsbeat.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Bosch to manufacture Humanoid robots | IN Supply",
+          "url": "https://in-supply.co.uk/bosch-to-manufacture-humanoid-robots/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Bosch to manufacture Humanoid robots | IN Supply\n\n# Bosch to manufacture Humanoid robots\n\n—\n\nMay 29, 2026\n\nHumanoid has selected Bosch to manufacture its HMND 01 robot. The agreement follows a logistics proof of concept and will support industrialisation, production, supply chain, and cost optimisation.\n\n---\n\n#### IN Brief:\n\n- About\n- Humanoid has selected Bosch as a manufacturing partner for the ",
+          "source": "in-supply.co.uk",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Schaeffler Deploys 1,000+ Humanoid Robots: Revolutionizing Global Manufacturing by 2032 (2026)",
+          "url": "https://decorelights.com/article/schaeffler-deploys-1-000-humanoid-robots-revolutionizing-global-manufacturing-by-2032",
+          "publishedAt": "2026-05-30T00:00:00.000Z",
+          "text": "Schaeffler Deploys 1,000+ Humanoid Robots: Revolutionizing Global Manufacturing by 2032 (2026)\n\n{ style = event.detail.style; message = event.detail.message; show = true; }); \">\n\n# Schaeffler Deploys 1,000+ Humanoid Robots: Revolutionizing Global Manufacturing by 2032 (2026)\n\nTable of Contents\n\nA Thousand Strong: The Dawn of Humanoid Workforce Integration Beyond Hardware: The Robot-as-a-Service Re",
+          "source": "decorelights.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "EDF, BMW, Airbus: Mistral AI Stages Its Industrial Shift, But Concrete Contracts Remain Sparse",
+          "url": "https://www.actuia.com/en/news/edf-bmw-airbus-mistral-ai-stages-its-industrial-shift-but-concrete-contracts-remain-sparse/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "EDF, BMW, Airbus: Mistral AI Stages Its Industrial Shift, But Concrete Contracts Remain Sparse\n\n# EDF, BMW, Airbus: Mistral AI Stages Its Industrial Shift, But Concrete Contracts Remain Sparse\n\nStephane Nachez May 29, 2026\n\nTLDR : Mistral AI highlights partnerships with major companies like EDF, BMW, and Airbus to integrate AI into European industries, but concrete financial details are limited.\n\n",
+          "source": "actuia.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "The real story behind NVIDIA's Unitree deal is not the robot—it is a massive bet on what is coming next - Business News | The Financial Express",
+          "url": "https://www.financialexpress.com/business/news/the-real-story-behind-nvidias-unitree-deal-is-not-the-robotit-is-a-massive-bet-on-what-is-coming-next/4256567/lite/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "The real story behind NVIDIA's Unitree deal is not the robot—it is a massive bet on what is coming next - Business News | The Financial Express\n\n# The real story behind NVIDIA’s Unitree deal is not the robot—it is a massive bet on what is coming next\n\n## Nvidia's decision to build its new humanoid robot platform around Unitree indicates a major push into robotics, autonomous systems and the future",
+          "source": "financialexpress.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Figure Moves From Demo Signal to Customer Workflow",
+          "url": "https://humanoidalpha.substack.com/p/figure-moves-from-demo-signal-to",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "Figure Moves From Demo Signal to Customer Workflow\n\nSubscribeSign in\n\n# Figure Moves From Demo Signal to Customer Workflow\n\n### Figure's Catalyst Brands logistics agreement, Zeon's Sanctuary AI materials signal, and the hand-layer bottlenecks investors should track next.\n\nMay 31, 2026\n\n1\n\nShare\n\nThe market is watching humanoids sort boxes.\n\nI am watching the distribution-center contract.\n\nThanks f",
+          "source": "humanoidalpha.substack.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "PUDU Embodied Unveils the Next-Generation PUDU D7: Opening a New Chapter for Industrial Semi-Humanoid Robotics",
+          "url": "https://www.prnewswire.com/news-releases/pudu-embodied-unveils-the-next-generation-pudu-d7-opening-a-new-chapter-for-industrial-semi-humanoid-robotics-302786976.html",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "PUDU Embodied Unveils the Next-Generation PUDU D7: Opening a New Chapter for Industrial Semi-Humanoid Robotics Accessibility Statement Skip Navigation\n\nSHENZHEN, China, June 1, 2026 /PRNewswire/ -- Pudu Robotics, a global leader in service robotics, today announced the launch of its new PUDU D7, its next-generation industrial semi-humanoid robot designed for manufacturing and industrial environmen",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research | Markets Insider",
+          "url": "https://markets.businessinsider.com/news/stocks/nvidia-announces-nvidia-isaac-gr00t-reference-humanoid-robot-for-academic-research-1036211728",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research | Markets Insider\n\n# NVIDIA Announces NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research\n\nJun. 1, 2026, 12:50 AM\n\nNews Summary:\n\n- NVIDIA announces an open humanoid robot reference design built on the NVIDIA Isaac GR00T platform, combining a Unitree H2 Plus humanoid robot, Sharpa five-fingered hands f",
+          "source": "markets.businessinsider.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Waymo's newest robotaxi is Chinese-made, built to make money, and now accepting riders | TechCrunch",
+          "url": "https://techcrunch.com/2026/05/28/waymos-newest-robotaxi-is-chinese-made-built-to-make-money-and-now-accepting-riders/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Waymo's newest robotaxi is Chinese-made, built to make money, and now accepting riders | TechCrunch\n\nImage Credits:Kirsten Korosec\n\n# Waymo’s newest robotaxi is Chinese-made, built to make money, and now accepting riders\n\n9:52 AM PDT · May 28, 2026\n\nWaymo has started giving select riders in Los Angeles, Phoenix, and San Francisco access to its newest robotaxi: an all-electric, minivan-like vehicle",
+          "source": "techcrunch.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research - TNGlobal",
+          "url": "https://technode.global/prnasia/unitree-announces-h2-plus-an-nvidia-isaac-gr00t-reference-humanoid-robot-for-academic-research/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research - TNGlobal\n\nUnitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research\n\n# Unitree Announces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid Robot for Academic Research\n\nNews Summary:\n\n- Unitree Robotics introduces H2 Plus, an NVIDIA Isaac GR00T Reference Humanoid R",
+          "source": "technode.global",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "China's Pudu Robotics Unveils Industrial Semi-Humanoid Robot PUDU D7",
+          "url": "https://theaiinsider.tech/2026/06/03/chinas-pudu-robotics-unveils-industrial-sem-humanoid-robot-pudu-d7/",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "China's Pudu Robotics Unveils Industrial Semi-Humanoid Robot PUDU D7\n\n- Newsletter\n- AI, AI Funding & Investment, AI Use Cases, Robotics\n\n# China’s Pudu Robotics Unveils Industrial Semi-Humanoid Robot PUDU D7\n\n- Greg Bock\n- June 3, 2026\n- 7 min read\n\nInsider Brief\n\n- Pudu Robotics has launched the PUDU D7, a semi-humanoid industrial robot designed for manufacturing and warehouse environments that ",
+          "source": "theaiinsider.tech",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "OpenAI Pivots Directly Into Hardware, Launching Internal Robotics Division | Humanoids Daily",
+          "url": "https://www.humanoidsdaily.com/news/openai-pivots-directly-into-hardware-launching-internal-robotics-division",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "OpenAI Pivots Directly Into Hardware, Launching Internal Robotics Division | Humanoids Daily\n\n## Key Takeaways\n\nHide\n\n- OpenAI CEO Sam Altman announced that the company’s world simulation research program, led by Aditya Ramesh, has evolved into a dedicated OpenAI Robotics division.\n- The company is actively hiring for 11 specialized roles in San Francisco, spanning custom actuator design, simulati",
+          "source": "humanoidsdaily.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Sharpa joins Nvidia and Unitree on humanoid robot project | The Straits Times",
+          "url": "https://www.straitstimes.com/tech/singapore-robotic-hands-firm-sharpa-joins-nvidia-and-unitree-on-humanoid-robot-project",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Sharpa joins Nvidia and Unitree on humanoid robot project | The Straits Times\n\nmyST+\n\nMenu\n\n# Singapore robotic-hands firm Sharpa joins Nvidia and Unitree on humanoid robot project\n\nSign up now: Get ST's newsletters delivered to your inbox\n\nNvidia CEO Jensen Huang speaking about the computing giant's Isaac GR00T Reference Humanoid Robot on the sidelines of the Computex conference in Taipei on June",
+          "source": "straitstimes.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        }
+      ],
+      "parallel": [
+        {
+          "title": "You're not hallucinating if you think physical AI is pushing industrial ...",
+          "url": "https://www.instagram.com/reel/DY4977aCk-N/",
+          "publishedAt": "2026-05-29",
+          "text": "The secret to enterprise grade AI continuous cognitive loops Reasoning ... PHYSICAL AI: WHY ROBOTICS IS THE NEXT FRONTIER AFTER THE SOFTWARE BOOM The AI 6 days ago · If we don't build the data center infrastructure to allow us to create AGI and Embodied AI for robotics, we will lose even more manufacturing to China and the",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Genisom AI's Embodied Robots Surpass 10,000-unit Production Milestone | Gasgoo",
+          "url": "https://autonews.gasgoo.com/articles/icv/genisom-ais-embodied-robots-surpass-10000-unit-production-milestone-2061438385384919041",
+          "publishedAt": "2026-06-01",
+          "text": "1. Home\n2. / ICV\n3. / Genisom AI's Embodied Robots Surpass 10,000-unit Production Milestone\nHumanoid Robot",
+          "source": "autonews.gasgoo.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "AI Insider's Robotics Week in Review - LinkedIn",
+          "url": "https://www.linkedin.com/pulse/ai-insiders-robotics-week-review-ai-insider-intel-pk1sc",
+          "publishedAt": "2026-05-30",
+          "text": "5 days ago · Japan's Mitsubishi Electric signed a three-year agreement with the Chiba Institute of Technology to jointly develop physical AI technologies and autonomous",
+          "source": "linkedin.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Exploring Embodied AI with the German CDTM Delegation It was ...",
+          "url": "https://www.instagram.com/reel/DY5K8lZAeK8/",
+          "publishedAt": "2026-05-29",
+          "text": "# No comments yet.\n🌍 #RealMan #EmbodiedAI #HumanoidRobot #MotionCapture #RobotLearning #PhysicalAI #Robotics #AI #Automation #Teleoperation",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Silicon Valley's New Slogan: Let's Get Physical - Business Insider",
+          "url": "https://www.businessinsider.com/silicon-valleys-new-slogan-lets-get-physical-2026-6",
+          "publishedAt": "2026-06-02",
+          "text": "Silicon Valley's AI boom is moving into robotics as OpenAI, Meta, Tesla, and startups race to give AI a body.",
+          "source": "businessinsider.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "From heavy machinery to embodied AI: How Zvalley is building the operating layer for industrial robotics",
+          "url": "https://interestingengineering.com/ai-robotics/zvalley-building-operating-layer-industrial-robotics",
+          "publishedAt": "2026-05-29",
+          "text": "Incubated by Zoomlion, the company is linking robotics, AI agents, and industrial data to create a full-stack system for factory deployment.",
+          "source": "interestingengineering.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Vendor Training Robots With Human Data Raises $60 Million",
+          "url": "https://aibusiness.com/robotics/vendor-training-robots-human-data-raises-60-million",
+          "publishedAt": "2026-06-02",
+          "text": "* Robotics\n* Generative AI\n* News",
+          "source": "aibusiness.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Chinese Embodied AI Firms Warn 'ChatGPT Moment' Is Far While ...",
+          "url": "https://www.facebook.com/yicaiglobal/posts/chinese-embodied-ai-firms-warn-chatgpt-moment-is-far-while-unveiling-new-robots-/1428620085975987/",
+          "publishedAt": "2026-06-03",
+          "text": "Li Zhang, the Chief Operating Officer of LimX Dynamics, a Shenzhen-based startup, initially estimated an 8-10-year timeline for the production of humanoid",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Exhibitors at COMPUTEX 2026 highlighted “physical AI” robots ...",
+          "url": "https://www.facebook.com/taiwanplusnews/posts/exhibitors-at-computex-2026-highlighted-physical-ai-robots-doing-real-world-task/1015602717645803/",
+          "publishedAt": "2026-06-03",
+          "text": "Exhibitors at COMPUTEX 2026 highlighted “physical AI” robots doing real-world tasks, as well as AI applications for e-ink, signaling a shift toward more",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Today's Daily Sift: AI/Robotics The AI story today is not ... - Instagram",
+          "url": "https://www.instagram.com/reel/DZFkzsNsF_8/",
+          "publishedAt": "2026-06-02",
+          "text": "They are deploying Digit humanoids into distribution centers. But here's the kicker: the robots will be powered by custom OpenAI models. This gives them next-",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "AD Robotics Planning & Business Strategy - Chewy | Built In Boston",
+          "url": "https://www.builtinboston.com/job/ad-planning-and-business-strategy/8679608",
+          "publishedAt": "2026-06-02",
+          "text": "# AD Robotics Planning & Business Strategy\nRead Full Description\nHQ\n\n## Chewy Boston, Massachusetts, USA Office\nLocated in the Fort Point neighborhood, home to many of Boston's hip and upcoming restaurants along with emerging technology companies.",
+          "source": "builtinboston.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Sam Altman Revives OpenAI's Robotics Ambitions in Hiring Push",
+          "url": "http://www.moomoo.com/community/feed/sam-altman-revives-openai-s-robotics-ambitions-in-hiring-push-116685097533446",
+          "publishedAt": "2026-06-03",
+          "text": "OpenAI Robotics is looking for “exceptional” full-stack hardware, operations, systems, and machine learning engineers to help the AI company “program and",
+          "source": "moomoo.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "OpenAI Robotics is hiring : r/singularity - Reddit",
+          "url": "https://www.reddit.com/r/singularity/comments/1tt2p2t/openai_robotics_is_hiring/",
+          "publishedAt": "2026-06-01",
+          "text": "# OpenAI Robotics is hiring\nRobotics\nr/singularity - OpenAI Robotics is hiring\nr/singularity - OpenAI Robotics is hiring\nShare",
+          "source": "reddit.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "OpenAI Launches Robotics Division, Hiring Engineers | Guillermo Flor posted on the topic | LinkedIn",
+          "url": "https://www.linkedin.com/posts/guillermoflor_breaking-openai-is-building-robots-sam-activity-7467178836108017665-5u_z",
+          "publishedAt": "2026-06-01",
+          "text": "* Get the app",
+          "source": "linkedin.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "OpenAI is hiring its way back into robotics - Startup Fortune",
+          "url": "https://startupfortune.com/openai-is-hiring-its-way-back-into-robotics/",
+          "publishedAt": "2026-05-31",
+          "text": "# OpenAI is hiring its way back into robotics\nOpenAI's current robotics hiring points to a deeper push into embodied AI and physical-world systems. The move could raise the cost of robotics talent and complicate the company's relationships with startups it has backed or partnered with.\n[Judith Murphy](https://startupfortune.com/author/judith-murphy/)\nJun 1, 2026 · 6 min read · 728 views",
+          "source": "startupfortune.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Flexible Robotics Jobs – Apply Today to Work From Home in Remote (May 15, 2026) | Indeed",
+          "url": "https://www.indeed.com/q-robotics-l-remote-jobs.html",
+          "publishedAt": "2026-06-03",
+          "text": "# robotics jobs in Remote\nRemote in Hershey, PA\n+ This position is for an Industrial Control System Network and Security Engineer in the Controls & Security Technology Solutions Group.",
+          "source": "indeed.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "OpenAI is expanding its robotics division to create humanoid robots ...",
+          "url": "https://www.facebook.com/TheCSRJournal/posts/openai-is-expanding-its-robotics-division-to-create-humanoid-robots-that-assist-/1316598003894918/",
+          "publishedAt": "2026-06-01",
+          "text": "# The CSR Journal's Post\n[](https://www.facebook.com/TheCSRJournal?__cft__%5B0%5D=AZYobZS0BU6Ga4H7z6vTt-ZQi0K6nA9pop_qxDYt8VnmAybFhPrHByU50ALbuF9c3_4ApZOBnXDVPLCvUd8gwMkBBMFIjsiq5qJOw6gmcHGSFw7mcVp5BLXOmV0TtsHi-PHD8WbVUGWkKim56b5bP-4uCA4ePmAEMDRMB3NetfK1GQ&__tn__=%3C%3C%2CP-R)",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Deployment Strategist @ Foundry Robotics Inc. - Jobs",
+          "url": "https://jobs.ashbyhq.com/foundry-robotics/8820a625-6b70-42c3-b3c1-00fd4462ba55",
+          "publishedAt": "2026-05-29",
+          "text": "We are hiring a Deployment Strategist to open, own, and grow our most important defense relationships. You will be the human face of Foundry inside the",
+          "source": "jobs.ashbyhq.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Manager, Offer Development & Strategy - MedTech Surgery, Cincinnati / Santa Clara / Raritan | Johnson & Johnson Careers",
+          "url": "https://www.careers.jnj.com/fr-ca/jobs/r-077005/manager-offer-development-strategy-robotics-digital-solutions-medtech-surgery/",
+          "publishedAt": "2026-06-03",
+          "text": "# Manager, Offer Development & Strategy - MedTech Surgery\n## Description\nThe Manager – MONARCH Contract Strategy & Offer Development will pursue additional programs and opportunities that support the expansion of the business, including rebates, overlays, and other incentives.",
+          "source": "careers.jnj.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        },
+        {
+          "title": "Founding Talent Partner at Watney Robotics - Wellfound",
+          "url": "https://wellfound.com/jobs/4292990-founding-talent-partner",
+          "publishedAt": "2026-06-03",
+          "text": "You'll set strategy, build sourcing playbooks, and partner directly with our founders and operators to hire across technical, operational, and executive",
+          "source": "wellfound.com",
+          "ogImage": null,
+          "beatHint": "Physical AI"
+        }
+      ]
+    },
+    "AI Infrastructure": {
+      "exa": [
+        {
+          "title": "Archestra raises $10M to broker AI agent access to corporate data - SiliconANGLE",
+          "url": "https://siliconangle.com/2026/06/02/archestra-raises-10m-broker-ai-agent-access-corporate-data/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Archestra raises $10M to broker AI agent access to corporate data - SiliconANGLE\n\nSHARE\n\nUPDATED 08:00 EDT / JUNE 02 2026\n\nAI\n\n### Archestra raises $10M to broker AI agent access to corporate data\n\nSHARE\n\nArchestra Inc., a U.K.-based startup whose open-source platform brokers access between artificial intelligence agents and sensitive enterprise data, today announced that it has raised $10 million",
+          "source": "siliconangle.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe",
+          "url": "https://www.prnewswire.co.uk/news-releases/factorial-raises-150m-series-d-reaches-2-5-billion-valuation-to-become-one-of-the-most-valuable-ai-scale-ups-in-europe-302789078.html",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe Accessibility Statement Skip Navigation\n\n- General Catalyst leads $150M equity investment, its first equity stake in Factorial as part of Series D round that values the company at over $2.5 billion, becoming one of the most valuable AI scale-ups in Europe\n- General Catalyst sim",
+          "source": "prnewswire.co.uk",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Reactor Emerges from Stealth with $59M to Build the Platform for Real-Time AI Worlds",
+          "url": "https://www.prnewswire.com/apac/news-releases/reactor-emerges-from-stealth-with-59m-to-build-the-platform-for-real-time-ai-worlds-302783734.html",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Reactor Emerges from Stealth with $59M to Build the Platform for Real-Time AI Worlds Accessibility Statement Skip Navigation\n\nFunding led by Lightspeed with participation from WndrCo, Amplify Partners and others, Reactor provides the infrastructure layer for real-time generative video\n\nSAN FRANCISCO, May 28, 2026 /PRNewswire/ -- Reactor, the developer platform for real-time generative video, today",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Reactor Emerges from Stealth with $59M to Build the Platform for Real-Time AI Worlds",
+          "url": "https://www.prnewswire.com/news-releases/reactor-emerges-from-stealth-with-59m-to-build-the-platform-for-real-time-ai-worlds-302784514.html",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Reactor Emerges from Stealth with $59M to Build the Platform for Real-Time AI Worlds Accessibility Statement Skip Navigation\n\nFunding led by Lightspeed with participation from WndrCo, Amplify Partners and others, Reactor provides the infrastructure layer for real-time generative video\n\nSAN FRANCISCO, May 28, 2026 /PRNewswire/ -- Reactor, the developer platform for real-time generative video, today",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The Developer Platform for World Models: Our Series A in Reactor - Lightspeed Venture Partners",
+          "url": "https://lsvp.com/stories/the-developer-platform-for-world-models-our-series-a-in-reactor/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "The Developer Platform for World Models: Our Series A in Reactor - Lightspeed Venture Partners\n\n05/28/2026\n\nAI\n\n- Share on twitter\n- Share on facebook\n- Share on linkedin\n- Copy link\n\n# The Developer Platform for World Models: Our Series A in Reactor\n\nToday, Lightspeed is announcing we’re leading Reactor’s Series A after co-leading their Seed — $59M in combined funding — to further their goal of b",
+          "source": "lsvp.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu",
+          "url": "https://tech.eu/2026/06/03/factorial-raises-150m-series-d-at-25b-valuation-to-expand-across-europe/",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu\n\nNews\n\nTopics\n\nInsights\n\nNOTIFICATIONS\n\nSign in to your account, or Sign up to stay up to date with the hottest European tech startup news.\n\nSearch on Tech.eu...\n\nNews\n\nTopics\n\nTech.eu\n\nSign in to your account, or Sign up to stay up to date with the hottest European tech startup news.\n\nTech.eu Insights creates ins",
+          "source": "tech.eu",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Introducing VIBEshift: from prototype to production-grade app in one command - Opsera",
+          "url": "https://opsera.ai/blog/introducing-vibeshift-from-prototype-to-production-grade-app-in-one-command/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Introducing VIBEshift: from prototype to production-grade app in one command - Opsera\n\n# Introducing VIBEshift: from prototype to production-grade app in one command\n\nNassir Khan\n\n|\n\nPublished on\n\nMay 29, 2026\n\nGet started with Opsera Agents today.\n\nAI tools have made it faster than ever to write code. But getting that code into production? Still a multi-day slog of Dockerfiles, YAML, and Kubernet",
+          "source": "opsera.ai",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Kodesage raises $6.6M to drag enterprise legacy software into the AI era, without it leaving the building",
+          "url": "https://thenextweb.com/news/kodesage-6-6m-seed-legacy-software-modernisation",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Kodesage raises $6.6M to drag enterprise legacy software into the AI era, without it leaving the building\n\nThe London and Budapest startup runs its modernisation AI entirely on-premise, aimed at the banks and insurers whose core systems still run on COBOL and Oracle Forms.\n\n---\n\nThe most important software in a bank is often the software nobody fully understands any more. It runs the core processe",
+          "source": "thenextweb.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Announcing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud",
+          "url": "https://chalk.ai/blog/chalk-compute",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Announcing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud\n\nIntroducing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud!Announcing Chalk Compute!\n\n# Introducing Chalk Compute: Time-Traveling Agent Sandboxes in Your Cloud\n\nAndrew Moreland\n\nCo-Founder\n\nby Andrew Moreland\n\nJune 1, 2026\n\nBuilding agents is easy. Trusting them in production is not.\n\nThe real bottleneck isn't raw",
+          "source": "chalk.ai",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "IBM and Red Hat Commit $5 Billion to Redefine the Future of Open Source in the AI Era",
+          "url": "https://newsroom.ibm.com/2026-05-28-ibm-and-red-hat-commit-5-billion-to-redefine-the-future-of-open-source-in-the-ai-era",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "IBM and Red Hat Commit $5 Billion to Redefine the Future of Open Source in the AI Era\n\n# All press releases\n\n# IBM and Red Hat Commit $5 Billion to Redefine the Future of Open Source in the AI Era\n\nProject Lightwell establishes a trusted enterprise clearinghouse for open source software with a new AI-driven model for securing the software supply chain\n\nMay 28, 2026\n\nARMONK, N.Y., May 28, 2026 — IB",
+          "source": "newsroom.ibm.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "OpenAI models and Codex on Amazon Bedrock are now generally available | Artificial Intelligence",
+          "url": "https://aws.amazon.com/blogs/machine-learning/openai-models-and-codex-on-amazon-bedrock-are-now-generally-available/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "OpenAI models and Codex on Amazon Bedrock are now generally available | Artificial Intelligence Skip to Main Content\n\n## Artificial Intelligence\n\n# OpenAI models and Codex on Amazon Bedrock are now generally available\n\nGPT-5.5, GPT-5.4, and Codex are now generally available on Amazon Bedrock. Deploy them in production applications and agents today, on Bedrock’s high performance inference engine.\n\n",
+          "source": "aws.amazon.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "AlloyDB Remote MCP Server GA: Secure AI Agent Access to Your Data | Google Cloud Blog",
+          "url": "https://cloud.google.com/blog/products/data-analytics/alloydb-remote-mcp-server-ga-secure-ai-agent-access-to-your-data",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "AlloyDB Remote MCP Server GA: Secure AI Agent Access to Your Data | Google Cloud Blog\n\nData Analytics\n\n# The fully-managed Remote MCP Server for AlloyDB is now Generally Available\n\nJune 2, 2026\n\n- Transform with Google Cloud\n\n##### Paul Ramsey\n\nProduct Manager, AlloyDB, Cloud SQL, Google Cloud\n\n##### Gleb Otochkin\n\nCloud Advocate, Databases, Google Cloud\n\n##### Try Gemini Enterprise Business Editi",
+          "source": "cloud.google.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "CoreWeave - CoreWeave Completes Industry-First Bring-Up and Validation of NVIDIA Vera Rubin NVL72",
+          "url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Completes-Industry-First-Bring-Up-and-Validation-of-NVIDIA-Vera-Rubin-NVL72/default.aspx",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "CoreWeave - CoreWeave Completes Industry-First Bring-Up and Validation of NVIDIA Vera Rubin NVL72\n\n### CoreWeave Completes Industry-First Bring-Up and Validation of NVIDIA Vera Rubin NVL72\n\nJune 1, 2026\n\nCoreWeave is the first AI cloud provider to stand up a fully validated and operational Vera Rubin NVL72, delivering the purpose-built innovations that unlock NVIDIA's most advanced AI system for t",
+          "source": "investors.coreweave.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Coralogix Raises $200M to Scale the Observability Backbone for the Age of AI - Coralogix",
+          "url": "https://coralogix.com/coralogix-raises-200m-to-scale-the-observability-backbone-for-the-age-of-ai/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Coralogix Raises $200M to Scale the Observability Backbone for the Age of AI - Coralogix\n\n# Coralogix Raises $200M to Scale the Observability Backbone for the Age of AI\n\nNew funding accelerates a platform built for a world where AI agents and human engineers analyze, manage, and operationalize data together\n\nBoston, MA – June 3, 2026 – Coralogix, the data and AI platform for observability, today a",
+          "source": "coralogix.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "SQL query logs hold the context AI agents need to stop hallucinating joins | VentureBeat",
+          "url": "https://venturebeat.com/data/sql-query-logs-hold-the-context-ai-agents-need-to-stop-hallucinating-joins",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "SQL query logs hold the context AI agents need to stop hallucinating joins | VentureBeat\n\n8:00 am, PT, May 28, 2026\n\nCredit: Image generated by VentureBeat with FLUX-2-Pro\n\nWhen Miro’s data team pointed AI agents directly at its Snowflake environment, the agents got the wrong answer more than 65% of the time. The problem wasn’t the model — it was context. With more than 10,000 tables and no semant",
+          "source": "venturebeat.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "OpenAI + Dell Codex On-Premises 2026: Architecture Explained",
+          "url": "https://www.creeta.com/en/openai-dell-codex-on-premises-enterprise-2026/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "OpenAI + Dell Codex On-Premises 2026: Architecture Explained\n\nOpenAI / Codex News & Releases Funding, Strategy & Policy\n\n# Codex Gets an On-Prem Path. Dell Is the First Stop.\n\nOpenAI named Dell as its first non-hyperscaler Codex deployment path. Here's how the architecture actually works and who it targets.\n\nMay 28, 2026\n\nShare\n\n## What the OpenAI–Dell Partnership Actually Adds\n\nThe OpenAI–Dell ar",
+          "source": "creeta.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Mistral NOW Summit 2026: Vast Data Helps Power the Data Foundation for Mistral's Nvidia-Accelerated AI Factories in Europe - StorageNewsletter",
+          "url": "https://www.storagenewsletter.com/2026/05/29/mistral-now-summit-2026-vast-data-helps-power-the-data-foundation-for-mistrals-nvidia-accelerated-ai-factories-in-europe/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Mistral NOW Summit 2026: Vast Data Helps Power the Data Foundation for Mistral's Nvidia-Accelerated AI Factories in Europe - StorageNewsletter\n\nCategories -- Navigate -- M&As Start-Ups Systems (RAID, NAS, SAN, Appliance) Financial Results, Investments and IPOs Market Reports/Research & Certifications Solid State (flash, SSD...), Memory... Hard Disk Drives Tapes Optical, DNA Software People Cloud, ",
+          "source": "storagenewsletter.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "VAST Powers Mistral’s NVIDIA-Accelerated AI Factories in Europe - VAST Data",
+          "url": "https://www.vastdata.com/press-releases/vast-data-mistral-nvidia-ai-factories-europe",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "VAST Powers Mistral’s NVIDIA-Accelerated AI Factories in Europe - VAST Data\n\nMay 27, 2026\n\n# VAST Data Helps Power the Data Foundation for Mistral’s NVIDIA-Accelerated AI Factories in Europe\n\nMistral Compute adopts the VAST AI Operating System as the data foundation for one of Europe's largest NVIDIA GB300 NVL72 deployments, while Mistral extends VAST into model development and enterprise model de",
+          "source": "vastdata.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "SoftBank Group and Sesterce to Develop 1 GW AI Data Center in Bosquel, France  | SoftBank Group Corp.",
+          "url": "https://group.softbank/en/news/press/20260531",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "SoftBank Group and Sesterce to Develop 1 GW AI Data Center in Bosquel, France | SoftBank Group Corp.\n\n# SoftBank Group and Sesterce to Develop 1 GW AI Data Center in Bosquel, France\n\nJoint venture aims to advance France’s AI leadership, create jobs, and support AI adoption across Hauts-de-France\n\nMay 31, 2026\n\n(France, May 30, 2026) SoftBank Group Corp.\n\nBosquel, France — May 30, 2026 — A joint ve",
+          "source": "group.softbank",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Gorilla Technology Announces $2 Billion AI Infrastructure Deal in India with Supermicro, Expanding Strategic Collaboration Across Asia Pacific | Gorilla Technology",
+          "url": "https://investors.gorilla-technology.com/gorilla-technology-announces-2-billion-ai-infrastructure-deal-in-india-with-supermicro-expanding-strategic-collaboration-across-asia-pacific/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Gorilla Technology Announces $2 Billion AI Infrastructure Deal in India with Supermicro, Expanding Strategic Collaboration Across Asia Pacific | Gorilla Technology\n\nGorilla Technology Announces $2 Billion AI Infrastructure Deal in India with Supermicro, Expanding Strategic Collaboration Across Asia Pacific | Gorilla Technology\n[![](https://investors.gorilla-technology.com/wp-content/uploads/2025/0",
+          "source": "investors.gorilla-technology.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "IREN signs USD $9.7 billion AI cloud deal with Microsoft",
+          "url": "https://datacenter.news/story/iren-signs-usd-9-7-billion-ai-cloud-deal-with-microsoft",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "IREN signs USD $9.7 billion AI cloud deal with Microsoft\n\nDataCenterNews US - Specialist news for cloud & data center decision-makers\n\nUnited States Powered By\n\n# IREN signs USD $9.7 billion AI cloud deal with Microsoft\n\nFri, 29th May 2026\n\nIREN has signed a multi-year agreement with Microsoft worth about USD $9.7 billion to supply AI cloud infrastructure, centred on GPU deployments at IREN's site",
+          "source": "datacenter.news",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "SoftBank Group to Build 5 GW of AI Data Center Capacity in France | SoftBank Group Corp.",
+          "url": "https://group.softbank/en/news/press/20260531_0",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "SoftBank Group to Build 5 GW of AI Data Center Capacity in France | SoftBank Group Corp.\n\n# SoftBank Group to Build 5 GW of AI Data Center Capacity in France\n\nMajor investment to strengthen France’s AI infrastructure, support European technological sovereignty and anchor advanced data center manufacturing in Dunkirk with Schneider Electric\n\nMay 31, 2026(France, May 30, 2026)\n\nSoftBank Group Corp.\n",
+          "source": "group.softbank",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "IREN closes $3.65 billion GPU financing to back Microsoft AI cloud contract - Blockspace",
+          "url": "https://blockspace.media/insight/iren-closes-gpu-financing-microsoft-ai/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "IREN closes $3.65 billion GPU financing to back Microsoft AI cloud contract - Blockspace\n\n# IREN closes $3.65 billion GPU financing to back Microsoft AI cloud contract\n\nJun 01, 2026\n\nBy Blockspace Staff\n\nIREN (NASDAQ: IREN) said Monday that it has closed a $3.65 billion investment-grade GPU financing facility to support delivery of its AI cloud contract with Microsoft. The company said the deal is",
+          "source": "blockspace.media",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "News: At Choose France, Ardian and Verne announce plans for a digital infrastructure campus in Île-de-France to strengthen Europe’s industrial and AI capacity",
+          "url": "https://www.verne.co/news/news-at-choose-france-ardian-and-verne-announce-plans-for-a-digital-infrastructure-campus-in-%C3%AEle-de-france-to-strengthen-europes-industrial-and-ai-capacity",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "News: At Choose France, Ardian and Verne announce plans for a digital infrastructure campus in Île-de-France to strengthen Europe’s industrial and AI capacity\n\n01.06.2026\n\n# News: Ardian and Verne announce digital infrastructure hub in Île-de-France to support European industrial capabilities at Choose France\n\n## New campus with target capacity of 500 MW to accelerate development of Europe’s large",
+          "source": "verne.co",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Ascenty Secures 150 Megawatts of New AI Contracts",
+          "url": "https://ascenty.com/en/blog/news-ascenty-en/ascenty-ai-contracts/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Ascenty Secures 150 Megawatts of New AI Contracts\n\n# Ascenty Secures 150 Megawatts of New AI Contracts with Leading Global Hyperscalers\n\nNew hyperscale contracts in Brazil to support US$1.2 billion of new investment for four new data centers in São Paulo region\n\nAscenty, a joint venture between Digital Realty and Brookfield Infrastructure and the leading data center and connectivity provider in La",
+          "source": "ascenty.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "India, UAE partner on AI sovereignty to bypass Google, Microsoft - Rest of World",
+          "url": "https://restofworld.org/2026/india-uae-g42-cerebras-ai-sovereignty/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "India, UAE partner on AI sovereignty to bypass Google, Microsoft - Rest of World\n\nRest of World\n\nBy\n\n+\n\nis the Middle East and Africa Editor at Rest of World, based in Abu Dhabi.\n\nYou need to sign in or create an account in order to follow this author.\n\nIndia is partnering with the United Arab Emirates to ease the grip of Amazon, Microsoft, and Google on artificial intelligence computing.\n\nG42, ba",
+          "source": "restofworld.org",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Bull and Foxconn partner to scale Europe’s manufacturing capabilities for artificial intelligence infrastructures",
+          "url": "https://www.bull.com/en/press-releases/bull-and-foxconn-partner-to-scale-europes-manufacturing-capabilities-for-artificial-intelligence-infrastructures",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Bull and Foxconn partner to scale Europe’s manufacturing capabilities for artificial intelligence infrastructures\n\nPress release\n\n# Bull and Foxconn partner to scale Europe’s manufacturing capabilities for artificial intelligence infrastructures\n\nParis, France – 1 June, 2026 Bull, a leader in advanced computing and AI, and Hon Hai Technology Group (Foxconn), the world’s largest electronics manufac",
+          "source": "bull.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "DriveNets Secures $410M Series D to Meet Surging Demand for Ethernet Fabric in Large-Scale AI Deployments",
+          "url": "https://www.prnewswire.com/il/news-releases/drivenets-secures-410m-series-d-to-meet-surging-demand-for-ethernet-fabric-in-large-scale-ai-deployments-822559085.html",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "DriveNets Secures $410M Series D to Meet Surging Demand for Ethernet Fabric in Large-Scale AI Deployments Accessibility Statement Skip Navigation\n\nWith more than $1B in secured business, the funding accelerates inventory build-out to meet the rising demand for open, multi-vendor, and Heterogeneous AI infrastructure\n\nRA'ANANA, Israel, June 1, 2026 /CNW/ -- DriveNets, a leader in large-scale network",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        }
+      ],
+      "parallel": [
+        {
+          "title": "Anthropic at $965 Billion: What the World's Most Valuable Startup Means for AI Builders | MindStudio",
+          "url": "https://www.mindstudio.ai/blog/anthropic-965-billion-valuation-what-it-means-for-ai-builders/",
+          "publishedAt": "2026-06-02",
+          "text": "# Anthropic at $965 Billion: What the World's Most Valuable Startup Means for AI Builders\nAnthropic raised $65B at a $965B valuation, surpassing OpenAI. Here's what this funding milestone means for Claude users and AI builders.\nMindStudio Team · June 2, 2026 · RSS\nAnthropic at $965 Billion: What the World's Most Valuable Startup Means for AI Builders",
+          "source": "mindstudio.ai",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The next generation of European software startups is being built ...",
+          "url": "https://www.instagram.com/p/DY46ta7jzZj/",
+          "publishedAt": "2026-05-29",
+          "text": "Vertical AI is pulling ahead over broad horizontal tooling Top companies are reaching funding milestones faster than the broader market. This year's report",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Google's AI ambitions are getting an $80 billion boost. Alphabet is ...",
+          "url": "https://www.facebook.com/techjuicepk/posts/googles-ai-ambitions-are-getting-an-80-billion-boostalphabet-is-reportedly-prepa/1430568115766259/",
+          "publishedAt": "2026-06-03",
+          "text": "Google has now raised its capital spending forecast to up to $93 billion this year, with even more aggressive investments planned for 2026. But Vahdat says the",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Alphabet announces proposed $80B equity capital raise to expand AI infrastructure and compute.\n\nShareholder @karenfinerman on what it signals to her @timseymour @grassosteve @guyadami weigh in.\n\n$GOOGL | CNBC Fast Money | Facebook",
+          "url": "https://www.facebook.com/FastMoney/posts/alphabet-announces-proposed-80b-equity-capital-raise-to-expand-ai-infrastructure/1343722124291524/",
+          "publishedAt": "2026-06-02",
+          "text": "After hours, shares increased by roughly 5%, boosting confidence as management indicated higher 2025 capital expenditures of $91 to $93 billion. AI DEMAND",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Senior Software Engineer - AI Tooling in Cambridge at Arm",
+          "url": "https://careers.arm.com/job/cambridge/senior-software-engineer-ai-tooling/33099/94207629520",
+          "publishedAt": "2026-06-03",
+          "text": "# Senior Software Engineer - AI Tooling\n## Drive change on Arm\nAt Arm, you'll influence 100% of the world's connected devices and all their applications. From healthcare and infrastructure to virtual reality, you'll affect nearly all industries worldwide, racing toward new milestones and achievements together.",
+          "source": "careers.arm.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Daloopa Raises $47 Million Series C to Power the Data Layer Behind AI-Driven Finance - Daloopa",
+          "url": "https://daloopa.com/blog/press-release/47-million-series-c",
+          "publishedAt": "2026-05-28",
+          "text": "Home > Resources > Blog\n* Press release",
+          "source": "daloopa.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "AI Heats Up: New Executive Order on Promoting Advanced Artificial Intelligence Innovation and Security | Government Contracts Law",
+          "url": "https://www.governmentcontractslaw.com/2026/06/ai-heats-up-new-executive-order-on-promoting-advanced-artificial-intelligence-innovation-and-security/",
+          "publishedAt": "2026-06-03",
+          "text": "Also by July 2, 2026, OMB must canvass federal grant programs for funds that can be directed to developers of “advanced AI vulnerability detection.” By August 1",
+          "source": "governmentcontractslaw.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Tempus Launches PRECISION Challenge for Oncology AI Breakthroughs",
+          "url": "https://www.tempus.com/news/pr/tempus-launches-the-precision-challenge-a-national-program-opening-its-foundation-model-work-to-the-broader-research-community/?srsltid=AfmBOorSaKSpo3rR_6P3NX2nC_Wos4EFNmmj8rSbwnni8ud2QXiIbOsO",
+          "publishedAt": "2026-05-30",
+          "text": "The program will provide staged funding and compute resources tied to research milestones and demonstrated progress: Proof of Concept Grant: $25,000 in funding",
+          "source": "tempus.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Anthropic has reached a new milestone in the global AI race after ...",
+          "url": "https://www.instagram.com/reel/DZHoeeVCSGP/",
+          "publishedAt": "2026-06-03",
+          "text": "With model developers racing to secure chips, cloud capacity and long term infrastructure. Air MGX's role gives the UAE deeper exposure to companies shaping the",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The people actually deploying LLM applications don't all come from ...",
+          "url": "https://www.facebook.com/datasciencedojo/posts/-the-people-actually-deploying-llm-applications-dont-all-come-from-the-same-back/1014346197782198/",
+          "publishedAt": "2026-05-30",
+          "text": "Tyler Hutcherson is going to introduce the attendees to vector databases, vector similarity search, indexing, and retrieval strategies for vector stores.",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Every extra database is a latency tax on your LLM. Simplify with ...",
+          "url": "https://www.facebook.com/MongoDB/posts/every-extra-database-is-a-latency-tax-on-your-llm-simplify-with-integrated-vecto/1535067845329888/",
+          "publishedAt": "2026-05-30",
+          "text": "For example, if you want to write a blog post about the latest trends in AI, you can use a vector database to store the latest information about that topic and",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "“Download a model, train it for a week, and replace OpenAI.” Reality ...",
+          "url": "https://www.instagram.com/reel/DY55Qc4hG6q/",
+          "publishedAt": "2026-05-29",
+          "text": "Python + FastAPI • LLM fundamentals • Prompt engineering • RAG pipelines • AI agents & workflows • Vector databases • AI deployment • Docker +",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Databricks AI Search | Databricks on AWS - Databricks documentation",
+          "url": "https://docs.databricks.com/aws/en/ai-search/ai-search",
+          "publishedAt": "2026-06-01",
+          "text": "# Databricks AI Search\nThis article gives an overview of Databricks AI Search, including what it is and how it works.",
+          "source": "docs.databricks.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The future belongs to engineers who can build AI systems - Instagram",
+          "url": "https://www.instagram.com/p/DY7a2jItoxJ/",
+          "publishedAt": "2026-05-30",
+          "text": "LAYER 01 Models & Hosting LAYER 02 Vector Databases LAYER 03 Orchestration & Pipelines LAYER 04 Observability & Evals From ML Algorithms to GenAI & LLMs Hands-",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Azure updates",
+          "url": "https://azure.microsoft.com/updates?id=562976",
+          "publishedAt": "2026-06-03",
+          "text": "Azure Updates. Get the latest updates on Azure products and features to meet your cloud investment needs. Subscribe to notifications to stay informed.",
+          "source": "azure.microsoft.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "OpenTelemetry Launches \"Blueprints\" Initiative to Simplify…",
+          "url": "https://www.develeap.com/news/opentelemetry-launches-blueprints-initiative-to-simplify-ent-1a2938e4/",
+          "publishedAt": "2026-06-02",
+          "text": "OpenTelemetry introduces Blueprints, a new initiative designed to reduce complexity in deploying and operating observability systems at enterprise scale",
+          "source": "develeap.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Azure updates | Microsoft Azure",
+          "url": "https://azure.microsoft.com/updates?id=563112",
+          "publishedAt": "2026-06-03",
+          "text": "Skip to main content\n[Microsoft](https://www.microsoft.com)\nAzure\n[Azure](https://azure.microsoft.com/en-us)\nAzure\nSearch Search Azure\n* No results Cancel\nEnable AI-powered discovery of Azure Updates using Microsoft Release Communications MCP server.\n[Explore MRC MCP server​](https://go.microsoft.com/fwlink/?linkid=2360302&clcid=0x409)",
+          "source": "azure.microsoft.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "AI observability - Amazon OpenSearch Service - AWS Documentation",
+          "url": "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/observability-ai.html",
+          "publishedAt": "2026-05-30",
+          "text": "1. [Documentation](https://docs.aws.amazon.com/index.html)\n2. ...\n3. [Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/index.html)\n4. Developer Guide\n5. [Documentation](https://docs.aws.amazon.com/index.html)\n6. [Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/index.html)\n7. Developer Guide",
+          "source": "docs.aws.amazon.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Azure updates",
+          "url": "https://azure.microsoft.com/updates?id=562794",
+          "publishedAt": "2026-06-03",
+          "text": "We are announcing the public preview of the Agentic Retrieval Toolkit for Azure Cosmos DB. Motivated by GraphRAG and multiple-hop reasoning problems,",
+          "source": "azure.microsoft.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "NVIDIA AI Cloud Ecosystem Expands Worldwide to Meet Global AI Compute Demand | NVIDIA Blog",
+          "url": "https://blogs.nvidia.com/blog/ai-cloud-ecosystem/",
+          "publishedAt": "2026-06-02",
+          "text": "Partners including CoreWeave, Firmus, IREN, Nebius and Nscale are expanding AI infrastructure to support frontier model development, enterprise AI, agentic",
+          "source": "blogs.nvidia.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The company says it will use the resources to \"scale AI infrastructure ...",
+          "url": "https://www.facebook.com/PhoneArena/posts/the-company-says-it-will-use-the-resources-to-scale-ai-infrastructure-and-global/1538786124570031/",
+          "publishedAt": "2026-06-03",
+          "text": "Brookfield announced Wednesday the launch of a $100 billion global AI infrastructure program, in partnership with Nvidia (NVDA) and the Kuwait Investment",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Oracle Cloud Infrastructure joins the Arm AGI CPU ecosystem as agentic AI accelerates - Arm Newsroom",
+          "url": "https://newsroom.arm.com/news/arm-agi-cpu-oracle-cloud-infrastructure-agentic-ai",
+          "publishedAt": "2026-06-03",
+          "text": "# Oracle Cloud Infrastructure joins the Arm AGI CPU ecosystem as agentic AI accelerates\n## Media Contacts\nRaymond Deplazes\nDirector Tech & Product Comms\nraymond.deplazes@arm.com\nSign Up for Media & Analyst News\nGet the latest media & analyst news direct from Arm\nSubscribe\n\n## Related\nBlog Mar 24, 2026",
+          "source": "newsroom.arm.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "The AI era runs on secure, reliable infrastructure. We deliver it",
+          "url": "https://www.instagram.com/reel/DZF-JpRFU2A/",
+          "publishedAt": "2026-06-03",
+          "text": "Despite layoffs, the company is seeing strong growth from AI data center spending, with $5.3 billion in orders so far and raised $9 billion full-year target,",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "DriveNets Secures $410M Series D to Meet Surging Demand for Ethernet Fabric in Large-Scale AI Deployments - DriveNets",
+          "url": "https://drivenets.com/news-and-events/press-release/drivenets-secures-410m-series-d-to-meet-surging-demand-for-ethernet-fabric-in-large-scale-ai-deployments/",
+          "publishedAt": "2026-06-02",
+          "text": "# Press Release\n[Home](https://drivenets.com) [News & Events](https://drivenets.com/news-and-events/) [Press Release](https://drivenets.com/news-and-events/?category=10) DriveNets Secures $410M Series D to Meet Surging Demand for Ethernet Fabric in Large-Scale AI Deployments",
+          "source": "drivenets.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Webinar - July 28th » OCP Educational Webinar Program »",
+          "url": "https://www.opencompute.org/summit/ocp-educational-webinar-program/webinar-july-28th",
+          "publishedAt": "2026-06-03",
+          "text": "AI infrastructure architects, engineers and operators, including hyperscalers, neoclouds, sovereign AI entities, and large enterprises who are building AI",
+          "source": "opencompute.org",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Job Application for Finance Manager, AI Infrastructure at Nscale",
+          "url": "https://job-boards.eu.greenhouse.io/nscaleoperationsukltd/jobs/4877787101",
+          "publishedAt": "2026-05-28",
+          "text": "We're hiring a Finance Manager, AI Infrastructure to help scale the financial backbone of our global AI compute platform. Reporting to the VP of Finance",
+          "source": "job-boards.eu.greenhouse.io",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "Classover Announces Neocloud Infrastructure Partnership With Cyfuture.ai - Classover",
+          "url": "https://classover.com/en/press-releases/classover-announces-neocloud-infrastructure-partnership-with-cyfuture-ai/",
+          "publishedAt": "2026-05-28",
+          "text": "The Company has announced its intention to rebrand as KIDZ AI Inc. to reflect its strategic expansion into AI compute infrastructure, GPU cloud platforms, and",
+          "source": "classover.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        },
+        {
+          "title": "A billion dollars is almost nothing when you're spending hundreds of ...",
+          "url": "https://www.instagram.com/p/DY5HzvIDehx/",
+          "publishedAt": "2026-05-29",
+          "text": "The surge reflects massive spending on AI infrastructure, data centres, cloud computing capacity, and advanced chips. ... AI INFRASTRUCTURE SPENDING",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Infrastructure"
+        }
+      ]
+    },
+    "AI Labs": {
+      "exa": [
+        {
+          "title": "Building a hill-climbing machine: Launching seven new MAI models | Microsoft AI",
+          "url": "https://microsoft.ai/news/building-a-hillclimbing-machine-launching-seven-new-mai-models/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Building a hill-climbing machine: Launching seven new MAI models | Microsoft AI\n\nAnnouncements\n\n# Building a hill-climbing machine: Launching seven new MAI models\n\nMustafa Suleyman\n\nJune 2, 2026\n\nAnnouncements\n\nMustafa Suleyman\n\nToday we are announcing a family of seven new models developed in-house at Microsoft AI. Beyond these models, we’re building a superintelligence lab – a system and an appr",
+          "source": "microsoft.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Introducing MAI-Thinking-1 | Microsoft AI",
+          "url": "https://microsoft.ai/news/introducing-mai-thinking-1/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Introducing MAI-Thinking-1 | Microsoft AI\n\nModels\n\n# Introducing MAI-Thinking-1\n\nSuperintelligence team\n\nJune 2, 2026\n\nModels\n\nSuperintelligence team\n\nToday we are introducing MAI-Thinking-1, Microsoft AI’s reasoning model. It is a medium-sized model that stands among the strongest models in its weight class. It matches leading models on key software engineering benchmarks, demonstrates advanced m",
+          "source": "microsoft.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "MiniMax M3: Frontier Coding, 1M Context, Native Multimodality — All in One Model - MiniMax Research | MiniMax",
+          "url": "https://www.minimax.io/blog/minimax-m3",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "MiniMax M3: Frontier Coding, 1M Context, Native Multimodality — All in One Model - MiniMax Research | MiniMax\n\nModels\n\nLLM\n\nVIDEO\n\nMiniMax Hailuo 2.3 / 2.3 Fast\n\nSPEECH & MUSIC\n\nProduct\n\nAPI\n\nToken Plan\n\nResearch\n\nCompany\n\nIntelligence with everyone\n\nMiniMax M3 is officially released today.\n\nM3 reaches frontier-level performance on specialized tasks such as coding and agentic work. It uses MSA (Mi",
+          "source": "minimax.io",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Holo3.1: Fast & Local Computer Use Agents",
+          "url": "https://huggingface.co/blog/hcompany/holo31",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Holo3.1: Fast & Local Computer Use Agents\n\n# Holo3.1: Fast & Local Computer Use Agents\n\nTeam Article Published June 2, 2026\n\n- +19\n\nMaxime Langevin maxime-hcompany Follow\n\nHamza Benchekroun hamza-hcompany Follow\n\nAxel Moyal axmoy Follow\n\nEmrick Sinitambirivoutin emricksini-h Follow\n\nAntonio Loison antonioloison Follow\n\nAvshalom Manevich avshalom-h Follow\n\nTony Wu h-tonywu Follow\n\nPierre-Louis Cedo",
+          "source": "huggingface.co",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "MONET: Lowering the bar for World-Class Image Generation research.",
+          "url": "https://huggingface.co/blog/jasperai/monet",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "MONET: Lowering the bar for World-Class Image Generation research.\n\n# MONET: Lowering the bar for World-Class Image Generation research.\n\nCommunity Article Published May 28, 2026\n\n- +4\n\nBenjamin Aubin baubin Follow\n\nGonzalo Quintana gonzaiq Follow\n\nsanjeev sreetharan sanjeev-jasper Follow\n\nDamien Henry dh7net Follow\n\nClément Chadebec clementchadebec Follow\n\nJasper research is releasing MONET, the ",
+          "source": "huggingface.co",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "How Cosmos 3 Helps Physical AI Think Before It Acts | NVIDIA Blog",
+          "url": "https://blogs.nvidia.com/blog/cosmos-3-physical-ai-open-world-foundation-model/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "How Cosmos 3 Helps Physical AI Think Before It Acts | NVIDIA Blog\n\n# How Cosmos 3 Helps Physical AI Think Before It Acts\n\nThe new, open NVIDIA world foundation model brings vision reasoning, multimodal generation and action prediction together to help robots, autonomous vehicles and vision AI agents think before acting in the real world.\n\nMay 31, 2026 by\n\nShare\n\nThe real world is always in motion.",
+          "source": "blogs.nvidia.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "MiniMax Releases MiniMax M3 with MSA Architecture Supporting 1M-Token Context, Native Multimodality, and Agentic Coding - MarkTechPost",
+          "url": "https://www.marktechpost.com/2026/06/01/minimax-releases-minimax-m3-with-msa-architecture-supporting-1m-token-context-native-multimodality-and-agentic-coding/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "MiniMax Releases MiniMax M3 with MSA Architecture Supporting 1M-Token Context, Native Multimodality, and Agentic Coding - MarkTechPost\n\nSearch\n\nPremium Content\n\nRead our exclusive articles\n\nFacebook\n\nInstagram\n\nX\n\nSearch\n\nHome Editors Pick Agentic AI MiniMax Releases MiniMax M3 with MSA Architecture Supporting 1M-Token Context, Native Multimodality,...\n\nMiniMax officially released MiniMax M3 on Ju",
+          "source": "marktechpost.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Welcome NVIDIA Cosmos 3: The First Open Omni-model for Physical AI Reasoning and Action",
+          "url": "https://huggingface.co/blog/nvidia/cosmos-3-for-physical-ai",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Welcome NVIDIA Cosmos 3: The First Open Omni-model for Physical AI Reasoning and Action\n\n# Welcome NVIDIA Cosmos 3: The First Open Omni-model for Physical AI Reasoning and Action\n\nEnterprise + Article Published June 1, 2026\n\n- +56\n\nAtharva Joshi atharvajoshi10 Follow\n\nNVIDIA Cosmos 3 is here - and it's available on Hugging Face today. Cosmos 3 represents a major leap forward in world foundation mo",
+          "source": "huggingface.co",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Introducing MAI-Code-1-Flash  | Microsoft AI",
+          "url": "https://microsoft.ai/news/introducingmai-code-1-flash/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "Introducing MAI-Code-1-Flash | Microsoft AI\n\nModels\n\n# Introducing MAI-Code-1-Flash\n\nSuperintelligence team\n\nJune 2, 2026\n\nModels\n\nSuperintelligence team\n\nToday we’re introducing MAI-Code-1-Flash, a new Microsoft coding model built for fast, efficient assistance in everyday developer workflows. It is built end-to-end by Microsoft using clean and appropriately licensed data. The model is rolling ou",
+          "source": "microsoft.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic raises $65 billion, nears $1T valuation ahead of IPO | TechCrunch",
+          "url": "https://techcrunch.com/2026/05/28/anthropic-raises-65-billion-nears-1t-valuation-ahead-of-ipo/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Anthropic raises $65 billion, nears $1T valuation ahead of IPO | TechCrunch\n\nImage Credits:Anthropic\n\n# Anthropic raises $65 billion, nears $1T valuation ahead of IPO\n\n11:52 AM PDT · May 28, 2026\n\nAnthropic has snagged$65 billion in funding at a $965 billion post-money valuation in its latest funding round, marking what could be the AI startup’s last private fundraising before debuting on the publ",
+          "source": "techcrunch.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "$965B and Climbing: Anthropic’s Series H Is Really a Compute Bet - AI Smasher",
+          "url": "https://aismasher.com/965b-and-climbing-anthropic-s-series-h-is-really-a-compute-bet/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "$965B and Climbing: Anthropic’s Series H Is Really a Compute Bet - AI Smasher\n\n# $965B and Climbing: Anthropic’s Series H Is Really a Compute Bet\n\nAnthropic’s Series H makes it the world’s most valuable private company and frames its next phase as a compute capacity race.\n\nTotal\n\n0\n\nShares\n\n##### Up next\n\nPublished on 28 May 2026\n\n##### Author\n\nTL;DR\n\nAnthropic said it closed a $65 billion Series ",
+          "source": "aismasher.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic Raises $65B, Now Worth More Than OpenAI | byteiota",
+          "url": "https://byteiota.com/anthropic-series-h-965-billion-valuation/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Anthropic Raises $65B, Now Worth More Than OpenAI | byteiota\n\nAnthropic closed a $65 billion Series H round today, landing at a $965 billion post-money valuation. For the first time, Anthropic is worth more than OpenAI. Run-rate revenue crossed $47 billion this month, and the company has 10 gigawatts of compute capacity in its pipeline — with some of it already online. This is no longer a research",
+          "source": "byteiota.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic raises $65B at $965B valuation, overtaking OpenAI for the first time — TFN",
+          "url": "https://techfundingnews.com/anthropic-raises-65b-at-965b-valuation-overtaking-openai-for-the-first-time/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Anthropic raises $65B at $965B valuation, overtaking OpenAI for the first time — TFN\n\nJune 3, 2026\n\n### Ex-Isar Aerospace and Volocopter leaders raise €5.7M to fix the enterprise AI execution problem\n\nJune 3, 2026\n\n### They met at the intersection of science and finance. Now Apoha has raised $36M to build the data layer AI still can’t do\n\nJune 3, 2026\n\n### OQC raises £260M: Europe’s biggest quantu",
+          "source": "techfundingnews.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic Closes $65B Series H at $965B Valuation — Now the World's Most Valuable AI Startup | Singularity.Kiwi",
+          "url": "https://singularity.kiwi/anthropic-65b-series-h-965b-valuation/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Anthropic Closes $65B Series H at $965B Valuation — Now the World's Most Valuable AI Startup | Singularity.Kiwi✨\">\n\nNews 29 May 2026\n\n# Anthropic Closes $65B Series H at $965B Valuation — Now the World's Most Valuable AI Startup\n\nFrom $380 billion to $965 billion in 15 weeks. Anthropic just closed the largest private funding round in AI history — and it's not even close.\n\nAnthropicAI FundingSeries",
+          "source": "singularity.kiwi",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic raises $65B at $965B valuation, passing OpenAI — AI Chat Daily",
+          "url": "https://www.aichatdaily.com/ai-business/anthropic-raises-65b-965b-valuation-passing-openai",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Anthropic raises $65B at $965B valuation, passing OpenAI — AI Chat Daily\n\nLive--:--:-- PT\n\nOpenAI, Anthropic CEOs sign letter pushing DNA screening law to block AI bioweapons Lovable signs multiyear Google Cloud deal for 5x usage jump Sam Altman to urge US lawmakers against requiring AI model approvals UN researchers say AI will double data center power and water use by 2030 xAI moves to unmask Gr",
+          "source": "aichatdaily.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "DeepSeek lines up its first outside money: a $7bn round at up to $59bn",
+          "url": "https://thenextweb.com/news/deepseek-7-billion-maiden-fundraising",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "DeepSeek lines up its first outside money: a $7bn round at up to $59bn\n\nDeepSeek has spent eighteen months as the most talked-about AI lab that almost nobody could invest in. That is about to change. The Chinese startup is slated to raise roughly 50 billion yuan, about $7bn, in its first external funding round, according to people familiar with the matter, in a deal that would value it at between ",
+          "source": "thenextweb.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic Surpasses OpenAI With $965B Valuation | AI Weekly",
+          "url": "https://aiweekly.co/alerts/anthropic-surpasses-openai-with-965b-valuation",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Anthropic Surpasses OpenAI With $965B Valuation | AI Weekly\n\n## Key insights\n\n- Amazon committed $5B of $15B in hyperscaler investments; Google and Broadcom added 5 gigawatts of next-generation TPU capacity; SpaceX provided GPU access at Colossus 1 and 2.\n- The $36B private credit facility is the largest private credit deal ever attempted, with Broadcom backstopping $31B in senior debt via residua",
+          "source": "aiweekly.co",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic becomes the world’s most valuable AI startup, nears $1 trillion valuation and surpasses OpenAI - Tech Startups",
+          "url": "https://techstartups.com/2026/05/28/anthropic-becomes-the-worlds-most-valuable-ai-startup-nears-1-trillion-valuation-and-surpasses-openai/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Anthropic becomes the world’s most valuable AI startup, nears $1 trillion valuation and surpasses OpenAI - Tech Startups\n\n- Trust & Safety\n- Editorial Policy\n\nJune 4, 2026\n\n- Trust & Safety\n- Editorial Policy\n\n- Top Startups\n- Startup List\n- Submit Your Startup\n\n- Free Startup Valuation Calculator\n\n# Anthropic becomes the world’s most valuable AI startup, nears $1 trillion valuation and surpasses ",
+          "source": "techstartups.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic nears $1T valuation after $65B raise as Claude demand accelerates",
+          "url": "https://cryptobriefing.com/anthropic-nears-1t-valuation-after-65b-raise-as-claude-demand-accelerates/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Anthropic nears $1T valuation after $65B raise as Claude demand accelerates\n\nSEARCH\n\nSearching...\n\n# Anthropic nears $1T valuation after $65B raise as Claude demand accelerates\n\nThe new funding will expand compute, research, and partnerships as Anthropic scales Claude across enterprise customers.\n\nShare\n\nthis.removeAttribute('data-copied'), 2000);\" aria-label=\"Copy link\">\n\nAdd us on Google\n\nMay. 2",
+          "source": "cryptobriefing.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "ROOST and Mila Announce Partnership to Advance Open Source AI Safety, Starting with Youth Safety | Mila",
+          "url": "https://mila.quebec/en/news/roost-and-mila-announce-partnership-to-advance-open-source-ai-safety-starting-with-youth",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "ROOST and Mila Announce Partnership to Advance Open Source AI Safety, Starting with Youth Safety | Mila\n\n## Popular keywords:\n\n# ROOST and Mila Announce Partnership to Advance Open Source AI Safety, Starting with Youth Safety\n\nJune 2, 2026\n\nPARIS, June 2, 2026 - Last week, at the 2026 G7 Digital Ministers’ Meeting in Paris, Robust Open Online Safety Tools (ROOST) and Mila – Québec Artificial Intel",
+          "source": "mila.quebec",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Kate Conroy appointed inaugural general manager of Australian AI Safety Institute - ABC News",
+          "url": "https://www.abc.net.au/news/2026-05-29/kate-conroy-leading-ai-safety-institute/106736306",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Kate Conroy appointed inaugural general manager of Australian AI Safety Institute - ABC News\n\nSkip to main content\n\nSkip to news navigation, settings and search\n\n# Kate Conroy appointed inaugural general manager of Australian AI Safety Institute\n\nBy national AI reporter Cameron Wilson\n\nFri 29 May 2026 at 10:42am\n\nFri 29 May 2026 at 10:42am\n\nKate Conroy has been described as a \"global expert in res",
+          "source": "abc.net.au",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Kate Conroy appointed inaugural general manager of Australian AI Safety Institute – The Business Investor",
+          "url": "https://thebusinessinvestor.co.uk/artificial-intelligence/kate-conroy-appointed-inaugural-general-manager-of-australian-ai-safety-institute/",
+          "publishedAt": "2026-05-30T00:00:00.000Z",
+          "text": "Kate Conroy appointed inaugural general manager of Australian AI Safety Institute – The Business Investor\n\nHome Artificial intelligence Kate Conroy appointed inaugural general manager of Australian AI Safety Institute\n\n# Kate Conroy appointed inaugural general manager of Australian AI Safety Institute\n\n5 Mins read28\n\nShare&media=https://thebusinessinvestor.co.uk/wp-content/uploads/2026/05/b20d832f",
+          "source": "thebusinessinvestor.co.uk",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Center for AI Safety Names Former xAI Leader Devin Kim President and Establishes Frontier Security Institute in Major Expansion of Leadership and Reach -\nLas Vegas Sun News",
+          "url": "https://lasvegassun.com/news/2026/jun/02/center-for-ai-safety-names-former-xai-leader-devin/",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "# Center for AI Safety Names Former xAI Leader Devin Kim President and Establishes Frontier Security Institute in Major Expansion of Leadership and Reach\n\nPublished Tuesday, June 2, 2026 | 8 a.m.\n\nUpdated Tuesday, June 2, 2026 | 8 a.m.\n\nSAN FRANCISCO--(BUSINESS WIRE)--Jun 2, 2026--\n\nThe Center for AI Safety (CAIS), a nonprofit focused on reducing societal-scale risks from artificial intelligence, ",
+          "source": "lasvegassun.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "HKUST and CalmCar Establish the Physical AI Innovation Center | The Hong Kong University of Science and Technology",
+          "url": "https://hkust.edu.hk/news/hkust-and-calmcar-establish-physical-ai-innovation-center",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "HKUST and CalmCar Establish the Physical AI Innovation Center | The Hong Kong University of Science and Technology\n\nQuick Links:\n\nNews\n\nResearch and Innovation\n\n# HKUST and CalmCar Establish the Physical AI Innovation Center\n\nUshering in a New Era of Physical Intelligence\n\n2026-06-03\n\n09 Industry, Innovation and Infrastructure\n\nSubscribe Now\n\nShare Now\n\nThe HKUST-CalmCar Physical AI Innovation Cen",
+          "source": "hkust.edu.hk",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Kate Conroy appointed as inaugural head of Australia's AI Safety Institute",
+          "url": "https://completeaitraining.com/news/kate-conroy-appointed-as-inaugural-head-of-australias-ai/",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Kate Conroy appointed as inaugural head of Australia's AI Safety Institute\n\nBack to: All AI News\n\n# Kate Conroy appointed as inaugural head of Australia's AI Safety Institute\n\nKate Conroy, a philosopher and Air Force reservist, has been named the first head of Australia's AI Safety Institute. The body received $29.9 million over four years to monitor AI risks across both model development and ever",
+          "source": "completeaitraining.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "3D Vision Pioneer Andrea Tagliasacchi Joins Wayve Labs - Wayve",
+          "url": "https://wayve.ai/press/andrea-tagliasacchi-joins-wayve-labs/",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "3D Vision Pioneer Andrea Tagliasacchi Joins Wayve Labs - Wayve\n\nNecessary These cookies are necessary for the website to function and cannot be switched off\n\nAnalytics These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site\n\nEmbedded These cookies are set when external content is embedded in the site, for example videos that are hosted b",
+          "source": "wayve.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "MATS Opens Fully Funded AI Safety Fellowship for 2026 - Techpression",
+          "url": "https://techpression.com/mats-opens-fully-funded-ai-safety-fellowship-for-2026/",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "MATS Opens Fully Funded AI Safety Fellowship for 2026 - Techpression\n\n- Latest\n- Trending\n\n## MATS Opens Fully Funded AI Safety Fellowship for 2026\n\nMay 31, 2026\n\n## TechTrinity 2026 Sets Stage for Africa’s AI and Startup Push\n\nJune 2, 2026\n\n## Africa Technology Expo 2026 Set to Power Lagos Innovation\n\nJune 2, 2026\n\n## Savant Targets Africa’s Deep-Tech Startups With New Build Cohort\n\nJune 2, 2026\n",
+          "source": "techpression.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "AI Safety’s Power Play: CAIS Taps xAI Talent, Targets National Security - BriefGlance.com",
+          "url": "https://briefglance.com/articles/ai-safetys-power-play-cais-taps-xai-talent-targets-national-security",
+          "publishedAt": "2026-06-02T00:00:00.000Z",
+          "text": "AI Safety’s Power Play: CAIS Taps xAI Talent, Targets National Security - BriefGlance.com\n\n# AI Safety’s Power Play: CAIS Taps xAI Talent, Targets National Security\n\nSAN FRANCISCO, CA – June 02, 2026 – The Center for AI Safety (CAIS), a nonprofit that has quietly been building a reputation for rigorous technical research, has just made its most assertive move yet. In a dual announcement that rever",
+          "source": "briefglance.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "NIST Expands AI Consortium’s Scope, Calls for New Members | NIST",
+          "url": "https://www.nist.gov/news-events/news/2026/05/nist-expands-ai-consortiums-scope-calls-new-members",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "NIST Expands AI Consortium’s Scope, Calls for New Members | NIST\n\nhttps://www.nist.gov/news-events/news/2026/05/nist-expands-ai-consortiums-scope-calls-new-members\n\n# NIST Expands AI Consortium’s Scope, Calls for New Members\n\nMay 29, 2026\n\n## Share\n\n- Educational Resources\n- NIST has renamed the former AI Safety Institute Consortium as the NIST AI Consortium to reflect the group’s newly expanded g",
+          "source": "nist.gov",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        }
+      ],
+      "parallel": [
+        {
+          "title": " Foundation Model Market Outlook 2026-2034",
+          "url": "https://www.intelmarketresearch.com/foundation-model-market-46772",
+          "publishedAt": "2026-06-01",
+          "text": "The Foundation Model Market is being propelled by rapid breakthroughs in large‑scale neural architectures, enabling capabilities such as zero‑shot learning Major organizations across finance, healthcare, and retail are integrating foundation models to automate decision‑making and personalize customer experiences.",
+          "source": "intelmarketresearch.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Tempus Launches PRECISION Challenge for Oncology AI Breakthroughs",
+          "url": "https://www.tempus.com/news/pr/tempus-launches-the-precision-challenge-a-national-program-opening-its-foundation-model-work-to-the-broader-research-community/?srsltid=AfmBOorTn1LzxDVygtClA45RZnLpWI_OSF-UOXwbuJpVqKxymH6MYccN",
+          "publishedAt": "2026-05-30",
+          "text": "Accelerate oncology breakthroughs with Tempus' PRECISION Challenge. The program offers researchers unprecedented access to multimodal data, foundation",
+          "source": "tempus.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "We are releasing Cosmos 3 — the frontier foundation model for ...",
+          "url": "https://www.facebook.com/NVIDIA/posts/we-are-releasing-cosmos-3-the-frontier-foundation-model-for-physical-ai-a-single/1455954666571287/",
+          "publishedAt": "2026-06-01",
+          "text": "We are releasing Cosmos 3 — the frontier foundation model for physical AI, a single open omni-model leading across vision reasoning, world generation,",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Data on AI Models - Epoch AI",
+          "url": "https://epoch.ai/data/ai-models",
+          "publishedAt": "2026-06-01",
+          "text": "# AI Models\n## Filter\n### Downloads\nNotable AI Models\nCSV, Updated Jun. 3, 2026\nLarge-Scale AI Models\nCSV, Updated Jun. 3, 2026\nFrontier Models\nCSV, Updated Jun. 3, 2026\nAll Models\nCSV, Updated Jun. 3, 2026\n\n...\n\n### Python Import\nimport pandas as pd\ndata_url = \"https://epoch.ai/data/all_ai_models.csv\"\nmodels_df = pd.read_csv(data_url)",
+          "source": "epoch.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "DOE is Advancing the AI Innovation Ecosystem | Department of Energy",
+          "url": "https://www.energy.gov/cet/doe-advancing-ai-innovation-ecosystem",
+          "publishedAt": "2026-05-30",
+          "text": "Description: This project will develop foundation models for biological research to study viral protein sequences using large language models (LLMs), predict",
+          "source": "energy.gov",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "\"Cosmos 3 is the frontier of physical AI\" ICYMI - Instagram",
+          "url": "https://www.instagram.com/reel/DZIZ-e2kofv/",
+          "publishedAt": "2026-06-03",
+          "text": "... breakthrough foundation model on stage at #NVIDIAGTC ... RESEARCH: CLAWHUB SECURITY SIGNALS LARGE CORPUS MULTI-SCANNER DATASET FOR AGENT SKILL SECURITY RESEARCH.",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Mutable, pretrained PyTorch foundation models for nested business ...",
+          "url": "https://www.reddit.com/r/mlops/comments/1ttwnqh/mutable_pretrained_pytorch_foundation_models_for/",
+          "publishedAt": "2026-06-02",
+          "text": "Built in real time model deployments and batch inference - both with feature parity (so no feature engineering lift and shift). 100k+ transactions per second",
+          "source": "reddit.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Kidney Week - (2026) - American Society of Nephrology",
+          "url": "https://www.asn-online.org/education/kidneyweek/2026/program-session-details.aspx?sessId=536742",
+          "publishedAt": "2026-06-03",
+          "text": "# ASN's Mission\n## Contact ASN\n### The Latest on X\n[@ASNKidney](https://twitter.com/ASNKidney)\n* slider background\n  Registration and Housing Open June 24\n  Kidney Week 2026\nKidney Week 2026 Logo\n\n...\n\n### Exhibitors\nConnect with Your Customers\nShare your latest innovations and solutions that support the nephrology industry.\nlearn more\nSupport Opportunities",
+          "source": "asn-online.org",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Supported foundation models on Model Serving | Databricks on AWS",
+          "url": "https://docs.databricks.com/aws/en/machine-learning/model-serving/foundation-model-overview",
+          "publishedAt": "2026-06-01",
+          "text": "* Agents\n* Query LLMs and agents\n* Serve and query foundation models\nOn this page\nLast updated on **Jun 1, 2026**",
+          "source": "docs.databricks.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "The US National Science Foundation (NSF) — a major funder of ...",
+          "url": "https://www.facebook.com/ScientificAmerican/posts/the-us-national-science-foundation-nsf-a-major-funder-of-basic-research-has-rest/1382557630409172/",
+          "publishedAt": "2026-06-01",
+          "text": "Curiosity-driven research lays the foundation for private sector investments and leads to breakthroughs that can be commercialized, said Deborah Wince",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Exclusive: AI market-research... - The Wall Street Journal | Facebook",
+          "url": "https://www.facebook.com/WSJ/posts/exclusive-ai-market-research-platform-alphasense-is-being-valued-at-75-billion-i/1368108068509120/",
+          "publishedAt": "2026-06-03",
+          "text": "Exclusive: AI market-research platform AlphaSense is being valued at $7.5 billion in a fresh round of funding.",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic Funding Pushed Startup Investment To Near-Record Levels In May As Exit Market Reopened",
+          "url": "https://news.crunchbase.com/venture/monthly-vc-funding-recap-ai-may-2026/",
+          "publishedAt": "2026-06-02",
+          "text": "Automated coding lab Cognition raised $1 billion, and Sierra, which develops AI for customer service, raised $950 million in a single round. Funding to the AI",
+          "source": "news.crunchbase.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Ex-DeepMind researchers raise $50m for AI science startup Inherent",
+          "url": "https://sifted.eu/articles/inherent-ai-funding-round-index-matt-clifford",
+          "publishedAt": "2026-05-29",
+          "text": "[News](https://sifted.eu/categories/news/)\nMay 29, 2026",
+          "source": "sifted.eu",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic is now the most valuable artificial intelligence company in Silicon Valley. The AI giant announced a $65 billion Series H financing at a $965 billion valuation on Thursday, putting its value above rival AI lab OpenAI.\n\nKate Rooney has the details.\n\nRead full report: cnb.cx/4u2hsVE | CNBC | Facebook",
+          "url": "https://www.facebook.com/cnbc/posts/anthropic-is-now-the-most-valuable-artificial-intelligence-company-in-silicon-va/1383049567029766/",
+          "publishedAt": "2026-05-29",
+          "text": "# Video\n## [**CNBC**](https://www.facebook.com/cnbc?__tn__=-UC)\n[22h](https://www.facebook.com/reel/2107955203101186/?__tn__=%2CO) Â·\nFollow\nAnthropic is now the most valuable artificial intelligence company in Silicon Valley. The AI giant aâ¦\nSee more",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Eight CU Boulder researchers and four startups receive funding through Colorado’s Advanced Industries Accelerator | Venture Partners at CU Boulder | University of Colorado Boulder",
+          "url": "https://www.colorado.edu/venturepartners/2026/06/02/eight-cu-boulder-researchers-and-four-startups-receive-funding-through-colorados",
+          "publishedAt": "2026-06-03",
+          "text": "# Eight CU Boulder researchers and four startups receive funding through Colorado’s Advanced Industries Accelerator\nPublished:Jun. 2, 2026 Jun. 2, 2026",
+          "source": "colorado.edu",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Global Innovation Labs | AI VC List – Active AI & Machine Learning Investors",
+          "url": "https://aivclist.com/vcs/global-innovation-labs-gilabsco/",
+          "publishedAt": "2026-05-31",
+          "text": "# Global Innovation Labs\n## Related Investor Lists\n[Download AI Investor List](https://www.vclistnetwork.com/l/aivclist?utm_source=aivclist%e2%80%93activeai%26machinelearninginvestors&utm_medium=footer&utm_campaign=single_niche)\nPart of VCListNetwork.com",
+          "source": "aivclist.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "AfterQuery — $46M Raised — Reviews & Alternatives | StartupHub.ai",
+          "url": "https://www.startuphub.ai/startups/afterquery",
+          "publishedAt": "2026-05-30",
+          "text": "# AfterQuery\n## Company Timeline\n### How much funding has AfterQuery raised?\nAfterQuery has raised a total of $46M in funding. The most recent round on record is Series A.\n\n### Where is AfterQuery headquartered?\nAfterQuery is headquartered in San Francisco, United States.",
+          "source": "startuphub.ai",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "AlleyWatch – The Pulse of New York Tech",
+          "url": "https://alleywatch.com/",
+          "publishedAt": "2026-06-03",
+          "text": "The notable startup funding rounds for the week ending 5/30/26 featuring funding details for Flexpirce, Triomics, Saris AI, and eighteen ... The AlleyWatch",
+          "source": "alleywatch.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "AlphaSense is being valued at $7.5 billion in a new funding round ...",
+          "url": "https://www.instagram.com/p/DZIYR_GEZJc/",
+          "publishedAt": "2026-06-03",
+          "text": "AlphaSense is being valued at $7.5 billion in a new funding round that raised $350 million, nearly doubling its valuation from its 2024 round as the",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "AI Safety News: Alignment, Red-teaming & Oversight | Let's Data Science",
+          "url": "https://letsdatascience.com/news/topic/ai-safety",
+          "publishedAt": "2026-06-02",
+          "text": "AI safety news — alignment research, red-teaming, model oversight, and emerging risks — curated by Let's Data Science.",
+          "source": "letsdatascience.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Critique of current AI safety bug bounty programs — EA Forum",
+          "url": "https://forum.effectivealtruism.org/posts/xAWKpgiTFF9ruEpsz/critique-of-current-ai-safety-bug-bounty-programs",
+          "publishedAt": "2026-06-02",
+          "text": "Internal studies conducted by AI labs to estimate the overall helpfulness of their AI safety bug bounty programs, as it may turn out this all makes negligible",
+          "source": "forum.effectivealtruism.org",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "METR",
+          "url": "https://metr.org/",
+          "publishedAt": "2026-05-29",
+          "text": "We advise AI developers and governments on implementing risk assessment methodologies for AI. For example, we have advised developers on Frontier AI Safety",
+          "source": "metr.org",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "UPCEA AI Hub: Applied AI for Online & Professional Education",
+          "url": "https://upcea.edu/resources/ai-hub/",
+          "publishedAt": "2026-06-01",
+          "text": "6 days ago · Strategically implement AI in higher education. Access UPCEA's primers, research, and training for enrollment growth, student success, credential innovation",
+          "source": "upcea.edu",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Priority AI risks",
+          "url": "https://airisk.mit.edu/priorities",
+          "publishedAt": "2026-06-03",
+          "text": "We surveyed 272 AI experts to understand which AI risks are most severe, who is most vulnerable to them and who is most responsible for addressing them.",
+          "source": "airisk.mit.edu",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "White House pushes AI safety testing Washington expands ...",
+          "url": "https://www.facebook.com/WIONews/posts/1357324143173423/",
+          "publishedAt": "2026-06-03",
+          "text": "White House pushes AI safety testing Washington expands oversight of AI security risks US to screen AI models for risks Diksha Bisla has more details.",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "International AI safety report 2026 | Department of Industry Science and Resources",
+          "url": "https://www.industry.gov.au/publications/international-ai-safety-report-2026",
+          "publishedAt": "2026-05-31",
+          "text": "# International AI safety report 2026\n## Share\n### Publisher\n* AI Safety Institute\n\n...\n\n## Subscribe for updates at the department\nSign up for one or more of our email lists to receive the latest news, announcements and opportunities from our department.\nSubscribe",
+          "source": "industry.gov.au",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "I lead AGI safety at Google DeepMind – here's the view from the inside | Rohin Shah - YouTube",
+          "url": "https://www.youtube.com/watch?v=Tv3mGA3wqh8",
+          "publishedAt": "2026-06-02",
+          "text": "Most people working on AI safety think without a massive effort AI systems will probably end up with goals catastrophically different from humanity's.",
+          "source": "youtube.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Anthropic Fellows Program for AI safety research - Reddit",
+          "url": "https://www.reddit.com/r/ControlProblem/comments/1tsimzk/anthropic_fellows_program_for_ai_safety_research/",
+          "publishedAt": "2026-05-31",
+          "text": "# Anthropic Fellows Program for AI safety research: applications open for May & July 2026\n[alignment.anthropic.com Open](https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/)\nShare\nPublic\nAnyone can view, post, and comment to this community\n0 0\nExpand Navigation Collapse Navigation",
+          "source": "reddit.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        },
+        {
+          "title": "Advancing youth safety and opportunity through global leadership | OpenAI",
+          "url": "https://openai.com/index/advancing-youth-safety-and-opportunity-through-global-leadership/",
+          "publishedAt": "2026-06-03",
+          "text": "OpenAI calls for global action on youth AI safety, proposing an international institute to strengthen safeguards, standards, and opportunities for young",
+          "source": "openai.com",
+          "ogImage": null,
+          "beatHint": "AI Labs"
+        }
+      ]
+    },
+    "Vertical AI": {
+      "exa": [
+        {
+          "title": "Parloa deploys $350M with SAP, Microsoft, OpenAI partnerships",
+          "url": "https://thenextweb.com/news/parloa-turns-its-350-million-war-chest-into-a-partnership-web-spanning-sap-microsoft-and-openai",
+          "publishedAt": "2026-05-30T00:00:00.000Z",
+          "text": "Parloa deploys $350M with SAP, Microsoft, OpenAI partnerships\n\n#### TL;DR\n\nParloa, the Berlin-founded AI agent management platform valued at $3 billion, has announced strategic partnerships with SAP, Microsoft, OpenAI, Five9, and Epic five months after raising $350 million in its Series D. The company has surpassed $50 million ARR with 150% net revenue retention and is positioning itself as the ma",
+          "source": "thenextweb.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe",
+          "url": "https://www.prnewswire.co.uk/news-releases/factorial-raises-150m-series-d-reaches-2-5-billion-valuation-to-become-one-of-the-most-valuable-ai-scale-ups-in-europe-302789078.html",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe Accessibility Statement Skip Navigation\n\n- General Catalyst leads $150M equity investment, its first equity stake in Factorial as part of Series D round that values the company at over $2.5 billion, becoming one of the most valuable AI scale-ups in Europe\n- General Catalyst sim",
+          "source": "prnewswire.co.uk",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Asana Acquires StackAI to Power Enterprise AI Workflows",
+          "url": "https://thelettertwo.com/2026/05/28/asana-acquires-stackai-enterprise-ai-workflows/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Asana Acquires StackAI to Power Enterprise AI Workflows\n\nCredit: StackAI/screenshot\n\nYou’re reading an issue of “ The AI Economy,” my newsletter exploring the forces shaping the AI era—tracking how AI is rewriting business, work, technology, and culture. Subscribe to get expert insights and curated updates delivered straight to your inbox.\n\nAs Asana positions itself as the “operating system for hu",
+          "source": "thelettertwo.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Vertice acquires Vendr to create the world's largest procurement intelligence dataset and lead autonomous AI negotiation",
+          "url": "https://www.prnewswire.co.uk/news-releases/vertice-acquires-vendr-to-create-the-worlds-largest-procurement-intelligence-dataset-and-lead-autonomous-ai-negotiation-302786413.html",
+          "publishedAt": "2026-06-01T00:00:00.000Z",
+          "text": "Vertice acquires Vendr to create the world's largest procurement intelligence dataset and lead autonomous AI negotiation Accessibility Statement Skip Navigation\n\nLONDON and NEW YORK, June 1, 2026 /PRNewswire/ -- Vertice, the AI procurement platform built for the modern enterprise, today announced its acquisition of Vendr, the US software pricing leader.\n\nContinue Reading\n\nVertice acquires Vendr to",
+          "source": "prnewswire.co.uk",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Asana acquires StackAI to run AI agent workflows across enterprise systems - SiliconANGLE",
+          "url": "https://siliconangle.com/2026/05/28/asana-acquires-stackai-run-ai-agent-workflows-across-enterprise-systems/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Asana acquires StackAI to run AI agent workflows across enterprise systems - SiliconANGLE\n\nSHARE\n\nUPDATED 19:06 EDT / MAY 28 2026\n\nAI\n\n### Asana acquires StackAI to run AI agent workflows across enterprise systems\n\nSHARE\n\nWork management software company Asana Inc. today said it has completed the acquisition of StackAI Inc., a no-code platform for building artificial intelligence agents, in a deal",
+          "source": "siliconangle.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Glean Surpasses $300M ARR: Unrivaled Enterprise Context Fuels AI Adoption | Morningstar",
+          "url": "https://www.morningstar.com/news/business-wire/20260528505530/glean-surpasses-300m-arr-unrivaled-enterprise-context-fuels-ai-adoption",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Glean Surpasses $300M ARR: Unrivaled Enterprise Context Fuels AI Adoption | Morningstar\n\nGlean Surpasses $300M ARR: Unrivaled Enterprise Context Fuels AI Adoption\n\nEnterprise AI-native company grows from $100M to $300M ARR in 15 months\n\nGlean today announced it reached $300 million in annual recurring revenue (ARR), just 15 months after reaching $100 million ARR. The milestone comes as Glean conti",
+          "source": "morningstar.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "The AI startup replacing software engineers just raised $1B at $26B valuation and it is already writing 89% of Cognition's own code — TFN",
+          "url": "https://techfundingnews.com/the-ai-startup-replacing-software-engineers-just-raised-1b-at-26b-valuation-and-it-is-already-writing-89-of-cognitions-own-code/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "The AI startup replacing software engineers just raised $1B at $26B valuation and it is already writing 89% of Cognition's own code — TFN\n\nJune 3, 2026\n\n### Ex-Isar Aerospace and Volocopter leaders raise €5.7M to fix the enterprise AI execution problem\n\nJune 3, 2026\n\n### They met at the intersection of science and finance. Now Apoha has raised $36M to build the data layer AI still can’t do\n\nJune 3",
+          "source": "techfundingnews.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu",
+          "url": "https://tech.eu/2026/06/03/factorial-raises-150m-series-d-at-25b-valuation-to-expand-across-europe/",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Factorial raises $150M Series D at $2.5B valuation to expand across Europe - Tech.eu\n\nNews\n\nTopics\n\nInsights\n\nNOTIFICATIONS\n\nSign in to your account, or Sign up to stay up to date with the hottest European tech startup news.\n\nSearch on Tech.eu...\n\nNews\n\nTopics\n\nTech.eu\n\nSign in to your account, or Sign up to stay up to date with the hottest European tech startup news.\n\nTech.eu Insights creates ins",
+          "source": "tech.eu",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Cognition Raises Over $1 Billion At A $26 Billion Valuation As Devin Adoption Accelerates Across Enterprises",
+          "url": "https://pulse2.com/cognition-raises-over-1-billion-at-a-26-billion-valuation-as-devin-adoption-accelerates-across-enterprises/",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "Cognition Raises Over $1 Billion At A $26 Billion Valuation As Devin Adoption Accelerates Across Enterprises\n\n# Cognition Raises Over $1 Billion At A $26 Billion Valuation As Devin Adoption Accelerates Across Enterprises\n\nBy Amit Chowdhry • May 31, 2026\n\nCognition Raises Over $1 Billion At A $26 Billion Valuation As Devin Adoption Accelerates Across Enterprises\n\nCognition announced that it has rai",
+          "source": "pulse2.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Asana acquires no-code agent-builder StackAI | TechCrunch",
+          "url": "https://techcrunch.com/2026/05/28/asana-acquires-no-code-agent-builder-stack-ai/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Asana acquires no-code agent-builder StackAI | TechCrunch\n\nImage Credits:Thomas Fuller/SOPA Images/LightRocket / Getty Images\n\n# Asana acquires no-code agent-builder StackAI\n\n1:06 PM PDT · May 28, 2026\n\nAsana has acquired the workflow automation company StackAI for $75 million, part of a larger effort to position itself as an AI-native workplace platform. StackAI’s founders, Tony Rosinol and Berna",
+          "source": "techcrunch.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe",
+          "url": "https://www.prnewswire.com/news-releases/factorial-raises-150m-series-d-reaches-2-5-billion-valuation-to-become-one-of-the-most-valuable-ai-scale-ups-in-europe-302789078.html",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Factorial Raises $150M Series D, Reaches $2.5 Billion Valuation to Become One of the Most Valuable AI Scale-Ups in Europe Accessibility Statement Skip Navigation\n\n- General Catalyst leads $150M equity investment, its first equity stake in Factorial as part of Series D round that values the company at over $2.5 billion, becoming one of the most valuable AI scale-ups in Europe\n- General Catalyst sim",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Asana Acquires StackAI, Adding Cross-System Execution for Human-Agent Teams | Morningstar",
+          "url": "https://www.morningstar.com/news/business-wire/20260528515345/asana-acquires-stackai-adding-cross-system-execution-for-human-agent-teams",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Asana Acquires StackAI, Adding Cross-System Execution for Human-Agent Teams | Morningstar\n\nAsana Acquires StackAI, Adding Cross-System Execution for Human-Agent Teams\n\nAcquisition adds orchestration for complex workflows that span enterprise systems, data, and teams\n\nAsana, Inc.(NYSE: ASAN)(LTSE: ASAN), the operating system for human-agent teams, today announced it has completed the acquisition of",
+          "source": "morningstar.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Asana acquires Stack AI for $75M to build AI agent platform",
+          "url": "https://thenextweb.com/news/asana-acquires-stack-ai-agent-builder-saas",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Asana acquires Stack AI for $75M to build AI agent platform\n\n#### TL;DR\n\nAsana has acquired no-code AI agent builder Stack AI for a reported $75 million, adding cross-system workflow execution to its AI platform. The deal was announced alongside a Q1 earnings beat, with revenue up 9.5% to $205.1 million, as the stock trades 53% below its January level.\n\nAsana has acquired Stack AI, a no-code platf",
+          "source": "thenextweb.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Geordie AI Raises $30M Series A as Enterprises Race to Secure AI Agents – Unite.AI",
+          "url": "https://www.unite.ai/geordie-ai-raises-30m-series-a-as-enterprises-race-to-secure-ai-agents/",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Geordie AI Raises $30M Series A as Enterprises Race to Secure AI Agents – Unite.AI\n\nHenry Comfort (CEO), Benji Weber (CTO), Hanah Darley (Chief AI Officer).\n\nGeordie AI has raised a $30 million Series A round led by Balderton Capital, as enterprises increasingly look for ways to govern and secure the rapidly expanding use of autonomous AI agents inside their organizations. The round also included ",
+          "source": "unite.ai",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Replit Expands Enterprise Leadership with Visa Investment and Partnership, Payments Expansion, and Solution Partner Program",
+          "url": "https://www.prnewswire.com/news-releases/replit-expands-enterprise-leadership-with-visa-investment-and-partnership-payments-expansion-and-solution-partner-program-302784366.html",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "Replit Expands Enterprise Leadership with Visa Investment and Partnership, Payments Expansion, and Solution Partner Program Accessibility Statement Skip Navigation\n\nVisa invests in and partners with Replit; more than 1,000 employees already using the platform\n\nSAN FRANCISCO, May 28, 2026 /PRNewswire/ -- Replit, the agentic software creation platform, today announced a partnership with Visa, a worl",
+          "source": "prnewswire.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Accenture Copilot Rollout: 743K Seats Largest [2026]",
+          "url": "https://tech-insider.org/accenture-microsoft-365-copilot-743000-employees-largest-enterprise-ai-deployment-2026/",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "Accenture Copilot Rollout: 743K Seats Largest [2026]\n\nStockholm, Sweden\n\nMay 31, 2026\n\n16 min read\n\nOn April 28, 2026, Microsoft and Accenture confirmed what insiders had been whispering about for months: Microsoft 365 Copilot is being rolled out to roughly 743,000 Accenture employees across more than 120 countries, the largest enterprise generative-AI deployment ever announced. The move turns Acc",
+          "source": "tech-insider.org",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Infosys, TCS and Wipro scale Microsoft 365 Copilot to over 300,000 employees - Source Asia",
+          "url": "https://news.microsoft.com/source/asia/2026/06/03/infosys-tcs-and-wipro-scale-microsoft-365-copilot-to-over-300000-employees/",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Infosys, TCS and Wipro scale Microsoft 365 Copilot to over 300,000 employees - Source Asia\n\nSkip to main content\n\nThe three global IT majors emerge as Frontier Firms in action — moving from large-scale rollout to enterprise-wide agentic AI operations, with India setting the pace in Asia.\n\nIndia —June 3, 2026 — Microsoft today announced that three leading IT companies — Infosys, TCS and Wipro — hav",
+          "source": "news.microsoft.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Infosys, TCS, Wipro cross 3 lakh Copilot licences - The Times of India",
+          "url": "https://timesofindia.indiatimes.com/business/india-business/infosys-tcs-wipro-cross-3-lakh-copilot-licences/articleshow/131476915.cms",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Infosys, TCS, Wipro cross 3 lakh Copilot licences - The Times of India\n\nEdition\n\nIN\n\nEnglish\n\nSign In\n\n- News\n- Business News\n- India Business News\n- Infosys, TCS, Wipro cross 3 lakh Copilot licences\n\nTrending\n\nTehran Crypto Network Seize\n\n# Infosys, TCS, Wipro cross 3 lakh Copilot licences\n\nComments\n\nShare\n\nAA\n\n+Text Size\n\n- Small\n- Medium\n- Large\n\nInfosys, TCS and Wipro have each scaled Microsof",
+          "source": "timesofindia.indiatimes.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Infosys, TCS and Wipro cross 300,000 Microsoft Copilot seats as India’s IT giants deepen enterprise AI push",
+          "url": "https://www.fortuneindia.com/business-news/infosys-tcs-and-wipro-cross-300000-microsoft-copilot-seats-as-indias-it-giants-deepen-enterprise-ai-push/141125",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Infosys, TCS and Wipro cross 300,000 Microsoft Copilot seats as India’s IT giants deepen enterprise AI push\n\nJune 3, 2026, 12:22 IST/2 min read\n\nSummarise\n\nShare\n\nShare\n\nIndia’s top IT firms ramp up Microsoft 365 Copilot to over 300,000 seats, signalling a shift from AI pilots to large-scale deployment embedded in daily workflows.\n\nTHIS STORY FEATURES\n\nWipro Ltd• Fortune 500 India 2025\n\nMicroland ",
+          "source": "fortuneindia.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Accenture Rolls Out Microsoft 365 Copilot to 743,000 Workers: The Largest Enterprise AI Deployment Ever - Windows News",
+          "url": "https://windowsnews.ai/article/accenture-rolls-out-microsoft-365-copilot-to-743000-workers-the-largest-enterprise-ai-deployment-eve.420948",
+          "publishedAt": "2026-05-31T00:00:00.000Z",
+          "text": "Accenture Rolls Out Microsoft 365 Copilot to 743,000 Workers: The Largest Enterprise AI Deployment Ever - Windows News\n\n### Table of Contents\n\nOn April 27 and 28, 2026, Microsoft and Accenture confirmed the largest enterprise rollout of Microsoft 365 Copilot ever publicly announced. The global professional services firm is deploying the AI assistant to roughly 743,000 employees across more than 12",
+          "source": "windowsnews.ai",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "KPMG rolls out Claude to 276,000 staff in global Anthropic alliance - Tech Three Dots",
+          "url": "https://techthreedots.com/kpmg-claude-anthropic-276000-employees",
+          "publishedAt": "2026-05-28T00:00:00.000Z",
+          "text": "KPMG rolls out Claude to 276,000 staff in global Anthropic alliance - Tech Three Dots\n\nSign in Join\n\nSign in\n\nWelcome!Log into your account\n\nyour username\n\nyour password\n\nForgot your password?\n\nCreate an account\n\nSign up\n\nWelcome!Register for an account\n\nyour email\n\nyour username\n\nA password will be e-mailed to you.\n\nPassword recovery\n\nRecover your password\n\nyour email\n\nSearch\n\nMay 28, 2026\n\n# KPM",
+          "source": "techthreedots.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Mistral AI signs Airbus and BMW for industrial AI platform",
+          "url": "https://qz.com/mistral-ai-airbus-bmw-industrial-engineering-052926",
+          "publishedAt": "2026-05-29T00:00:00.000Z",
+          "text": "Mistral AI signs Airbus and BMW for industrial AI platform\n\nMistral AI signs Airbus and BMW for industrial AI platform",
+          "source": "qz.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Wolters Kluwer and OpenAI expand enterprise AI collaboration to advance trusted Expert AI for regulated professionals",
+          "url": "https://live.euronext.com/en/products/equities/company-news/2026-06-03-wolters-kluwer-and-openai-expand-enterprise-ai",
+          "publishedAt": "2026-06-03T00:00:00.000Z",
+          "text": "Wolters Kluwer and OpenAI expand enterprise AI collaboration to advance trusted Expert AI for regulated professionals\n\n03 Jun 2026 08:00 CEST\n\nSubscribe\n\n### Issuer\n\nWOLTERS KLUWER N.V.\n\nPRESS RELEASE\n\nWolters Kluwer and OpenAI expand enterprise AI collaboration to advance trusted Expert AI for regulated professionals\n\nThe collaboration combines OpenAI’s latest capabilities across Wolters Kluwer’s",
+          "source": "live.euronext.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        }
+      ],
+      "parallel": [
+        {
+          "title": "15 health systems that have signed enterprise AI deals in 2026",
+          "url": "https://www.beckershospitalreview.com/healthcare-information-technology/ai/15-health-systems-that-have-signed-enterprise-ai-deals-in-2026/",
+          "publishedAt": "2026-06-03",
+          "text": "# 15 health systems that have signed enterprise AI deals in 2026\n## Most Read\n### [20 large health systems growing bigger](https://www.beckershospitalreview.com/rural-health/growth-merger/11-large-health-systems-growing-bigger/)\nBy: Alan Condon\nTuesday, May 19th, 2026",
+          "source": "beckershospitalreview.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Why All AI & Tech Companies Need To Win Enterprise Deals",
+          "url": "https://www.youtube.com/watch?v=6Agt-j331uU",
+          "publishedAt": "2026-05-31",
+          "text": "Build AI that actually works: https://heyclarity.dev/ Self Aligned Newsletter: https://www.selfaligned.me/ If you're new to my channel, my name is Robert Ta",
+          "source": "youtube.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Enterprise Software Vendors Are Buying the AI Execution Layer | ERP Today",
+          "url": "https://erp.today/enterprise-software-ai-acquisitions-execution-layer/",
+          "publishedAt": "2026-06-02",
+          "text": "# Recent Acquisitions Announcements Show Enterprise Software Vendors Are Buying the AI Execution Layer\n## Key Takeaways\n### ⇨\nLeading companies like Asana, Coupa, Salesforce, and Vertice are acquiring AI capabilities to enhance their platforms' functionality across various enterprise domains, aiming for seamless execution rather than just providing recommendations.",
+          "source": "erp.today",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Build AI Apps on Your Data, IT Approved From Day One |… - AppDirect",
+          "url": "https://www.appdirect.com/blog/the-three-reasons-enterprise-ai-stalls-and-how-devsai-clears-all-of-them",
+          "publishedAt": "2026-06-02",
+          "text": "Devs.ai lets any team build production-ready AI apps on their own data—with a governed private AI store employees will actually use. Free to start.",
+          "source": "appdirect.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI Adoption by the Numbers: Where Enterprise AI is Actually Working",
+          "url": "https://x.com/kimberlywtan/article/2041896368877531158",
+          "publishedAt": "2026-06-02",
+          "text": "To qualify for this statistic, these enterprises had to have signed a top-down contract with an AI startup, successfully converted a pilot, and have gone live",
+          "source": "x.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Cracking The Enterprise AI Sales Code - LinkedIn",
+          "url": "https://www.linkedin.com/pulse/cracking-enterprise-ai-sales-code-inc42-kohbc",
+          "publishedAt": "2026-06-03",
+          "text": "The company has partnered with OpenAI, ElevenLabs and AWS as it looks to deepen AI adoption across inspections, audits and customer support workflows.",
+          "source": "linkedin.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Top AI Investors & VC Firms Backing Startups in 2026 - Qubit Capital",
+          "url": "https://qubit.capital/blog/top-investors-backing-ai-startups",
+          "publishedAt": "2026-05-29",
+          "text": "AI captured 34% of VC while representing just 18% of funded startups. See top AI investors, check sizes, active portfolios, and what to include in your",
+          "source": "qubit.capital",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "What does the future of enterprise AI look like? Hear Snowflake CEO ...",
+          "url": "https://www.instagram.com/reel/DZDGEzjEvWd/",
+          "publishedAt": "2026-06-02",
+          "text": "The companies that are winning with AI are approaching it ... 1/6 AI DATA CLOUD SNOWFLAKE SIGNED A $6 BILLION AI INFRASTRUCTURE DEAL WITH AWS Enterprise AI demand",
+          "source": "instagram.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI (Artificial Intelligence) Startups funded by Y Combinator (YC) in Los Angeles 2026 | Y Combinator",
+          "url": "https://www.ycombinator.com/companies/industry/ai/los-angeles",
+          "publishedAt": "2026-06-01",
+          "text": "Browse 29 of the top AI startups funded by Y Combinator. Headquartered in Los Angeles, these are some of the hottest and fastest-growing startups.",
+          "source": "ycombinator.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Mark Zuckerberg Wants Meta’s New AI Agents to Run Your Whole Business - WSJ",
+          "url": "https://www.wsj.com/tech/mark-zuckerberg-wants-metas-new-ai-agents-to-run-your-whole-business-6e2100e2",
+          "publishedAt": "2026-06-03",
+          "text": "# Mark Zuckerberg Wants Meta’s New AI Agents to Run Your Whole Business\n## Videos\n### Most Popular\nOPINION",
+          "source": "wsj.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI Agents News Brief: Funding, New Tools, and Security Focus",
+          "url": "https://aiagentsdirectory.com/news/ai-agents-news-brief-funding-new-tools-and-security-focus",
+          "publishedAt": "2026-06-02",
+          "text": "Gradient Labs secured $26 million to scale compliant AI agents for financial services, while Geordie AI raised $30 million to govern and secure enterprise AI",
+          "source": "aiagentsdirectory.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Cuban's advice comes as companies build AI models to automate ...",
+          "url": "https://www.facebook.com/businessinsider/posts/cubans-advice-comes-as-companies-build-ai-models-to-automate-tasks-but-agent-cos/1365247632140184/",
+          "publishedAt": "2026-06-03",
+          "text": "The hype around AI agents is driven by market pressures to monetize expensive AI models. OpenAI predicts agentic systems will go mainstream by 2025, aiming to",
+          "source": "facebook.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI: Morgan Stanley to open its wealth management funnel to agents",
+          "url": "https://www.cnbc.com/2026/06/03/ai-agents-morgan-stanley-wealth-management-funnel.html",
+          "publishedAt": "2026-06-03",
+          "text": "Skip Navigation\n[Finance](https://www.cnbc.com/finance/)",
+          "source": "cnbc.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "The best workflow automation tools in 2026 - Zapier",
+          "url": "https://zapier.com/blog/workflow-automation-software/",
+          "publishedAt": "2026-06-01",
+          "text": "3 days ago · Workflow automation software can help you streamline tasks, achieve greater efficiency, and lower costs. Read up on 10 options in this guide.",
+          "source": "zapier.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Daily AI Agent News - Last 7 Days",
+          "url": "https://aiagentstore.ai/ai-agent-news/this-week",
+          "publishedAt": "2026-06-03",
+          "text": "# Daily AI Agent News - Last 7 Days\n## Meta launches \"Meta Business Agent\" and a Business Agent Platform\n### Cognizant expands with Snowflake CoCo to deploy Cortex-powered intelligent agents for enterprises\nWednesday, June 3, 2026",
+          "source": "aiagentstore.ai",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Clinical Workflow Automation: Where AI Is Making Real Inroads | HealthTech Magazine",
+          "url": "https://healthtechmagazine.net/article/2026/06/clinical-workflow-automation-ai-inroads-perfcon",
+          "publishedAt": "2026-06-01",
+          "text": "# Clinical Workflow Automation: Where AI Is Making Real Inroads in Healthcare\n[_**READ MORE:** Make health services work smarter with AI and collaboration._](https://www.cdw.com/content/cdw/en/articles/digitalworkspace/making-health-services-work-smarter-with-ai-and-collaboration.html)",
+          "source": "healthtechmagazine.net",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Artificial%20Intelligence Startups funded by Y Combinator (YC) 2026 | Y Combinator",
+          "url": "https://www.ycombinator.com/companies/industry/Artificial%20Intelligence",
+          "publishedAt": "2026-06-04",
+          "text": "# Artificial%20Intelligence Startups funded by Y Combinator (YC) 2026\nMay 2026\nBrowse 0 of the top Artificial%20Intelligence startups funded by Y Combinator.\nWe also have a Startup Directory where you can search through over 5,000 companies .",
+          "source": "ycombinator.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "How AI Agents Are Changing Investment Research - YouTube",
+          "url": "https://www.youtube.com/watch?v=yJPetcoA6r4",
+          "publishedAt": "2026-05-30",
+          "text": "... fund professionals, asset managers, and investment teams ... BREAKING NEWS: COVID-19 Whistleblower Testifies Publicly Before Rand Paul-Led Senate Committee.",
+          "source": "youtube.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "What is workflow automation? A practical guide for 2026 - Make",
+          "url": "https://www.make.com/en/blog/workflow-automation",
+          "publishedAt": "2026-05-28",
+          "text": "Talk to sales  [Get started free](https://make.com/en/register)\nMay 28, 2026 | 10 minutes\n\n...\n\n# Workflow automation in 2026: A practical guide\n## What is workflow automation?\nMost teams arrive at workflow automation from opposite ends of the same frustration. The definition is the same either way.",
+          "source": "make.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Is Microsoft's OpenAI Bet Putting Your AI Contract at Risk? - CX Today",
+          "url": "https://www.cxtoday.com/ai-automation-in-cx/is-microsofts-openai-bet-putting-your-ai-contract-at-risk/",
+          "publishedAt": "2026-06-03",
+          "text": "[Home](https://www.cxtoday.com/) → AI & Automation in CX",
+          "source": "cxtoday.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Introducing Microsoft 365 Business with Copilot: The new standard for small business | Microsoft 365 Blog",
+          "url": "https://www.microsoft.com/en-us/microsoft-365/blog/2026/05/28/introducing-microsoft-365-business-with-copilot-the-new-standard-for-small-business/",
+          "publishedAt": "2026-05-28",
+          "text": "Meet Microsoft 365 Business with Copilot—the AI-powered solution transforming how small businesses work, collaborate, and compete.",
+          "source": "microsoft.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI Copilot Integration Cost & ROI Guide 2026 | AgamiSoft",
+          "url": "https://agamisoft.com/ai-copilot-integration-cost-roi-guide",
+          "publishedAt": "2026-06-02",
+          "text": "A standard enterprise AI copilot deployment takes 8–16 weeks from contract signature to full production rollout. Platform-native tools like Microsoft 365",
+          "source": "agamisoft.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "AI alone won't change your business. The system running it will. - The Official Microsoft Blog",
+          "url": "https://blogs.microsoft.com/blog/2026/06/02/ai-alone-wont-change-your-business-the-system-running-it-will/",
+          "publishedAt": "2026-06-02",
+          "text": "# AI alone won’t change your business. The system running it will.\n## **Building a system for the agentic enterprise**\nCode is only part of an agent. To be useful, an agent also has to understand your business: your customers, your products, your contracts, your processes. Without enterprise context and intelligence you can trust, even the most capable model is guessing.",
+          "source": "blogs.microsoft.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": " AI Copilot Market Outlook 2026-2034",
+          "url": "https://www.intelmarketresearch.com/ai-copilot-market-46747",
+          "publishedAt": "2026-05-31",
+          "text": "# AI Copilot Market Growth Analysis, Dynamics, Key Players and Innovations, Outlook and Forecast 2026-2034\n* Pages: 137\n* Report Code: IMR-46747\n* Report available in: pdf pdf pdf\n* Overview\n* Table of Contents\n* List of Tables / Figures\n* [Download FREE Sample](https://www.intelmarketresearch.com/download-free-sample/46747/ai-copilot-market)",
+          "source": "intelmarketresearch.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Understanding Enterprise AI Agents: The 2026 Guide to Deployment, Governance, and Scale",
+          "url": "https://www.lyzr.ai/blog/enterprise-ai/",
+          "publishedAt": "2026-06-01",
+          "text": "# Understanding Enterprise AI Agents: The 2026 Guide to Deployment, Governance, and Scale\n## How to choose the right enterprise AI agent platform\nIf you want to walk through these decisions specifically for your organization, our team runs architecture briefings for CIOs and enterprise architects, request one via [book a Lyzr architecture briefing](https://www.lyzr.ai/book-demo) .",
+          "source": "lyzr.ai",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Industry-Specific AI Agent Playbooks (Finance, Healthcare, Legal ...",
+          "url": "https://vdf.ai/resources/industry-ai-agent-playbooks/",
+          "publishedAt": "2026-06-03",
+          "text": "Industry-specific AI agent playbooks are vertical applications of the same enterprise AI platform — same orchestration, same governance, same retrieval",
+          "source": "vdf.ai",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Accenture Copilot: 743K Seats, Biggest AI Deploy [2026] - Tech Insider",
+          "url": "https://tech-insider.org/accenture-microsoft-365-copilot-743000-employees-largest-enterprise-ai-deployment-2026/",
+          "publishedAt": "2026-05-31",
+          "text": "Microsoft confirmed Accenture is rolling out Microsoft 365 Copilot to 743000 employees across 120+ countries — the largest enterprise AI deployment ever.",
+          "source": "tech-insider.org",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "What Features Should an Enterprise AML AI Copilot Include?",
+          "url": "https://intellivon.com/blogs/aml-ai-copilot-platform-features/",
+          "publishedAt": "2026-06-03",
+          "text": "Enterprise AML AI copilot guide for banks: compare required features, architecture, compliance controls, AI models and integrations.",
+          "source": "intellivon.com",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        },
+        {
+          "title": "Microsoft Introduces Microsoft 365 Copilot to Revolutionize ...",
+          "url": "https://af.net/realtime/microsoft-introduces-microsoft-365-copilot-to-revolutionize-enterprise-workflows/",
+          "publishedAt": "2026-05-31",
+          "text": "Microsoft 365 Copilot integrates AI into daily workflows, supporting document creation, data analysis, and task automation. It uses enterprise data to",
+          "source": "af.net",
+          "ogImage": null,
+          "beatHint": "Vertical AI"
+        }
+      ]
+    }
+  }
+}
