@@ -2,104 +2,212 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ── Cinematic animations ── */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* ── Design tokens: one light palette, every text pair at WCAG AA or better ──
+   Contrast on --bg / --surface:
+   --ink 17.3:1 · --ink-2 7.5:1 · --meta 4.9:1 / 5.3:1 · --accent 10.6:1
+   --new-ink on --new-bg 5.5:1 */
+:root {
+  color-scheme: light;
 
-.hero-anim,
-.beat-anim,
-.card-anim {
-  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-.hero-anim-1 { animation-delay: 0.10s; }
-.hero-anim-2 { animation-delay: 0.15s; }
-.hero-anim-3 { animation-delay: 0.20s; }
-.hero-anim-4 { animation-delay: 0.25s; }
-.hero-anim-5 { animation-delay: 0.30s; }
-.beat-anim   { animation-delay: 0.10s; }
-.card-anim   { animation-delay: var(--card-anim-delay, 0ms); }
+  --bg:        #FAF8F4;
+  --surface:   #FFFFFF;
+  --ink:       #18140C;  /* headlines */
+  --ink-2:     #585048;  /* body copy */
+  --meta:      #736B61;  /* source, dates, counts, inactive nav */
+  --accent:    #1B3A6B;
+  --accent-2:  #2E5EA8;  /* masthead gradient only */
+  --rule:      #DED8CC;
+  --rule-soft: #E8E2D6;
+  --new-bg:    #047857;
+  --new-ink:   #FFFFFF;
+  --nav-bg:    rgba(250, 248, 244, 0.88);
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-anim,
-  .beat-anim,
-  .card-anim {
-    animation: none;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
+  --card-shadow:       0 1px 2px rgba(24, 20, 12, 0.04), 0 4px 16px rgba(24, 20, 12, 0.04);
+  --card-shadow-hover: 0 2px 4px rgba(24, 20, 12, 0.06), 0 12px 32px rgba(24, 20, 12, 0.08);
 
-/* ── Responsive horizontal padding ── */
-:root { --page-pad-x: 56px; }
+  --display: var(--font-display), Georgia, serif;
+  --body:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --page-pad-x: 56px;
+}
 @media (max-width: 600px) {
   :root { --page-pad-x: 20px; }
-  .digest-title { font-size: clamp(26px, 7vw, 38px) !important; }
 }
 
-/* ── Card layout: row on desktop, column on mobile (no JS, no hydration flash) ── */
-.card-layout {
-  display: flex;
-  gap: clamp(16px, 4vw, 24px);
-  padding: clamp(20px, 3vw, 28px);
-  flex-direction: row;
-}
-.card-thumb {
-  position: relative;
-  flex-shrink: 0;
-  width: 180px;
-  height: 140px;
-  border-radius: 6px;
-  overflow: hidden;
-}
-@media (max-width: 767px) {
-  .card-layout  { flex-direction: column; }
-  .card-thumb   { width: 100%; height: 160px; }
+html, body { background: var(--bg); min-height: 100vh; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── CSS custom properties (set by DigestClient on theme switch) ── */
-:root {
-  --page-bg:           #FAF8F4;
-  --tab-blur-bg:       rgba(250,248,244,0.94);
-  --accent:            #1B3A6B;
-  --article-hover-bg:  rgba(27,58,107,0.025);
-  --article-hover-clr: #080604;
-  --play-hover-border: rgba(27,58,107,0.5);
-  --play-hover-bg:     rgba(27,58,107,0.1);
-  --tab-hover-clr:     #5A6E8A;
-  --scroll-thumb:      #D0C8BC;
-  --tab-border:        #DED8CC;
-}
+a, button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
 
-html, body { background: var(--page-bg); min-height: 100vh; }
-
-/* ── Thumb hover ── */
-.thumb-wrap  { overflow: hidden; }
-.thumb-inner { transition: transform 0.55s ease; }
-
-.play-ring { transition: border-color 0.2s, background 0.2s; }
-
-/* ── Keyboard focus states (WCAG 2.1 Level AA) ── */
-button:focus-visible,
-a:focus-visible {
+/* ── Keyboard focus ── */
+a:focus-visible,
+button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Tab-specific focus styles */
-[role="tab"]:focus-visible {
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Masthead and header ── */
+.masthead-rule {
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 35%, transparent 100%);
+}
+.digest-header {
+  padding: 52px var(--page-pad-x) 36px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.digest-title {
+  margin: 0 0 24px;
+  font-family: var(--display);
+  font-size: clamp(28px, 7vw, 38px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.digest-rule {
+  height: 1px;
+  margin: 0 0 16px;
+  border: 0;
+  background: var(--rule);
+}
+.edition-date {
+  margin: 0;
+  font-size: 13px;
+  color: var(--meta);
+}
+.thesis {
+  max-width: 760px;
+  margin: 16px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ── Shared story parts (lead story and cards) ── */
+.story-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--meta);
+}
+.new-badge {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--new-bg);
+  color: var(--new-ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.so-what {
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+}
+.so-what-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.so-what p {
+  margin: 0;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* The title is the story's one link, stretched over its container, so the
+   whole block is clickable but a screen reader hears only the headline. */
+.story-link { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+.story-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.lead-story .story-link:focus-visible,
+.news-card .story-link:focus-visible { outline: none; }
+.lead-story:has(.story-link:focus-visible),
+.news-card:has(.story-link:focus-visible) {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
 
-/* Input elements */
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+/* ── Lead story ── */
+.lead-story {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid var(--rule-soft);
 }
+.lead-story-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 720px;
+  padding: 48px var(--page-pad-x);
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.lead-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(30px, 7vw, 46px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lead-story .story-meta { font-size: 13px; }
+.lead-summary {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.lead-story .so-what p { font-size: 15px; }
+.lead-story:hover .story-link { color: var(--accent); }
 
 /* ── Beat jump navigation (sticky, in-page) ── */
 @media (prefers-reduced-motion: no-preference) {
@@ -109,7 +217,17 @@ select:focus-visible {
    for the card's meta row above it. --beat-nav-offset is measured in JS. */
 html {
   --focus-clearance: 64px;
-  scroll-padding-top: calc(var(--beat-nav-offset, 64px) + var(--focus-clearance));
+  scroll-padding-top: calc(var(--beat-nav-offset, 49px) + var(--focus-clearance));
+}
+.beat-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rule-soft);
+  box-shadow: 0 2px 8px rgba(27, 58, 107, 0.04);
 }
 /* The scroller runs edge to edge so a clipped link peeks in on narrow screens */
 .beat-nav-scroller {
@@ -127,13 +245,12 @@ html {
   min-height: 48px;
   padding: 0 14px;
   border-bottom: 2px solid transparent;
-  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.02em;
   white-space: nowrap;
   text-decoration: none;
-  color: var(--beat-nav-ink);
+  color: var(--ink-2);
   transition: color 0.18s ease, border-color 0.18s ease;
 }
 .beat-nav-link:first-child { padding-left: 0; }
@@ -150,45 +267,132 @@ html {
 .beat-nav-count {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  opacity: 0.8;
+  color: var(--meta);
 }
+.beat-nav-link[aria-current] .beat-nav-count { color: inherit; }
+
+/* ── Beat sections ── */
+.beats { padding: 0 var(--page-pad-x) 80px; }
 .beat-section {
   padding-top: clamp(36px, 6vw, 48px);
   /* Adds to html's scroll-padding-top: lands the heading about 24px below
      the sticky nav */
   scroll-margin-top: calc(0px - var(--focus-clearance) - clamp(12px, 3vw, 24px));
 }
-
-/* ── News card: the title is the one link, stretched over the card ── */
-.news-card { position: relative; }
-.card-link { color: inherit; text-decoration: none; }
-.card-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+.beat-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 clamp(20px, 4vw, 28px);
+  font-family: var(--display);
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: 600;
+  color: var(--ink);
 }
-.news-card .card-link:focus-visible { outline: none; }
-.news-card:has(.card-link:focus-visible) {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+.beat-heading-count {
+  font-family: var(--body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--meta);
+}
+.beat-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 24px);
+}
+.beat-empty {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-2);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
+/* ── News card ── */
+.news-card {
+  position: relative;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s ease;
+}
+.news-card:hover { box-shadow: var(--card-shadow-hover); }
+.news-card:hover .story-link { color: var(--accent); }
+/* Row on desktop, column on mobile (no JS, no hydration flash) */
+.card-layout {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(16px, 4vw, 24px);
+  padding: clamp(20px, 3vw, 28px);
+}
+.card-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 180px;
+  height: 140px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .card-layout { flex-direction: column; }
+  .card-thumb  { width: 100%; height: 160px; }
+}
+.card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.card-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.card-summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-/* Scrollbar ── */
-::-webkit-scrollbar       { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 2px; }
+/* ── Footer ── */
+.site-footer {
+  margin-top: 40px;
+  padding: clamp(40px, 8vw, 60px) var(--page-pad-x);
+  border-top: 1px solid var(--rule-soft);
+  text-align: center;
+}
+.site-footer p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--meta);
+}
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+}
+.site-footer a:hover { color: var(--accent); }
 
-a, button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
+/* ── Empty state (no published edition yet) ── */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 0 var(--page-pad-x);
+  text-align: center;
+}
+.empty-state p { margin: 0; font-size: 16px; color: var(--ink-2); }
+.empty-state p + p { margin-top: 8px; font-size: 14px; color: var(--meta); }

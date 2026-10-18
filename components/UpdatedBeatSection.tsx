@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { DigestArticle, Beat } from '@/lib/summarize';
-import { useTheme } from './DigestClient';
+import type { Beat } from '@/lib/summarize';
+import type { DisplayArticle } from '@/lib/format';
 import UpdatedNewsCard from './UpdatedNewsCard';
 
 interface UpdatedBeatSectionProps {
-  articles: DigestArticle[];
+  articles: DisplayArticle[];
 }
 
 const BEATS: Beat[] = ['AI Labs', 'Vertical AI', 'AI Infrastructure', 'Physical AI'];
@@ -14,14 +14,11 @@ const BEATS: Beat[] = ['AI Labs', 'Vertical AI', 'AI Infrastructure', 'Physical 
 // Section anchors double as shareable URLs: /#physical-ai
 const beatId = (beat: Beat) => beat.toLowerCase().replace(/\s+/g, '-');
 
-// The 2px ScrollProgressBar sits above the sticky nav.
-const PROGRESS_BAR_H = 2;
 // How long a jump link's smooth scroll keeps scroll-spy quiet, so the
 // highlight doesn't flicker through the sections in between.
 const JUMP_LOCK_MS = 900;
 
 export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps) {
-  const theme = useTheme();
   const navRef = useRef<HTMLElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Partial<Record<Beat, HTMLAnchorElement | null>>>({});
@@ -29,7 +26,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
   const jumpLockUntil = useRef(0);
 
   const [activeBeat, setActiveBeat] = useState<Beat | null>(null);
-  const [navOffset, setNavOffset] = useState(64);
+  const [navOffset, setNavOffset] = useState(49);
   const [fade, setFade] = useState({ left: false, right: false });
 
   const sections = BEATS.map((beat) => ({
@@ -44,7 +41,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
     if (!nav) return;
     const root = document.documentElement;
     const measure = () => {
-      const px = nav.offsetHeight + PROGRESS_BAR_H;
+      const px = nav.offsetHeight;
       setNavOffset(px);
       root.style.setProperty('--beat-nav-offset', `${px}px`);
     };
@@ -116,9 +113,8 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
     }
   }, [activeBeat]);
 
-  // Content mounts after hydration, so the browser's own hash jump has
-  // nothing to land on. Repeat it once the sections exist and the web fonts
-  // have swapped in: the swap reflows the page by a few hundred pixels.
+  // The browser's own hash jump (/#physical-ai) can run before the web fonts
+  // swap in, and the swap reflows the page. Repeat the jump once they have.
   useEffect(() => {
     const id = window.location.hash.slice(1);
     const beat = BEATS.find((b) => beatId(b) === id);
@@ -146,22 +142,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
     <>
       {/* Sticky in-page navigation. A direct child of <main> so it stays
           stuck across every beat section. */}
-      <nav
-        ref={navRef}
-        aria-label="Beats"
-        className="beat-nav"
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          background: theme.tabBlurBg,
-          borderBottom: `1px solid rgba(27, 58, 107, 0.10)`,
-          boxShadow: '0 2px 8px rgba(27, 58, 107, 0.04)',
-          ['--beat-nav-ink' as any]: theme.textMid,
-        }}
-      >
+      <nav ref={navRef} aria-label="Beats" className="beat-nav">
         <div
           ref={scrollerRef}
           className="beat-nav-scroller"
@@ -185,12 +166,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
         </div>
       </nav>
 
-      <div
-        style={{
-          padding: `0 var(--page-pad-x) 80px`,
-          background: `linear-gradient(180deg, rgba(250, 248, 244, 0.15) 0%, rgba(250, 248, 244, 0.08) 50%, rgba(27, 58, 107, 0.02) 100%)`,
-        }}
-      >
+      <div className="beats">
         {sections.map(({ beat, items }) => (
           <section
             key={beat}
@@ -199,42 +175,21 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
             aria-labelledby={`${beatId(beat)}-heading`}
             className="beat-section"
           >
-            <h2
-              id={`${beatId(beat)}-heading`}
-              style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: 'clamp(24px, 5vw, 32px)',
-                fontWeight: 600,
-                color: theme.textHigh,
-                margin: '0 0 clamp(20px, 4vw, 28px)',
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: '12px',
-              }}
-            >
+            <h2 id={`${beatId(beat)}-heading`} className="beat-heading">
               {beat}{' '}
-              <span
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: '13px',
-                  fontWeight: 400,
-                  color: theme.textMid,
-                }}
-              >
+              <span className="beat-heading-count">
                 {items.length} {items.length === 1 ? 'story' : 'stories'}
               </span>
             </h2>
 
             {items.length > 0 ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'clamp(20px, 3vw, 24px)' }}>
+              <div className="beat-list">
                 {items.map((article) => (
                   <UpdatedNewsCard key={article.storyId} article={article} />
                 ))}
               </div>
             ) : (
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: theme.textMid, margin: 0 }}>
-                No {beat} stories in today&rsquo;s edition.
-              </p>
+              <p className="beat-empty">No {beat} stories in today&rsquo;s edition.</p>
             )}
           </section>
         ))}
