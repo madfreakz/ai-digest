@@ -11,6 +11,11 @@ export interface ExaArticle {
   beatHint: Beat;
 }
 
+// Article text fetched per result. Exa bills contents per result, not per
+// character, so a longer excerpt is free here; summarizeBeat feeds up to 800
+// characters of it to the scoring prompt (input tokens only).
+const ARTICLE_TEXT_CHARS = 1000;
+
 const BEAT_PLACEHOLDERS: Record<Beat, string> = {
   "Physical AI":       "/placeholder-physical-ai.png",
   "AI Infrastructure": "/placeholder-ai-infra.png",
@@ -111,7 +116,7 @@ async function runBeatQueries(
 
   const allQueries: Array<{ query: string; opts: Record<string, unknown> }> = queries.map(q => ({
     query: q,
-    opts: { type: "neural", numResults: 10, startPublishedDate: startDate, text: { maxCharacters: 400 } },
+    opts: { type: "neural", numResults: 10, startPublishedDate: startDate, text: { maxCharacters: ARTICLE_TEXT_CHARS } },
   }));
 
   const tcQuery = TC_QUERIES[beat];
@@ -122,7 +127,7 @@ async function runBeatQueries(
         type: "neural",
         numResults: 5,
         startPublishedDate: startDate,
-        text: { maxCharacters: 400 },
+        text: { maxCharacters: ARTICLE_TEXT_CHARS },
         includeDomains: ["techcrunch.com"],
       },
     });
@@ -198,7 +203,7 @@ export async function fetchVcBlogArticles(): Promise<ExaArticle[]> {
         type: "neural",
         numResults: 10,
         startPublishedDate: startDate,
-        text: { maxCharacters: 400 },
+        text: { maxCharacters: ARTICLE_TEXT_CHARS },
         includeDomains: VC_DOMAINS,
       } as any)
     );

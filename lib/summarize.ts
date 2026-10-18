@@ -278,7 +278,10 @@ export async function summarizeBeat(
       const title   = sanitizeUntrusted(a.title, 300) || "Untitled";
       const url     = sanitizeUntrusted(a.url, 500);
       const source  = sanitizeUntrusted(a.source, 120) || "unknown";
-      const excerpt = sanitizeUntrusted(a.text, 200);
+      // 800 chars of article text (was 200): the "So What?" line can only be as
+      // specific as what the model reads. Input only; output per item is
+      // unchanged, so maxOutputTokens doesn't move (15 articles max, above).
+      const excerpt = sanitizeUntrusted(a.text, 800);
       return `[${i + 1}] «${DATA_FENCE}»\nTitle: ${title}\nURL: ${url}\nSource: ${source}\nExcerpt: ${excerpt}\n«/${DATA_FENCE}»\nDate (trusted): ${a.publishedAt}`;
     })
     .join("\n\n---\n\n");
@@ -646,8 +649,8 @@ ${context}
 «/${DATA_FENCE}»
 
 Return a JSON object with:
-- "thesis": 2 sentences on the LEAD STORY above and what it signals for BD/partnerships practitioners today. Lead with this story; do not headline any other.
-- "emailSubject": one punchy subject line under 60 chars about the LEAD STORY — specific and concrete (e.g. "Figure raises $675M — infra race heats up")`;
+- "thesis": 2 plain sentences on the LEAD STORY above. First: what happened and why it matters in the market. Second: the concrete consequence, naming who gains or loses (a company, buyer group or competitor set). Lead with this story; do not headline any other. Do not address the reader or mention BD professionals, do not hedge ("could", "potentially", "may", "might"), and skip stock phrases like "opens partnership avenues", "pivotal shift", "new frontier" or "signals a growing trend".
+- "emailSubject": one punchy subject line under 60 chars about the LEAD STORY — specific and concrete (e.g. "Figure raises $675M: infra race heats up")`;
 
   // gemini-3.5-flash is the most 503-prone model in this app. Retry it, then
   // fall back to gemini-2.5-flash-lite (separate capacity pool, stays healthy
