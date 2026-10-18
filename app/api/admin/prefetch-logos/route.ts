@@ -5,7 +5,7 @@ import type { DiscoveredCompany } from "@/lib/companies";
 import { DISCOVERED_INDEX_KEY } from "@/lib/kv-config";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60; // needs more than the default 10s
+export const maxDuration = 120; // ~400 paced requests with retries
 
 const LOGO_CACHE_KEY = "logos:company-map";
 const LOGO_CACHE_TTL = 7 * 24 * 60 * 60; // 7 days
@@ -65,60 +65,75 @@ export async function GET(req: Request) {
     // KV read failed; proceed with static companies only
   }
 
+  // Start from the current map: a request that fails this run keeps the logo
+  // it had. A full overwrite let one rate-limited run (2026-10-18: 104 of 393,
+  // every request after roughly the 130th failing) wipe logos the digest
+  // already had. Names no longer tracked or discovered fall out.
+  let previous: Record<string, string> = {};
+  try {
+    previous = (await kv.get<Record<string, string>>(LOGO_CACHE_KEY)) ?? {};
+  } catch {
+    // start empty
+  }
   const logoMap: Record<string, string> = {};
+  for (const { name } of toFetch) {
+    if (previous[name]) logoMap[name] = previous[name];
+  }
+
+  // Paced: a few requests at a time, retrying 429s with backoff (Retry-After
+  // when Logo.dev sends it). Status counts are returned so a bad run says why.
+  const MAX_CONCURRENT = 4;
+  const MAX_ATTEMPTS = 3;
+  const TIMEOUT_MS = 6000;
+  const statuses: Record<string, number> = {};
+  const bump = (k: string) => { statuses[k] = (statuses[k] ?? 0) + 1; };
   let found = 0;
 
-  // Parallel fetch with concurrency cap of 20, 3s timeout per request
-  const maxConcurrent = 20;
-  let activeCount = 0;
-  const queue: Array<() => void> = [];
+  async function check(name: string, url: string): Promise<void> {
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+        if (res.status === 429 && attempt < MAX_ATTEMPTS) {
+          const retryAfter = Number(res.headers.get("retry-after"));
+          const waitMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 1500 * attempt;
+          await new Promise(r => setTimeout(r, Math.min(waitMs, 10_000)));
+          continue;
+        }
+        bump(String(res.status));
+        if (res.ok) {
+          logoMap[name] = url;
+          found++;
+        }
+        return;
+      } catch {
+        if (attempt === MAX_ATTEMPTS) bump("timeout_or_network");
+      }
+    }
+  }
 
-  const runNext = () => {
-    const task = queue.shift();
-    if (task) { activeCount++; task(); }
-  };
-
+  let next = 0;
   await Promise.all(
-    toFetch.map(
-      ({ name, url }) =>
-        new Promise<void>(resolve => {
-          const task = async () => {
-            const controller = new AbortController();
-            const tid = setTimeout(() => controller.abort(), 3000);
-            try {
-              const res = await fetch(url, { signal: controller.signal });
-              clearTimeout(tid);
-              if (res.ok) {
-                logoMap[name] = url;
-                found++;
-              }
-            } catch {
-              clearTimeout(tid);
-            }
-            activeCount--;
-            resolve();
-            runNext();
-          };
-
-          if (activeCount < maxConcurrent) {
-            activeCount++;
-            task();
-          } else {
-            queue.push(task);
-          }
-        })
-    )
+    Array.from({ length: MAX_CONCURRENT }, async () => {
+      while (next < toFetch.length) {
+        const { name, url } = toFetch[next++];
+        await check(name, url);
+      }
+    }),
   );
 
   await kv.setex(LOGO_CACHE_KEY, LOGO_CACHE_TTL, logoMap);
 
-  console.log(`[prefetch-logos] Cached ${found}/${toFetch.length} logos in KV`);
+  const cached = Object.keys(logoMap).length;
+  console.log(`[prefetch-logos] fetched ${found}/${toFetch.length}, cached ${cached} (kept ${cached - found} from the previous map)`, statuses);
 
   return NextResponse.json({
     success: true,
     total: toFetch.length,
     found,
-    missing: toFetch.length - found,
+    keptFromPrevious: cached - found,
+    cached,
+    missing: toFetch.length - cached,
+    statuses,
     cachedAt: new Date().toISOString(),
   });
 }
