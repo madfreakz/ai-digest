@@ -1,6 +1,15 @@
+import { existsSync, readFileSync } from "node:fs";
 import DigestClient from "@/components/DigestClient";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
+import type { Digest } from "@/lib/summarize";
 import { getPublishedDigest, getPreviousDigest } from "@/lib/beat-digests";
+
+// Dev only: set DEV_DIGEST_FILE (e.g. in .env.development.local) to a saved
+// digest JSON to preview real data locally. Falls back to the mock.
+function devDigest(): Digest {
+  const file = process.env.DEV_DIGEST_FILE;
+  return file && existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as Digest) : MOCK_DIGEST;
+}
 
 // ISR: cache the rendered page at the edge for up to 1h. send-digest calls
 // revalidatePath('/') on publish so fresh content appears immediately when the
@@ -10,7 +19,7 @@ export const revalidate = 3600;
 
 export default async function Home() {
   if (process.env.NODE_ENV === "development") {
-    return <DigestClient digest={MOCK_DIGEST} />;
+    return <DigestClient digest={devDigest()} />;
   }
 
   // Only serve the published digest. If it's missing, show the empty state
