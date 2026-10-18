@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
-import { pickFeaturedArticle, getSynthesisHero } from "../lib/summarize";
+import { pickFeaturedArticle, getSynthesisHero, fallbackLead } from "../lib/summarize";
 import type { Digest, DigestArticle } from "../lib/summarize";
 
 function mkArticle(partial: Partial<DigestArticle>): DigestArticle {
@@ -65,6 +65,49 @@ describe("pickFeaturedArticle", () => {
       mkArticle({ title: "recent low",      impactScore: 4,  publishedAt: new Date(now - 1_000).toISOString() }),
     ];
     assert.equal(pickFeaturedArticle(articles)?.title, "recent low");
+  });
+
+  test("never picks a future-dated article, even at higher impact", () => {
+    // Exa misdated a preprint 4 days ahead on the 2026-10-18 edition. A
+    // negative age used to pass the 48h window and win.
+    const now = Date.now();
+    const articles = [
+      mkArticle({ title: "future high", impactScore: 10, publishedAt: new Date(now + 4 * 24 * 60 * 60 * 1000).toISOString() }),
+      mkArticle({ title: "real recent", impactScore: 7,  publishedAt: new Date(now - 6 * 60 * 60 * 1000).toISOString() }),
+    ];
+    assert.equal(pickFeaturedArticle(articles)?.title, "real recent");
+  });
+
+  test("a future-dated article doesn't win an impact tie on recency", () => {
+    const now = Date.now();
+    const articles = [
+      mkArticle({ title: "future", impactScore: 8, publishedAt: new Date(now + 2 * 24 * 60 * 60 * 1000).toISOString() }),
+      mkArticle({ title: "today",  impactScore: 8, publishedAt: new Date(now - 1_000).toISOString() }),
+    ];
+    assert.equal(pickFeaturedArticle(articles)?.title, "today");
+  });
+
+  test("allows small clock skew (under an hour ahead)", () => {
+    const now = Date.now();
+    const articles = [mkArticle({ title: "skewed", publishedAt: new Date(now + 10 * 60 * 1000).toISOString() })];
+    assert.equal(pickFeaturedArticle(articles)?.title, "skewed");
+  });
+});
+
+describe("fallbackLead", () => {
+  test("skips future-dated articles at the head of a newest-first list", () => {
+    const now = Date.now();
+    const articles = [
+      mkArticle({ title: "future", publishedAt: new Date(now + 3 * 24 * 60 * 60 * 1000).toISOString() }),
+      mkArticle({ title: "5d",     publishedAt: new Date(now - 5 * 24 * 60 * 60 * 1000).toISOString() }),
+    ];
+    assert.equal(fallbackLead(articles).title, "5d");
+  });
+
+  test("returns the first article when every date is in the future", () => {
+    const now = Date.now();
+    const articles = [mkArticle({ title: "only", publishedAt: new Date(now + 3 * 24 * 60 * 60 * 1000).toISOString() })];
+    assert.equal(fallbackLead(articles).title, "only");
   });
 });
 

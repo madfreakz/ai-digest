@@ -1,12 +1,13 @@
 import { kv } from "@vercel/kv";
 import type { Beat } from "./companies";
 import type { DigestArticle, Digest, DigestSynthesis, DiscoveredCompanyResult } from "./summarize";
-import { generateDigest as generateBeatDigest, generateEditorialSynthesis, pickFeaturedArticle } from "./summarize";
+import { generateDigest as generateBeatDigest, generateEditorialSynthesis, pickFeaturedArticle, fallbackLead } from "./summarize";
 import { fetchAllNews, fetchBeatNews, fetchVcBlogArticles, normalizeUrl } from "./exa";
 import type { DiscoveredCompany } from "./companies";
 import { isBlockedDiscovery, isPlausibleDomain } from "./companies";
 import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
 import { getEffectivePriority } from "./sources";
+import { dropBrokenOgImages } from "./og-images";
 
 interface BeatCacheMetadata {
   timestamp: string;
@@ -436,15 +437,18 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
   }
   allArticles = deduplicateAcrossBeats(allArticles);
   allArticles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  // Drop og:images that can't load (relative placeholders, dead publisher
+  // defaults) before anything is published or emailed.
+  allArticles = await dropBrokenOgImages(allArticles);
 
   let synthesis: Digest["synthesis"] | undefined;
   if (allArticles.length > 0) {
     // Freshness-first: choose the lead story deterministically, THEN synthesize
     // the thesis + subject about it. The hero (getSynthesisHero) resolves the
     // same featuredArticleUrl, so the hero and the editorial lead can never
-    // split. articles are already sorted newest-first, so allArticles[0] is the
-    // safe fallback when nothing is within pickFeaturedArticle's 48h window.
-    const featured = pickFeaturedArticle(allArticles) ?? allArticles[0];
+    // split. articles are already sorted newest-first, so fallbackLead (the
+    // newest article not dated in the future) covers an empty 48h window.
+    const featured = pickFeaturedArticle(allArticles) ?? fallbackLead(allArticles);
     try {
       if (KV_CONFIGURED) {
         const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);

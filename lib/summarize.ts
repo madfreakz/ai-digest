@@ -194,16 +194,35 @@ export function isSafeHttpUrl(raw: string): boolean {
   }
 }
 
+// Exa sometimes dates an article days ahead (2026-10-22 on an Oct 18 edition).
+// A date further in the future than this is treated as unknown: it can't be
+// the lead, because a negative age always passed the 48h window and the
+// recency tiebreak then favoured it.
+const FUTURE_DATE_TOLERANCE_MS = 60 * 60 * 1000;
+
+export function isFutureDated(article: DigestArticle, now = Date.now()): boolean {
+  return new Date(article.publishedAt).getTime() - now > FUTURE_DATE_TOLERANCE_MS;
+}
+
 export function pickFeaturedArticle(articles: DigestArticle[]): DigestArticle | undefined {
   const now = Date.now();
-  const recent = articles.filter(a => now - new Date(a.publishedAt).getTime() < 48 * 60 * 60 * 1000);
-  // If no recent articles qualify, return undefined — callers fall back to articles[0] (sorted by publishedAt desc)
+  const recent = articles.filter(a =>
+    !isFutureDated(a, now) && now - new Date(a.publishedAt).getTime() < 48 * 60 * 60 * 1000,
+  );
+  // If no recent articles qualify, return undefined — callers fall back to fallbackLead
   if (recent.length === 0) return undefined;
   return recent.reduce<DigestArticle | undefined>((best, a) => {
     if (!best) return a;
     if (a.impactScore !== best.impactScore) return a.impactScore > best.impactScore ? a : best;
     return new Date(a.publishedAt).getTime() > new Date(best.publishedAt).getTime() ? a : best;
   }, undefined);
+}
+
+// Lead when nothing is inside pickFeaturedArticle's window: the newest article
+// (articles arrive sorted newest-first) whose date isn't in the future.
+export function fallbackLead(articles: DigestArticle[]): DigestArticle {
+  const now = Date.now();
+  return articles.find(a => !isFutureDated(a, now)) ?? articles[0];
 }
 
 // Freshness window used when CHOOSING the lead story (pickFeaturedArticle) and
@@ -228,7 +247,7 @@ export function getSynthesisHero(digest: Digest): DigestArticle | undefined {
     if (match) return match;
     console.log(`[hero] synthesis featuredArticleUrl not found in article set — falling back to pickFeaturedArticle`);
   }
-  return pickFeaturedArticle(digest.articles) ?? digest.articles[0];
+  return pickFeaturedArticle(digest.articles) ?? fallbackLead(digest.articles);
 }
 
 interface SummarizeBeatResult {
