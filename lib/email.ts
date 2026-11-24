@@ -2,7 +2,7 @@ import type { Digest, DigestArticle } from "./summarize";
 import { getSynthesisHero } from "./summarize";
 import type { Beat } from "./companies";
 import { escapeHtml } from "./html";
-import { displayTitle } from "./format";
+import { displayTitle, formatPublishedAt } from "./format";
 
 // The 7am email. Kept to what every client renders, Outlook for Windows
 // included: tables for layout, solid 6-digit hex colors (no 8-digit alpha, no
@@ -112,18 +112,41 @@ export function firstSentence(text: string): string {
   return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
 }
 
-function quickHitRow(a: DigestArticle, last: boolean): string {
-  const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
+const BEAT_ORDER: Beat[] = ["AI Labs", "Vertical AI", "AI Infrastructure", "Physical AI"];
+
+function beatRow(a: DigestArticle, last: boolean): string {
   const borderStyle = last ? "none" : `1px solid ${BORDER}`;
   const url = escapeHtml(a.url);
   const title = escapeHtml(displayTitle(a.title));
-  const summaryLead = escapeHtml(firstSentence(a.summary));
+  const soWhat = escapeHtml(a.bdRelevance?.trim() || firstSentence(a.summary));
+  const dateLabel = formatPublishedAt(a.publishedAt);
+  const metaParts = [a.source, ...a.companyTags.slice(0, 2), dateLabel].filter(Boolean).map(escapeHtml).join(" · ");
+  const newTag = a.isNew
+    ? `<span style="display:inline-block;margin-right:6px;background:#047857;color:#FFFFFF;font-size:12px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:0.04em;">NEW</span>`
+    : "";
+
   return `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0;border-collapse:collapse;">
   <tr><td style="padding:12px 0;border-bottom:${borderStyle};">
-    <div style="margin-bottom:2px;">${pill(a.beat, beatColor)}</div>
-    <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:15px;font-weight:500;text-decoration:none;line-height:1.4;margin-bottom:4px;">${title}</a>
-    <p style="color:${TEXT_LOW};font-size:13px;line-height:1.5;margin:0;">${summaryLead}</p>
+    <p style="color:${TEXT_LOW};font-size:12px;line-height:1.4;margin:0 0 4px;">${newTag}${metaParts}</p>
+    <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:15px;font-weight:600;text-decoration:none;line-height:1.4;margin-bottom:4px;">${title}</a>
+    <p style="color:${TEXT_MID};font-size:13px;line-height:1.5;margin:0;">${soWhat}</p>
+  </td></tr>
+</table>`;
+}
+
+function beatSectionBlock(beat: Beat, items: DigestArticle[]): string {
+  const beatColor = BEAT_COLORS[beat] ?? ACCENT;
+  const rows = items.map((a, i) => beatRow(a, i === items.length - 1)).join("");
+  return `
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px;border-collapse:collapse;">
+  <tr><td>
+    <p style="margin:0 0 6px;color:${beatColor};font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${escapeHtml(beat)} <span style="color:${TEXT_LOW};font-weight:500;">(${items.length})</span></p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:${CARD_BG};border:1px solid ${BORDER};border-radius:8px;border-collapse:separate;">
+      <tr><td style="padding:0 16px;">
+        ${rows}
+      </td></tr>
+    </table>
   </td></tr>
 </table>`;
 }
@@ -150,7 +173,23 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
   const sorted = [...digest.articles];
 
   const featured = getSynthesisHero(digest) ?? sorted[0];
-  const quickHits = sorted.filter(a => a !== featured).slice(0, 9);
+  if (!featured) return "<p>No articles today.</p>";
+
+  const remaining = sorted.filter(a => a !== featured);
+  const newOnly = remaining.filter(a => a.isNew);
+  const briefingPool = newOnly.length > 0 ? newOnly : remaining;
+  const totalNewCount = sorted.filter(a => a.isNew).length;
+  const statsLine = totalNewCount > 0
+    ? `${date} · ${totalNewCount} new today · ${sorted.length} total`
+    : `${date} · ${sorted.length} stories`;
+
+  const beatSections = BEAT_ORDER
+    .map(beat => {
+      const items = briefingPool.filter(a => a.beat === beat).slice(0, 3);
+      return items.length > 0 ? beatSectionBlock(beat, items) : "";
+    })
+    .filter(Boolean)
+    .join("");
 
   const thesisBlock = digest.synthesis?.thesis
     ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
@@ -160,9 +199,7 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
 </table>`
     : "";
 
-  if (!featured) return "<p>No articles today.</p>";
-
-  const quickHitRows = quickHits.map((a, i) => quickHitRow(a, i === quickHits.length - 1)).join("");
+  const sectionHeading = newOnly.length > 0 ? "What Shifted Today" : "By Beat";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -193,7 +230,7 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
 
           <!-- Header -->
           <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">Frontier AI Digest</h1>
-          <p style="color:${TEXT_LOW};font-size:13px;margin:0 0 28px;">${date}</p>
+          <p style="color:${TEXT_LOW};font-size:13px;margin:0 0 28px;">${statsLine}</p>
 
           <!-- Stale-beat warning (renders only when a beat is overdue) -->
           ${staleWarningBanner(staleBeats)}
@@ -204,26 +241,21 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
           <!-- Featured story -->
           ${featuredBlock(featured)}
 
-          <!-- Quick Hits label -->
-          <p style="color:${TEXT_HIGH};font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin:0 0 4px;">Quick Hits</p>
-          <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr><td height="1" bgcolor="${BORDER}" style="height:1px;line-height:1px;font-size:0;">&nbsp;</td></tr></table>
-
-          <!-- Quick Hits rows -->
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:${CARD_BG};border:1px solid ${BORDER};border-radius:8px;margin-bottom:28px;border-collapse:separate;">
-            <tr><td style="padding:0 16px;">
-              ${quickHitRows}
-            </td></tr>
-          </table>
+          <!-- Beat-grouped "So What?" briefing -->
+          <p style="color:${TEXT_HIGH};font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin:0 0 12px;">${sectionHeading}</p>
+          ${beatSections}
 
           <!-- CTA -->
-          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 28px;">
             <tr><td align="center">
-              <a href="https://frontier-ai-digest.vercel.app" style="display:inline-block;background:${ACCENT};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 28px;border-radius:6px;letter-spacing:0.01em;">View full digest →</a>
+              <a href="https://frontier-ai-digest.vercel.app" style="display:inline-block;background:${ACCENT};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:6px;letter-spacing:0.01em;">View full digest →</a>
+              &nbsp;&nbsp;
+              <a href="https://frontier-ai-digest.vercel.app/archive" style="color:${ACCENT};font-size:13px;font-weight:600;text-decoration:underline;">Browse archive</a>
             </td></tr>
           </table>
 
           <!-- Footer -->
-          <p style="color:${FOOTER_CLR};font-size:12px;text-align:center;margin:0;">© Mark Fok · Frontier AI Digest · Powered by Exa + Gemini</p>
+          <p style="color:${FOOTER_CLR};font-size:12px;text-align:center;margin:0;">© Mark Fok · Frontier AI Digest · Powered by Exa + RSS + Gemini</p>
 
         </td></tr>
       </table>

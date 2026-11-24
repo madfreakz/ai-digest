@@ -25,7 +25,7 @@ export default function UpdatedNewsCard({ article }: UpdatedNewsCardProps) {
       <div className="card-layout">
         {/* Thumbnail: only when there is a real logo or photo */}
         {showThumb && (
-          <div className="card-thumb" aria-hidden="true">
+          <div className={`card-thumb ${logoUrl !== null ? 'card-thumb-logo' : 'card-thumb-photo'}`} aria-hidden="true">
             <Thumb src={imageUrl} isLogo={logoUrl !== null} onError={() => setImgFailed(true)} />
           </div>
         )}

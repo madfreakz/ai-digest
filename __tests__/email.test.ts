@@ -60,12 +60,44 @@ describe("buildEmailHtml", () => {
     assert.match(buildEmailHtml(digest, ["Vertical AI"]), /didn't refresh in time: <strong>Vertical AI<\/strong>/);
   });
 
-  test("does not append a double period on single-sentence summaries", () => {
+  test("groups by beat, leads with bdRelevance, shows NEW badge, and links to archive", () => {
+    const rich = mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
+      mkArticle({
+        title: "New infra shift",
+        url: "https://example.com/infra",
+        beat: "AI Infrastructure",
+        bdRelevance: "Cloud providers squeeze standalone GPU hosts.",
+        summary: "Generic summary sentence.",
+        isNew: true,
+        storyId: "infra-1",
+      }),
+      mkArticle({
+        title: "Older robotics story",
+        url: "https://example.com/old-bot",
+        beat: "Physical AI",
+        bdRelevance: "Should be omitted when new stories exist.",
+        isNew: false,
+        storyId: "bot-1",
+      }),
+    ]);
+    const richHtml = buildEmailHtml(rich);
+    assert.match(richHtml, /What Shifted Today/);
+    assert.match(richHtml, />AI Infrastructure\s*</);
+    assert.match(richHtml, />NEW<\/span>/);
+    assert.match(richHtml, /Cloud providers squeeze standalone GPU hosts\./);
+    assert.doesNotMatch(richHtml, /Generic summary sentence\./);
+    assert.doesNotMatch(richHtml, /Should be omitted when new stories exist\./);
+    assert.match(richHtml, /href="https:\/\/frontier-ai-digest\.vercel\.app\/archive"/);
+  });
+
+  test("falls back to firstSentence(summary) without double periods when bdRelevance is empty", () => {
     const single = mkDigest([
       mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
       mkArticle({
         title: "Single sentence item",
         url: "https://example.com/single",
+        bdRelevance: "",
         summary: "Only one sentence here.",
         storyId: "single",
       }),

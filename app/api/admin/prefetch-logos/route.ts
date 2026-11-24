@@ -35,14 +35,14 @@ export async function GET(req: Request) {
     const key = company.name.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    toFetch.push({ name: key, url: `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png` });
+    toFetch.push({ name: key, url: `/api/logo/${encodeURIComponent(domain)}` });
   }
 
   // Also add DOMAIN_ALIASES entries not already covered by COMPANIES
   for (const [aliasName, domain] of Object.entries(DOMAIN_ALIASES)) {
     if (seen.has(aliasName)) continue;
     seen.add(aliasName);
-    toFetch.push({ name: aliasName, url: `https://img.logo.dev/${domain}?token=${logoDevKey}&size=200&format=png` });
+    toFetch.push({ name: aliasName, url: `/api/logo/${encodeURIComponent(domain)}` });
   }
 
   // Also add KV-discovered companies
@@ -54,7 +54,7 @@ export async function GET(req: Request) {
       const key = dc.name.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
-      toFetch.push({ name: key, url: `https://img.logo.dev/${dc.domain}?token=${logoDevKey}&size=200&format=png` });
+      toFetch.push({ name: key, url: `/api/logo/${encodeURIComponent(dc.domain)}` });
     }
   } catch {
     // KV read failed; proceed with static companies only

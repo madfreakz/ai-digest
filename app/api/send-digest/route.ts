@@ -5,6 +5,7 @@ import { Resend } from "resend";
 export const dynamic = "force-dynamic";
 import { requireCronAuth } from "@/lib/auth";
 import { buildEmailHtml } from "@/lib/email";
+import { normalizeUrl } from "@/lib/exa";
 
 export async function GET(req: Request) {
   const authError = requireCronAuth(req);
@@ -22,7 +23,7 @@ export async function GET(req: Request) {
       } catch {}
     }
 
-    const { aggregateDigestFromBeats, publishFinalDigest, getBeatFreshness } = await import("@/lib/beat-digests");
+    const { aggregateDigestFromBeats, publishFinalDigest, getBeatFreshness, getPreviousDigest } = await import("@/lib/beat-digests");
     const digest = await aggregateDigestFromBeats();
     if (!digest || digest.articles.length === 0) {
       console.error("[send-digest] No articles in digest — check beat caches or KV provisioning");
@@ -34,13 +35,30 @@ export async function GET(req: Request) {
     await publishFinalDigest(digest);
     revalidatePath("/");
     revalidatePath("/opengraph-image");
+    revalidatePath("/archive");
 
     if (skipEmail) {
       return NextResponse.json({ success: true, published: true, emailSent: false, articleCount: digest.articles.length });
     }
 
-    const staleBeats = (await getBeatFreshness()).filter(f => f.stale).map(f => f.beat);
-    const html = buildEmailHtml(digest, staleBeats);
+    const [freshness, previous] = await Promise.all([
+      getBeatFreshness(),
+      getPreviousDigest(),
+    ]);
+    const staleBeats = freshness.filter(f => f.stale).map(f => f.beat);
+    const priorIds = previous ? new Set(previous.articles.map(a => a.storyId)) : null;
+    const priorUrls = previous ? new Set(previous.articles.map(a => normalizeUrl(a.url))) : null;
+    const emailDigest = priorIds && priorUrls
+      ? {
+          ...digest,
+          articles: digest.articles.map(a => ({
+            ...a,
+            isNew: !priorIds.has(a.storyId) && !priorUrls.has(normalizeUrl(a.url)),
+          })),
+        }
+      : digest;
+
+    const html = buildEmailHtml(emailDigest, staleBeats);
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
     const date   = new Date().toLocaleDateString("en-US", {

@@ -1,26 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import { Analytics } from '@vercel/analytics/next';
 import "./globals.css";
 
-// Self-hosted and preloaded by next/font: no render-blocking stylesheet and no
-// layout shift when the web fonts arrive. Playfair for headlines, DM Sans for
-// everything else.
-const display = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["500", "600"],
+// Self-hosted and preloaded by next/font/local (OFL): zero external Google
+// Fonts fetch at build time, eliminating Turbopack next/font/google flakiness.
+const display = localFont({
+  src: "./fonts/playfair-display-latin.woff2",
+  weight: "500 600",
   variable: "--font-display",
   display: "swap",
 });
-const body = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+const body = localFont({
+  src: [
+    { path: "./fonts/dm-sans-latin.woff2", weight: "400 600", style: "normal" },
+    { path: "./fonts/dm-sans-latin-italic.woff2", weight: "400 600", style: "italic" },
+  ],
   variable: "--font-body",
   display: "swap",
 });
 
-const DESCRIPTION = "Daily intelligence on Physical AI, AI Infrastructure, AI Labs, and Vertical AI, with BD signal";
+const DESCRIPTION = "Daily intelligence on where value shifts across Physical AI, AI Infrastructure, AI Labs, and Vertical AI";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://frontier-ai-digest.vercel.app"),

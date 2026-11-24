@@ -28,11 +28,41 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
   const [activeBeat, setActiveBeat] = useState<Beat | null>(null);
   const [navOffset, setNavOffset] = useState(49);
   const [fade, setFade] = useState({ left: false, right: false });
+  const [newOnly, setNewOnly] = useState(false);
+  const [query, setQuery] = useState('');
 
-  const sections = BEATS.map((beat) => ({
-    beat,
-    items: articles.filter((a) => a.beat === beat),
-  }));
+  const newCount = articles.filter((a) => a.isNew).length;
+  const showNewToggle = newCount > 0 && newCount < articles.length;
+  const trimmedQuery = query.trim().toLowerCase();
+
+  const matchesFilter = (a: DisplayArticle) => {
+    if (newOnly && !a.isNew) return false;
+    if (!trimmedQuery) return true;
+    return (
+      a.displayTitle.toLowerCase().includes(trimmedQuery) ||
+      a.summary.toLowerCase().includes(trimmedQuery) ||
+      a.bdRelevance.toLowerCase().includes(trimmedQuery) ||
+      a.source.toLowerCase().includes(trimmedQuery) ||
+      a.companyTags.some((t) => t.toLowerCase().includes(trimmedQuery))
+    );
+  };
+
+  const filteredArticles = articles.filter(matchesFilter);
+  const isFiltered = newOnly || trimmedQuery.length > 0;
+
+  const sections = BEATS.map((beat) => {
+    const beatItems = filteredArticles.filter((a) => a.beat === beat);
+    const hasSplit = !newOnly && beatItems.some((a) => a.isNew) && beatItems.some((a) => !a.isNew);
+    const ordered = hasSplit
+      ? [...beatItems.filter((a) => a.isNew), ...beatItems.filter((a) => !a.isNew)]
+      : beatItems;
+    return {
+      beat,
+      items: ordered,
+      newItems: hasSplit ? beatItems.filter((a) => a.isNew) : ordered,
+      earlierItems: hasSplit ? beatItems.filter((a) => !a.isNew) : [],
+    };
+  });
 
   // Measure the sticky nav so jump targets and keyboard focus land below it.
   // Published on <html> because scroll-padding-top lives there (globals.css).
@@ -143,56 +173,123 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
       {/* Sticky in-page navigation. A direct child of <main> so it stays
           stuck across every beat section. */}
       <nav ref={navRef} aria-label="Beats" className="beat-nav">
-        <div
-          ref={scrollerRef}
-          className="beat-nav-scroller"
-          onScroll={updateFade}
-          style={{ maskImage: fadeMask, WebkitMaskImage: fadeMask }}
-        >
-          {sections.map(({ beat, items }) => (
-            <a
-              key={beat}
-              ref={(el) => { linkRefs.current[beat] = el; }}
-              href={`#${beatId(beat)}`}
-              className="beat-nav-link"
-              aria-current={activeBeat === beat ? 'location' : undefined}
-              onClick={() => handleJump(beat)}
-            >
-              {beat}
-              <span className="beat-nav-count" aria-hidden="true">{items.length}</span>
-              <span className="sr-only">, {items.length} {items.length === 1 ? 'story' : 'stories'}</span>
-            </a>
-          ))}
+        <div className="beat-nav-inner">
+          <div
+            ref={scrollerRef}
+            className="beat-nav-scroller"
+            onScroll={updateFade}
+            style={{ maskImage: fadeMask, WebkitMaskImage: fadeMask }}
+          >
+            {sections.map(({ beat, items }) => (
+              <a
+                key={beat}
+                ref={(el) => { linkRefs.current[beat] = el; }}
+                href={`#${beatId(beat)}`}
+                className="beat-nav-link"
+                aria-current={activeBeat === beat ? 'location' : undefined}
+                onClick={() => handleJump(beat)}
+              >
+                {beat}
+                <span className="beat-nav-count" aria-hidden="true">{items.length}</span>
+                <span className="sr-only">, {items.length} {items.length === 1 ? 'story' : 'stories'}</span>
+              </a>
+            ))}
+          </div>
+
+          <div className="beat-filters">
+            {showNewToggle && (
+              <button
+                type="button"
+                className="filter-pill"
+                aria-pressed={newOnly}
+                onClick={() => setNewOnly((prev) => !prev)}
+              >
+                New ({newCount})
+              </button>
+            )}
+            <div className="filter-input-wrap">
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Filter…"
+                aria-label="Filter stories"
+                className="filter-input"
+              />
+              {query && (
+                <button
+                  type="button"
+                  className="filter-clear"
+                  aria-label="Clear filter"
+                  onClick={() => setQuery('')}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </nav>
 
       <div className="beats">
-        {sections.map(({ beat, items }) => (
-          <section
-            key={beat}
-            id={beatId(beat)}
-            ref={(el) => { sectionRefs.current[beat] = el; }}
-            aria-labelledby={`${beatId(beat)}-heading`}
-            className="beat-section"
-          >
-            <h2 id={`${beatId(beat)}-heading`} className="beat-heading">
-              {beat}{' '}
-              <span className="beat-heading-count">
-                {items.length} {items.length === 1 ? 'story' : 'stories'}
-              </span>
-            </h2>
+        {isFiltered && filteredArticles.length === 0 ? (
+          <div className="filter-empty">
+            <p>No stories match the current filter.</p>
+            <button
+              type="button"
+              className="filter-pill"
+              onClick={() => {
+                setNewOnly(false);
+                setQuery('');
+              }}
+            >
+              Reset filters
+            </button>
+          </div>
+        ) : (
+          sections.map(({ beat, items, newItems, earlierItems }) => (
+            <section
+              key={beat}
+              id={beatId(beat)}
+              ref={(el) => { sectionRefs.current[beat] = el; }}
+              aria-labelledby={`${beatId(beat)}-heading`}
+              className="beat-section"
+            >
+              <h2 id={`${beatId(beat)}-heading`} className="beat-heading">
+                {beat}{' '}
+                <span className="beat-heading-count">
+                  {items.length} {items.length === 1 ? 'story' : 'stories'}
+                </span>
+              </h2>
 
-            {items.length > 0 ? (
-              <div className="beat-list">
-                {items.map((article) => (
-                  <UpdatedNewsCard key={article.url} article={article} />
-                ))}
-              </div>
-            ) : (
-              <p className="beat-empty">No {beat} stories in today&rsquo;s edition.</p>
-            )}
-          </section>
-        ))}
+              {items.length > 0 ? (
+                earlierItems.length > 0 ? (
+                  <>
+                    <div className="beat-list">
+                      {newItems.map((article) => (
+                        <UpdatedNewsCard key={article.url} article={article} />
+                      ))}
+                    </div>
+                    <p className="beat-subdivider">Earlier this week</p>
+                    <div className="beat-list">
+                      {earlierItems.map((article) => (
+                        <UpdatedNewsCard key={article.url} article={article} />
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="beat-list">
+                    {items.map((article) => (
+                      <UpdatedNewsCard key={article.url} article={article} />
+                    ))}
+                  </div>
+                )
+              ) : (
+                <p className="beat-empty">No {beat} stories match today&rsquo;s view.</p>
+              )}
+            </section>
+          ))
+        )}
       </div>
     </>
   );

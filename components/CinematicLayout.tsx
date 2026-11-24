@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { Digest } from '@/lib/summarize';
 import { getSynthesisHero } from '@/lib/summarize';
 import { formatEditionDate, toDisplayArticle } from '@/lib/format';
@@ -7,11 +8,13 @@ import UpdatedBeatSection from './UpdatedBeatSection';
 
 interface CinematicLayoutProps {
   digest: Digest;
+  archiveBanner?: string;
+  navLink?: { href: string; label: string };
 }
 
 // Server component: the page arrives fully rendered, and the lead-story pick
 // (getSynthesisHero, in lib/summarize) never reaches the browser bundle.
-export default function CinematicLayout({ digest }: CinematicLayoutProps) {
+export default function CinematicLayout({ digest, archiveBanner, navLink }: CinematicLayoutProps) {
   const featured = getSynthesisHero(digest) ?? digest.articles[0];
   const remaining = digest.articles.filter((a) => a !== featured).map(toDisplayArticle);
 
@@ -19,9 +22,17 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
     <>
       <div className="masthead-rule" />
 
+      {archiveBanner && (
+        <div className="archive-banner">
+          <span>{archiveBanner}</span>
+          <Link href="/">← Back to today</Link>
+        </div>
+      )}
+
       <DigestHeader
         editionDate={formatEditionDate(digest.generatedAt)}
         thesis={digest.synthesis?.thesis}
+        navLink={navLink}
       />
 
       <main>
