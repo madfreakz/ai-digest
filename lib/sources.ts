@@ -62,6 +62,16 @@ const SOURCE_REGISTRY: SourceEntry[] = [
   { domain: "deepmind.google",            tier: 1, paywalled: false, name: "Google DeepMind",           category: "company_blog" },
   { domain: "ai.meta.com",               tier: 1, paywalled: false, name: "Meta AI",                   category: "company_blog" },
   { domain: "mistral.ai",                 tier: 1, paywalled: false, name: "Mistral AI",                category: "company_blog" },
+  { domain: "together.ai",                tier: 1, paywalled: false, name: "Together AI",               category: "company_blog" },
+  { domain: "weaviate.io",                tier: 1, paywalled: false, name: "Weaviate",                  category: "company_blog" },
+  { domain: "vercel.com",                 tier: 1, paywalled: false, name: "Vercel",                    category: "company_blog" },
+  { domain: "blog.cloudflare.com",        tier: 1, paywalled: false, name: "Cloudflare Blog",           category: "company_blog" },
+  { domain: "bostondynamics.com",         tier: 1, paywalled: false, name: "Boston Dynamics",           category: "company_blog" },
+  { domain: "waymo.com",                  tier: 1, paywalled: false, name: "Waymo",                     category: "company_blog" },
+  { domain: "therobotreport.com",         tier: 1, paywalled: false, name: "The Robot Report",          category: "media" },
+  { domain: "spectrum.ieee.org",          tier: 1, paywalled: false, name: "IEEE Spectrum",             category: "media" },
+  { domain: "stratechery.com",            tier: 1, paywalled: false, name: "Stratechery",               category: "newsletter" },
+  { domain: "simonwillison.net",          tier: 1, paywalled: false, name: "Simon Willison",            category: "newsletter" },
 
   // ── Tier 2: Credible but paywalled ────────────────────────────────────────
   { domain: "bloomberg.com",              tier: 2, paywalled: true,  name: "Bloomberg",                 category: "media" },

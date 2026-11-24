@@ -92,6 +92,37 @@ describe("pickFeaturedArticle", () => {
     const articles = [mkArticle({ title: "skewed", publishedAt: new Date(now + 10 * 60 * 1000).toISOString() })];
     assert.equal(pickFeaturedArticle(articles)?.title, "skewed");
   });
+
+  test("skips previously featured leads by URL or storyId", () => {
+    const now = Date.now();
+    const a1 = mkArticle({
+      title: "yesterday-lead",
+      url: "https://www.example.com/yesterday?utm_source=x",
+      storyId: "yesterday-story",
+      impactScore: 10,
+      publishedAt: new Date(now - 2 * 60 * 60 * 1000).toISOString(),
+    });
+    const a2 = mkArticle({
+      title: "same-story-id",
+      url: "https://other.example.com/reprint",
+      storyId: "yesterday-story",
+      impactScore: 9,
+      publishedAt: new Date(now - 3 * 60 * 60 * 1000).toISOString(),
+    });
+    const a3 = mkArticle({
+      title: "fresh-unseen",
+      url: "https://example.com/fresh",
+      storyId: "fresh-story",
+      impactScore: 8,
+      publishedAt: new Date(now - 4 * 60 * 60 * 1000).toISOString(),
+    });
+
+    const picked = pickFeaturedArticle([a1, a2, a3], {
+      urls: new Set(["https://example.com/yesterday"]),
+      storyIds: new Set(["yesterday-story"]),
+    });
+    assert.equal(picked?.title, "fresh-unseen");
+  });
 });
 
 describe("fallbackLead", () => {
@@ -102,6 +133,26 @@ describe("fallbackLead", () => {
       mkArticle({ title: "5d",     publishedAt: new Date(now - 5 * 24 * 60 * 60 * 1000).toISOString() }),
     ];
     assert.equal(fallbackLead(articles).title, "5d");
+  });
+
+  test("skips previously featured articles when a non-excluded fallback exists", () => {
+    const now = Date.now();
+    const prev = mkArticle({
+      title: "old-lead",
+      url: "https://example.com/old-lead",
+      storyId: "old-lead",
+      publishedAt: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    const next = mkArticle({
+      title: "fresh-fallback",
+      url: "https://example.com/fresh-fallback",
+      storyId: "fresh-fallback",
+      publishedAt: new Date(now - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+    assert.equal(
+      fallbackLead([prev, next], { urls: new Set(["https://example.com/old-lead"]) }).title,
+      "fresh-fallback",
+    );
   });
 
   test("returns the first article when every date is in the future", () => {

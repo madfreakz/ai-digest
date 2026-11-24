@@ -8,10 +8,27 @@ import { isBlockedDiscovery, isPlausibleDomain } from "./companies";
 import { KV_CONFIGURED, DISCOVERED_INDEX_KEY } from "./kv-config";
 import { getEffectivePriority } from "./sources";
 import { dropBrokenOgImages } from "./og-images";
+import { fetchBeatRssArticles } from "./rss";
+import { sendOpsAlert } from "./alerts";
+import type { LeadExclusion } from "./summarize";
 
 interface BeatCacheMetadata {
   timestamp: string;
   articleCount: number;
+}
+
+export interface RecentLeadEntry {
+  date: string;
+  url: string;
+  storyId: string;
+  title: string;
+}
+
+export interface ArchiveEntry {
+  date: string;
+  articleCount: number;
+  emailSubject?: string;
+  leadTitle?: string;
 }
 
 const BEAT_CACHE_TTL = 24 * 60 * 60;
@@ -19,6 +36,22 @@ const SYNTHESIS_KEY = "digest:synthesis";
 const SYNTHESIS_TTL = 24 * 60 * 60;
 const PUBLISHED_DIGEST_KEY = "digest:published";
 const PREVIOUS_DIGEST_KEY = "digest:previous";
+const RECENT_LEADS_KEY = "digest:recent-leads";
+const ARCHIVE_INDEX_KEY = "digest:archive:index";
+const ARCHIVE_TTL = 90 * 24 * 60 * 60;
+const ARCHIVE_MAX_DAYS = 90;
+const RECENT_LEADS_MAX = 14;
+
+export function ptDateKey(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
 
 // Freshness sentinel — written on every successful beat refresh, lives well past
 // the cache TTL so we can distinguish "expired cache" from "never refreshed".
@@ -122,9 +155,10 @@ async function storeDiscoveredCompanies(discovered: DiscoveredCompanyResult[]): 
 
 export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
   try {
-    const [beatArticles, vcArticles] = await Promise.all([
+    const [beatArticles, vcArticles, rssArticles] = await Promise.all([
       fetchBeatNews(beat),
       mergeVcArticles(beat),
+      fetchBeatRssArticles(beat),
     ]);
 
     const seenUrls = new Set(beatArticles.map(a => normalizeUrl(a.url)));
@@ -136,10 +170,30 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
         mergedArticles.push({ ...vc, beatHint: beat });
       }
     }
-    console.log(`[beat-digests] ${beat} - fetched ${beatArticles.length} beat + ${vcArticles.length} VC articles`);
+    let rssAdded = 0;
+    for (const rss of rssArticles) {
+      const normalized = normalizeUrl(rss.url);
+      if (!seenUrls.has(normalized)) {
+        seenUrls.add(normalized);
+        mergedArticles.push({ ...rss, beatHint: beat });
+        rssAdded++;
+      }
+    }
+    console.log(`[beat-digests] ${beat} - fetched ${beatArticles.length} beat + ${vcArticles.length} VC + ${rssAdded} unique RSS articles`);
 
-    const { digest: beatDigest, discoveredCompanies } = await generateBeatDigest(mergedArticles, beat);
+    const { digest: beatDigest, discoveredCompanies, fallbackUsed } = await generateBeatDigest(mergedArticles, beat);
     console.log(`[beat-digests] ${beat} - generateBeatDigest returned ${beatDigest.articles.length} articles`);
+    if (fallbackUsed) {
+      void sendOpsAlert(
+        `beat-fallback-${beat}`,
+        `Beat scoring fell back to flash-lite (${beat})`,
+        [
+          `Beat: ${beat}`,
+          `Recovered articles: ${beatDigest.articles.length}`,
+          "Primary gemini-2.5-flash scoring hit 503/errors and recovered on gemini-2.5-flash-lite.",
+        ],
+      );
+    }
 
     if (discoveredCompanies.length > 0) {
       await storeDiscoveredCompanies(discoveredCompanies);
@@ -173,6 +227,15 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
     // NOT "recover" by writing [] into the cache or moving the KV write below
     // this catch. See feedback_gemini_503_resilience.
     console.error(`[beat-digests] Failed to fetch/generate articles for ${beat}:`, err);
+    await sendOpsAlert(
+      `beat-failed-${beat}`,
+      `Beat refresh failed (${beat})`,
+      [
+        `Beat: ${beat}`,
+        `Error: ${err instanceof Error ? err.message : String(err)}`,
+        "Previous beat cache was preserved.",
+      ],
+    );
     throw err;
   }
 }
@@ -227,6 +290,33 @@ async function generateFreshAllBeats(beats: Beat[]): Promise<DigestArticle[]> {
   return articles;
 }
 
+export async function getRecentLeads(): Promise<RecentLeadEntry[]> {
+  if (!KV_CONFIGURED) return [];
+  try {
+    return (await kv.get<RecentLeadEntry[]>(RECENT_LEADS_KEY)) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getArchiveIndex(): Promise<ArchiveEntry[]> {
+  if (!KV_CONFIGURED) return [];
+  try {
+    return (await kv.get<ArchiveEntry[]>(ARCHIVE_INDEX_KEY)) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getArchivedDigest(date: string): Promise<Digest | null> {
+  if (!KV_CONFIGURED || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  try {
+    return (await kv.get<Digest>(`digest:archive:${date}`)) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function publishFinalDigest(digest: Digest): Promise<void> {
   if (!KV_CONFIGURED) {
     console.warn("[beat-digests] KV not configured — skipping publish");
@@ -245,6 +335,46 @@ export async function publishFinalDigest(digest: Digest): Promise<void> {
 
     await kv.set(PUBLISHED_DIGEST_KEY, digest);
     console.log(`[beat-digests] Published final digest (${digest.articles.length} articles)`);
+
+    // Save daily archive snapshot + recent lead history (best-effort)
+    const todayPt = ptDateKey(digest.generatedAt);
+    const leadUrl = digest.synthesis?.featuredArticleUrl;
+    const leadArticle = (leadUrl ? digest.articles.find(a => a.url === leadUrl) : undefined) ?? digest.articles[0];
+
+    const writes: Promise<unknown>[] = [
+      kv.setex(`digest:archive:${todayPt}`, ARCHIVE_TTL, digest),
+    ];
+
+    try {
+      const existingArchive = (await kv.get<ArchiveEntry[]>(ARCHIVE_INDEX_KEY)) ?? [];
+      const nextEntry: ArchiveEntry = {
+        date: todayPt,
+        articleCount: digest.articles.length,
+        emailSubject: digest.synthesis?.emailSubject,
+        leadTitle: leadArticle?.title,
+      };
+      const nextArchive = [nextEntry, ...existingArchive.filter(e => e.date !== todayPt)]
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, ARCHIVE_MAX_DAYS);
+      writes.push(kv.set(ARCHIVE_INDEX_KEY, nextArchive));
+    } catch {}
+
+    if (leadArticle) {
+      try {
+        const existingLeads = (await kv.get<RecentLeadEntry[]>(RECENT_LEADS_KEY)) ?? [];
+        const leadEntry: RecentLeadEntry = {
+          date: todayPt,
+          url: normalizeUrl(leadArticle.url),
+          storyId: leadArticle.storyId.toLowerCase(),
+          title: leadArticle.title,
+        };
+        const nextLeads = [leadEntry, ...existingLeads.filter(e => e.date !== todayPt)]
+          .slice(0, RECENT_LEADS_MAX);
+        writes.push(kv.set(RECENT_LEADS_KEY, nextLeads));
+      } catch {}
+    }
+
+    await Promise.all(writes);
   } catch (err) {
     console.error("[beat-digests] Failed to publish final digest:", err instanceof Error ? err.message : String(err));
   }
@@ -446,36 +576,50 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
   allArticles = await dropBrokenOgImages(allArticles);
 
   let synthesis: Digest["synthesis"] | undefined;
+  const generatedAt = new Date().toISOString();
+  const todayPt = ptDateKey(generatedAt);
+
   if (allArticles.length > 0) {
-    // Freshness-first: choose the lead story deterministically, THEN synthesize
-    // the thesis + subject about it. The hero (getSynthesisHero) resolves the
-    // same featuredArticleUrl, so the hero and the editorial lead can never
-    // split. articles are already sorted newest-first, so fallbackLead (the
-    // newest article not dated in the future) covers an empty 48h window.
-    const featured = pickFeaturedArticle(allArticles) ?? fallbackLead(allArticles);
+    const recentLeads = await getRecentLeads();
+    const priorLeads = recentLeads.filter(entry => entry.date !== todayPt);
+    const excluded: LeadExclusion | undefined = priorLeads.length > 0
+      ? {
+          urls: new Set(priorLeads.map(e => normalizeUrl(e.url))),
+          storyIds: new Set(priorLeads.map(e => e.storyId.toLowerCase())),
+        }
+      : undefined;
+
+    // Freshness-first with cross-day lead memory: avoid repeating yesterday's
+    // lead when fresher unseen stories exist.
+    const featured = pickFeaturedArticle(allArticles, excluded) ?? fallbackLead(allArticles, excluded);
     try {
       if (KV_CONFIGURED) {
         const cachedSynthesis = await kv.get<DigestSynthesis>(SYNTHESIS_KEY);
-        // Reuse the cache ONLY if it was written for today's lead story.
-        // Otherwise the article set has moved on (a newer story is now the
-        // freshest high-impact pick) and the cached thesis/subject describe a
-        // stale lead — which is exactly what made the hero and top story diverge.
-        if (cachedSynthesis && cachedSynthesis.featuredArticleUrl === featured.url) {
+        // Reuse cache ONLY if it matches today's Pacific date AND lead story.
+        if (
+          cachedSynthesis &&
+          cachedSynthesis.featuredArticleUrl === featured.url &&
+          cachedSynthesis.generatedDate === todayPt
+        ) {
           synthesis = cachedSynthesis;
-          console.log("[beat-digests] Synthesis cache HIT (lead unchanged):", synthesis.emailSubject);
+          console.log("[beat-digests] Synthesis cache HIT (lead & date unchanged):", synthesis.emailSubject);
         } else {
           if (cachedSynthesis) {
-            console.log(`[beat-digests] Synthesis cache STALE — lead changed to "${featured.title.slice(0, 60)}", regenerating`);
+            console.log(`[beat-digests] Synthesis cache STALE — regenerating for "${featured.title.slice(0, 60)}" (${todayPt})`);
           }
-          synthesis = await generateEditorialSynthesis(allArticles, featured);
-          if (synthesis) {
+          const generated = await generateEditorialSynthesis(allArticles, featured);
+          if (generated) {
+            synthesis = { ...generated, generatedDate: todayPt };
             await kv.setex(SYNTHESIS_KEY, SYNTHESIS_TTL, synthesis);
             console.log("[beat-digests] Synthesis cached:", synthesis.emailSubject);
           }
         }
       } else {
-        synthesis = await generateEditorialSynthesis(allArticles, featured);
-        if (synthesis) console.log("[beat-digests] Synthesis generated (no KV):", synthesis.emailSubject);
+        const generated = await generateEditorialSynthesis(allArticles, featured);
+        if (generated) {
+          synthesis = { ...generated, generatedDate: todayPt };
+          console.log("[beat-digests] Synthesis generated (no KV):", synthesis.emailSubject);
+        }
       }
     } catch (err) {
       console.warn("[beat-digests] Synthesis failed:", err instanceof Error ? err.message : String(err));
@@ -484,7 +628,7 @@ export async function aggregateDigestFromBeats(): Promise<Digest> {
 
   return {
     articles: allArticles,
-    generatedAt: new Date().toISOString(),
+    generatedAt,
     synthesis,
   };
 }
