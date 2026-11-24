@@ -10,6 +10,7 @@ import { displayTitle } from "./format";
 import { getEffectivePriority } from "./sources";
 import type { Digest, DigestArticle } from "./summarize";
 import { DATA_FENCE, isSafeHttpUrl, sanitizeUntrusted } from "./summarize";
+import { callOpenRouterJson, isOpenRouterConfigured } from "./llm";
 
 const BEATS: Beat[] = ["AI Labs", "Vertical AI", "AI Infrastructure", "Physical AI"];
 const WEEKLY_LATEST_KEY = "weekly:latest";
@@ -67,6 +68,27 @@ const WEEKLY_RESPONSE_SCHEMA: Schema = {
           beat: { type: Type.STRING, enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
           summary: { type: Type.STRING },
           topStoryUrls: { type: Type.ARRAY, items: { type: Type.STRING } },
+        },
+        required: ["beat", "summary", "topStoryUrls"],
+      },
+    },
+  },
+  required: ["emailSubject", "weekTheme", "beatSummaries"],
+};
+
+const WEEKLY_JSON_SCHEMA: Record<string, unknown> = {
+  type: "object",
+  properties: {
+    emailSubject: { type: "string" },
+    weekTheme: { type: "string" },
+    beatSummaries: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          beat: { type: "string", enum: ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"] },
+          summary: { type: "string" },
+          topStoryUrls: { type: "array", items: { type: "string" } },
         },
         required: ["beat", "summary", "topStoryUrls"],
       },
@@ -158,6 +180,58 @@ Return JSON with:
   - "summary": 2 plain sentences on what shifted in that beat this week
   - "topStoryUrls": 2 to 3 exact URLs copied from the stories above for that beat`;
 
+  const buildWeeklyResult = (parsedData: z.infer<typeof WeeklyOutputSchema>): WeeklyDigest => {
+    const validSummaries: WeeklyBeatSummary[] = BEATS.map(beat => {
+      const found = parsedData.beatSummaries.find(b => b.beat === beat);
+      const safeUrls = (found?.topStoryUrls ?? [])
+        .filter(u => isSafeHttpUrl(u) && storiesByUrl.has(u))
+        .slice(0, 3);
+      const fallbackUrls = pool.filter(a => a.beat === beat).slice(0, 2).map(a => a.url);
+      return {
+        beat,
+        summary: found?.summary ?? `No major shifts recorded in ${beat} this week.`,
+        topStoryUrls: safeUrls.length > 0 ? safeUrls : fallbackUrls,
+      };
+    });
+
+    const usedStories: Record<string, WeeklyStoryRef> = {};
+    for (const b of validSummaries) {
+      for (const u of b.topStoryUrls) {
+        const ref = storiesByUrl.get(u);
+        if (ref) usedStories[u] = ref;
+      }
+    }
+
+    return {
+      weekEnding,
+      generatedAt: new Date().toISOString(),
+      emailSubject: parsedData.emailSubject.replace(/[\r\n]+/g, " ").trim().slice(0, 160),
+      weekTheme: parsedData.weekTheme.trim(),
+      beatSummaries: validSummaries,
+      articleCount: uniqueUrls.size,
+      daysCovered: dailyDigests.length,
+      stories: usedStories,
+    };
+  };
+
+  if (!aiOverride && isOpenRouterConfigured()) {
+    try {
+      const res = await callOpenRouterJson({
+        role: "synthesis",
+        systemInstruction: WEEKLY_SYSTEM_INSTRUCTION,
+        prompt,
+        schema: WeeklyOutputSchema,
+        jsonSchema: { name: "weekly_digest", schema: WEEKLY_JSON_SCHEMA },
+        temperature: 0.35,
+        maxTokens: 4096,
+      });
+      return buildWeeklyResult(res.data);
+    } catch (err) {
+      console.warn("[weekly] OpenRouter weekly synthesis failed:", err instanceof Error ? err.message : String(err));
+      return null;
+    }
+  }
+
   const ai = aiOverride ?? new GoogleGenAI({
     apiKey: (process.env.GOOGLE_API_KEY_SYNTHESIS ?? process.env.GOOGLE_API_KEY)!,
   });
@@ -189,37 +263,7 @@ Return JSON with:
         continue;
       }
 
-      const validSummaries: WeeklyBeatSummary[] = BEATS.map(beat => {
-        const found = parsed.data.beatSummaries.find(b => b.beat === beat);
-        const safeUrls = (found?.topStoryUrls ?? [])
-          .filter(u => isSafeHttpUrl(u) && storiesByUrl.has(u))
-          .slice(0, 3);
-        const fallbackUrls = pool.filter(a => a.beat === beat).slice(0, 2).map(a => a.url);
-        return {
-          beat,
-          summary: found?.summary ?? `No major shifts recorded in ${beat} this week.`,
-          topStoryUrls: safeUrls.length > 0 ? safeUrls : fallbackUrls,
-        };
-      });
-
-      const usedStories: Record<string, WeeklyStoryRef> = {};
-      for (const b of validSummaries) {
-        for (const u of b.topStoryUrls) {
-          const ref = storiesByUrl.get(u);
-          if (ref) usedStories[u] = ref;
-        }
-      }
-
-      return {
-        weekEnding,
-        generatedAt: new Date().toISOString(),
-        emailSubject: parsed.data.emailSubject.replace(/[\r\n]+/g, " ").trim().slice(0, 160),
-        weekTheme: parsed.data.weekTheme.trim(),
-        beatSummaries: validSummaries,
-        articleCount: uniqueUrls.size,
-        daysCovered: dailyDigests.length,
-        stories: usedStories,
-      };
+      return buildWeeklyResult(parsed.data);
     } catch (err) {
       console.warn(`[weekly] attempt ${i + 1} (${model}) failed:`, err instanceof Error ? err.message : String(err));
     }

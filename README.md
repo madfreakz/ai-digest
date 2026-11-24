@@ -64,18 +64,23 @@ The interesting engineering here is in the failure modes, not the happy path:
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
-npm test             # node --test across the pipeline
-npm run build        # production build
+npm run dev              # http://localhost:3000
+npm test                 # node --test across the pipeline
+npm run build            # production build
 npm run eval -- --live   # offline quality scorecard against live production
+npm run eval:models      # blind A/B across <$1/mo OpenRouter or Gemini models
 ```
 
 Environment (`.env.local`):
 
 | Var | Purpose |
 |-----|---------|
-| `GOOGLE_API_KEY` | Per-beat triage, scoring & discovery |
-| `GOOGLE_API_KEY_SYNTHESIS` | Daily & weekly synthesis (falls back to `GOOGLE_API_KEY`) |
+| `OPENROUTER_API_KEY` | Optional unified router key (enables 3-slot cross-vendor routing + fallback) |
+| `OPENROUTER_TRIAGE_MODEL` | Slot 1 (`45 -> 15` triage, e.g. `deepseek/deepseek-v4.1-flash`) |
+| `OPENROUTER_SCORING_MODEL` | Slot 2 (15-item scoring + "So What?", e.g. `deepseek/deepseek-v4.1-flash`) |
+| `OPENROUTER_SYNTHESIS_MODEL` | Slot 3 (daily thesis + weekly rollup, e.g. `google/gemini-4-hydrogen`) |
+| `GOOGLE_API_KEY` | Fallback/direct Gemini scoring when `OPENROUTER_API_KEY` is unset |
+| `GOOGLE_API_KEY_SYNTHESIS` | Fallback/direct Gemini synthesis when `OPENROUTER_API_KEY` is unset |
 | `EXA_API_KEY` | Retrieval |
 | `RESEND_API_KEY` | Daily briefing, weekly rollup & ops alerts |
 | `LOGO_DEV_KEY` | Company logo proxy (`/api/logo/[domain]`) |
@@ -110,12 +115,14 @@ lib/exa.ts                 Exa retrieval & URL normalization
 lib/rss.ts                 20 primary-source RSS/Atom feeds & XML parser
 lib/filters.ts             deterministic noise/industry filter & So What linter
 lib/summarize.ts           2-stage triage, scoring, dedup, synthesis, resilience
+lib/llm.ts                 3-slot OpenRouter client (triage / scoring / synthesis)
 lib/beat-digests.ts        KV orchestration, cross-day lead memory, daily archive
 lib/weekly.ts              Sunday weekly synthesis & Outlook-safe email builder
 lib/alerts.ts              rate-limited Resend ops alerts
 lib/companies.ts           145+ tracked companies + canonical tag resolver
 lib/email.ts               beat-grouped Outlook-safe morning briefing builder
 scripts/eval-digest.ts     offline & --live quality scorecard
+scripts/model-ab.ts        blind multi-beat <$1/mo model A/B harness
 __tests__/                 pipeline, resilience, filter, RSS, email & auth tests
 ```
 
