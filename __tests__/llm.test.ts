@@ -105,6 +105,47 @@ describe("callOpenRouterJson", () => {
     }
   });
 
+  test("omits temperature for openai/gpt-5* and falls back cleanly on 404 parameter mismatch", async () => {
+    const prevKey = process.env.OPENROUTER_API_KEY;
+    process.env.OPENROUTER_API_KEY = "sk-or-test-key";
+    try {
+      const seenBodies: Array<Record<string, unknown>> = [];
+      const res = await callOpenRouterJson({
+        role: "scoring",
+        models: ["openai/gpt-5.6-luna"],
+        systemInstruction: "sys",
+        prompt: "usr",
+        schema,
+        jsonSchema: { name: "test_schema", schema: { type: "object" } },
+        temperature: 0.1,
+        maxTokens: 256,
+        baseDelayMs: 0,
+        fetchImpl: async (_url, init) => {
+          const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+          seenBodies.push(body);
+          if (seenBodies.length === 1) {
+            return new Response(JSON.stringify({ error: "param mismatch" }), { status: 404 });
+          }
+          return new Response(
+            JSON.stringify({
+              model: "openai/gpt-5.6-luna",
+              choices: [{ message: { content: "{\"ok\":true,\"note\":\"ok\"}" } }],
+              usage: { prompt_tokens: 10, completion_tokens: 5 },
+            }),
+            { status: 200 },
+          );
+        },
+      });
+      assert.equal(res.data.ok, true);
+      assert.equal("temperature" in seenBodies[0], false);
+      assert.deepEqual(seenBodies[0].reasoning, { effort: "low" });
+      assert.equal("provider" in seenBodies[1], false);
+    } finally {
+      if (prevKey === undefined) delete process.env.OPENROUTER_API_KEY;
+      else process.env.OPENROUTER_API_KEY = prevKey;
+    }
+  });
+
   test("throws when all candidate models fail", async () => {
     const prevKey = process.env.OPENROUTER_API_KEY;
     process.env.OPENROUTER_API_KEY = "sk-or-test-key";

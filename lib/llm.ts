@@ -7,19 +7,19 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const DEFAULT_ROLE_MODELS: Record<LlmRole, string[]> = {
   triage: [
     "deepseek/deepseek-v4.1-flash",
-    "google/gemini-2.5-flash-lite",
-    "qwen/qwen3.8-flash",
+    "openai/gpt-5.4-nano",
+    "google/gemini-3.5-flash-lite",
   ],
   scoring: [
     "deepseek/deepseek-v4.1-flash",
-    "qwen/qwen3.8-flash",
     "openai/gpt-5.6-luna",
+    "openai/gpt-5.4-nano",
     "google/gemini-3.5-flash-lite",
   ],
   synthesis: [
     "google/gemini-4-hydrogen",
     "openai/gpt-5.6-luna",
-    "qwen/qwen3.7-plus",
+    "openai/gpt-5.4-nano",
     "google/gemini-3.5-flash-lite",
   ],
 };
@@ -87,6 +87,7 @@ export interface OpenRouterJsonOptions<T> {
   jsonSchema?: { name: string; schema: Record<string, unknown> };
   temperature: number;
   maxTokens: number;
+  reasoningEffort?: "minimal" | "low" | "medium" | "high";
   timeoutMs?: number;
   baseDelayMs?: number;
   fetchImpl?: FetchLike;
@@ -106,6 +107,11 @@ function isTransientStatus(status: number): boolean {
   return status === 429 || status === 502 || status === 503 || status === 504;
 }
 
+function supportsTemperature(model: string): boolean {
+  // OpenAI gpt-5* reasoning/nano endpoints on OpenRouter reject `temperature`.
+  return !/^openai\/gpt-5/i.test(model);
+}
+
 export async function callOpenRouterJson<T>(
   opts: OpenRouterJsonOptions<T>,
 ): Promise<OpenRouterJsonResult<T>> {
@@ -118,12 +124,14 @@ export async function callOpenRouterJson<T>(
   const fetchImpl = opts.fetchImpl ?? fetch;
   const timeoutMs = opts.timeoutMs ?? 90_000;
   const baseDelayMs = opts.baseDelayMs ?? 3_000;
+  const reasoningEffort = opts.reasoningEffort ?? "low";
 
   let lastError: unknown;
 
   for (let modelIdx = 0; modelIdx < models.length; modelIdx++) {
     const model = models[modelIdx];
     let useJsonObjectFallback = false;
+    let stripOptionalParams = false;
 
     for (let attempt = 0; attempt < 2; attempt++) {
       const useJsonSchema = Boolean(opts.jsonSchema) && !useJsonObjectFallback;
@@ -143,11 +151,16 @@ export async function callOpenRouterJson<T>(
               },
             }
           : { type: "json_object" },
-        temperature: opts.temperature,
         max_tokens: opts.maxTokens,
       };
-      if (useJsonSchema) {
-        body.provider = { require_parameters: true };
+      if (!stripOptionalParams) {
+        if (supportsTemperature(model)) {
+          body.temperature = opts.temperature;
+        }
+        body.reasoning = { effort: reasoningEffort };
+        if (useJsonSchema) {
+          body.provider = { require_parameters: true };
+        }
       }
 
       try {
@@ -166,6 +179,12 @@ export async function callOpenRouterJson<T>(
         if ((res.status === 400 || res.status === 422) && useJsonSchema && !useJsonObjectFallback) {
           useJsonObjectFallback = true;
           console.warn(`[openrouter] ${opts.role} (${model}) rejected json_schema (HTTP ${res.status}); retrying with json_object`);
+          continue;
+        }
+
+        if (res.status === 404 && !stripOptionalParams) {
+          stripOptionalParams = true;
+          console.warn(`[openrouter] ${opts.role} (${model}) returned HTTP 404; retrying without strict provider parameters`);
           continue;
         }
 

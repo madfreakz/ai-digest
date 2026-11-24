@@ -358,7 +358,8 @@ async function runArm(
           schema: ToolOutputSchema,
           jsonSchema: { name: "record_articles", schema: RECORD_ARTICLES_JSON_SCHEMA },
           temperature: 0.1,
-          maxTokens: 8192,
+          maxTokens: 16384,
+          reasoningEffort: "low",
           baseDelayMs: 2500,
         });
         base.scoringMs += Math.round(performance.now() - t0);

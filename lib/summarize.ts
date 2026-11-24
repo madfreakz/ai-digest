@@ -595,7 +595,8 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
       schema: ToolOutputSchema,
       jsonSchema: { name: "record_articles", schema: RECORD_ARTICLES_JSON_SCHEMA },
       temperature: 0.1,
-      maxTokens: 8192,
+      maxTokens: 16384,
+      reasoningEffort: "low",
       baseDelayMs: opts.baseDelayMs ?? 3000,
     });
     parsed = res.data;
