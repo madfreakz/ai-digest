@@ -16,7 +16,7 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
   const remaining = digest.articles.filter((a) => a !== featured).map(toDisplayArticle);
 
   return (
-    <main>
+    <>
       <div className="masthead-rule" />
 
       <DigestHeader
@@ -24,9 +24,11 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
         thesis={digest.synthesis?.thesis}
       />
 
-      {featured && <HeroFeaturedStory article={toDisplayArticle(featured)} />}
+      <main>
+        {featured && <HeroFeaturedStory article={toDisplayArticle(featured)} />}
 
-      {remaining.length > 0 && <UpdatedBeatSection articles={remaining} />}
+        {remaining.length > 0 && <UpdatedBeatSection articles={remaining} />}
+      </main>
 
       <footer className="site-footer">
         <p>
@@ -49,6 +51,6 @@ export default function CinematicLayout({ digest }: CinematicLayoutProps) {
           · Frontier AI Digest
         </p>
       </footer>
-    </main>
+    </>
   );
 }

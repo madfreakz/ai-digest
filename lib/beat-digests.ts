@@ -127,11 +127,12 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
       mergeVcArticles(beat),
     ]);
 
-    const seenUrls = new Set(beatArticles.map(a => a.url));
+    const seenUrls = new Set(beatArticles.map(a => normalizeUrl(a.url)));
     const mergedArticles = [...beatArticles];
     for (const vc of vcArticles) {
-      if (!seenUrls.has(vc.url)) {
-        seenUrls.add(vc.url);
+      const normalized = normalizeUrl(vc.url);
+      if (!seenUrls.has(normalized)) {
+        seenUrls.add(normalized);
         mergedArticles.push({ ...vc, beatHint: beat });
       }
     }
@@ -166,12 +167,13 @@ export async function cacheBeatArticles(beat: Beat): Promise<DigestArticle[]> {
     // LOAD-BEARING: generateBeatDigest throws when scoring totally fails (e.g. a
     // Gemini 503 spike across flash + flash-lite). The throw lands HERE, BEFORE
     // the KV write above, so the previous good beat cache is left intact and the
-    // freshness sentinel is NOT stamped — the stale-beat detector in
-    // aggregateDigestFromBeats will then correctly flag the overdue beat. Do NOT
-    // "recover" by writing beatDigest.articles ([]) into the cache here, and do
-    // NOT move the KV write below this catch. See feedback_gemini_503_resilience.
+    // freshness sentinel is NOT stamped; the stale-beat detector in
+    // aggregateDigestFromBeats will then correctly flag the overdue beat. Re-throw
+    // so /api/beat returns HTTP 500 rather than silently reporting success, and do
+    // NOT "recover" by writing [] into the cache or moving the KV write below
+    // this catch. See feedback_gemini_503_resilience.
     console.error(`[beat-digests] Failed to fetch/generate articles for ${beat}:`, err);
-    return [];
+    throw err;
   }
 }
 
@@ -332,7 +334,7 @@ function deduplicateByUrl(articles: DigestArticle[]): DigestArticle[] {
   return result;
 }
 
-function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
+export function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
   if (articles.length <= 1) return articles;
 
   const titleSets = articles.map(a => titleWords(a.title));
@@ -342,10 +344,12 @@ function deduplicateAcrossBeats(articles: DigestArticle[]): DigestArticle[] {
     if (removed.has(i)) continue;
     for (let j = i + 1; j < articles.length; j++) {
       if (removed.has(j) || removed.has(i)) continue;
-      if (articles[i].beat === articles[j].beat) continue;
+      const idI = articles[i].storyId?.trim().toLowerCase();
+      const idJ = articles[j].storyId?.trim().toLowerCase();
+      const sameStoryId = !!idI && idI === idJ;
       const sim = jaccardSimilarity(titleSets[i], titleSets[j]);
       const sharedTag = articles[i].companyTags.some(t => articles[j].companyTags.includes(t));
-      if (sim >= 0.5 || (sim >= 0.40 && sharedTag)) {
+      if (sameStoryId || sim >= 0.5 || (sim >= 0.40 && sharedTag)) {
         const prioI = getEffectivePriority(articles[i].source);
         const prioJ = getEffectivePriority(articles[j].source);
         const loser = prioI <= prioJ ? j : i;

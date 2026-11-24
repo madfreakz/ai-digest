@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
-import { buildEmailHtml } from "../lib/email";
+import { buildEmailHtml, firstSentence } from "../lib/email";
 import type { Digest, DigestArticle } from "../lib/summarize";
 
 function mkArticle(partial: Partial<DigestArticle>): DigestArticle {
@@ -58,5 +58,40 @@ describe("buildEmailHtml", () => {
   test("shows the stale-beat banner only when a beat is overdue", () => {
     assert.doesNotMatch(html, /didn't refresh in time/);
     assert.match(buildEmailHtml(digest, ["Vertical AI"]), /didn't refresh in time: <strong>Vertical AI<\/strong>/);
+  });
+
+  test("does not append a double period on single-sentence summaries", () => {
+    const single = mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
+      mkArticle({
+        title: "Single sentence item",
+        url: "https://example.com/single",
+        summary: "Only one sentence here.",
+        storyId: "single",
+      }),
+    ]);
+    const singleHtml = buildEmailHtml(single);
+    assert.match(singleHtml, />Only one sentence here\.</);
+    assert.doesNotMatch(singleHtml, /\.\./);
+  });
+});
+
+describe("firstSentence", () => {
+  test("extracts the first sentence without double punctuation", () => {
+    assert.equal(firstSentence("One sentence. Two sentence."), "One sentence.");
+    assert.equal(firstSentence("Only one sentence."), "Only one sentence.");
+    assert.equal(firstSentence("No trailing punctuation"), "No trailing punctuation.");
+    assert.equal(firstSentence("Big launch! More details follow."), "Big launch!");
+  });
+
+  test("does not split on decimals or common abbreviations", () => {
+    assert.equal(
+      firstSentence("Pedestal AI raised $4.7M in U.S. seed funding. It targets supply chains."),
+      "Pedestal AI raised $4.7M in U.S. seed funding.",
+    );
+    assert.equal(
+      firstSentence("Acme Inc. launched v3.0 for A.I. teams. Revenue doubled."),
+      "Acme Inc. launched v3.0 for A.I. teams.",
+    );
   });
 });

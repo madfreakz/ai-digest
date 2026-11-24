@@ -16,13 +16,6 @@ export interface ExaArticle {
 // characters of it to the scoring prompt (input tokens only).
 const ARTICLE_TEXT_CHARS = 1000;
 
-const BEAT_PLACEHOLDERS: Record<Beat, string> = {
-  "Physical AI":       "/placeholder-physical-ai.png",
-  "AI Infrastructure": "/placeholder-ai-infra.png",
-  "AI Labs":           "/placeholder-ai-labs.png",
-  "Vertical AI":       "/placeholder-vertical-ai.png",
-};
-
 const QUERIES_PHYSICAL_AI = [
   "humanoid robotics companies raising capital or announcing commercial partnerships",
   "embodied AI and physical robotics enterprise deployment contracts and milestones",
@@ -145,8 +138,14 @@ async function runBeatQueries(
         for (const item of result.results) {
           const normalized = normalizeUrl(item.url);
           if (!seenUrls.has(normalized)) {
+            let hostname: string;
+            try {
+              hostname = new URL(item.url).hostname.replace(/^www\./, "");
+            } catch {
+              console.warn(`[exa] ${beat} - skipping malformed URL: ${String(item.url).slice(0, 80)}`);
+              continue;
+            }
             seenUrls.add(normalized);
-            const hostname = new URL(item.url).hostname.replace(/^www\./, "");
             const image = (item as Record<string, unknown>).image as string | null;
             results.push({
               title: item.title ?? "Untitled",
@@ -154,7 +153,7 @@ async function runBeatQueries(
               publishedAt: item.publishedDate ?? new Date().toISOString(),
               text: (item as Record<string, unknown>).text as string | undefined,
               source: hostname,
-              ogImage: image ?? BEAT_PLACEHOLDERS[beat],
+              ogImage: image ?? null,
               beatHint: beat,
             });
           }
@@ -208,10 +207,17 @@ export async function fetchVcBlogArticles(): Promise<ExaArticle[]> {
       } as any)
     );
     console.log(`[exa] VC blog query returned ${result.results.length} results`);
-    return result.results.map(item => {
-      const hostname = new URL(item.url).hostname.replace(/^www\./, "");
+    const vcArticles: ExaArticle[] = [];
+    for (const item of result.results) {
+      let hostname: string;
+      try {
+        hostname = new URL(item.url).hostname.replace(/^www\./, "");
+      } catch {
+        console.warn(`[exa] VC blog query - skipping malformed URL: ${String(item.url).slice(0, 80)}`);
+        continue;
+      }
       const image = (item as Record<string, unknown>).image as string | null;
-      return {
+      vcArticles.push({
         title: item.title ?? "Untitled",
         url: item.url,
         publishedAt: item.publishedDate ?? new Date().toISOString(),
@@ -219,8 +225,9 @@ export async function fetchVcBlogArticles(): Promise<ExaArticle[]> {
         source: hostname,
         ogImage: image ?? null,
         beatHint: "AI Labs" as Beat,
-      };
-    });
+      });
+    }
+    return vcArticles;
   } catch (err) {
     console.error("[exa] VC blog query failed:", err instanceof Error ? err.message : String(err));
     return [];

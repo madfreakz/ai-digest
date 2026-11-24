@@ -49,6 +49,24 @@ describe("displayTitle", () => {
     assert.equal(displayTitle(t), t);
   });
 
+  test("drops trailing :: and - publisher suffixes", () => {
+    assert.equal(
+      displayTitle("Protecting where software gets built: StepSecurity's $20M Series A - StepSecurity"),
+      "Protecting where software gets built: StepSecurity's $20M Series A",
+    );
+    assert.equal(
+      displayTitle("Amesite Signs New 2,000-Patient Enterprise Customer :: Amesite, Inc. (AMST)"),
+      "Amesite Signs New 2,000-Patient Enterprise Customer",
+    );
+  });
+
+  test("preserves hyphenated product terms and lowercase dashed clauses", () => {
+    const t1 = "Freshworks alums raise $53M to build AI-native CRM with GPT-6.2";
+    assert.equal(displayTitle(t1), t1);
+    const t2 = "Why agent orchestration matters now - and what builders should watch";
+    assert.equal(displayTitle(t2), t2);
+  });
+
   test("keeps the full title when stripping would leave almost nothing", () => {
     assert.equal(displayTitle("Jev | TechCrunch"), "Jev | TechCrunch");
   });

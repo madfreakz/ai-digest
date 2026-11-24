@@ -1,33 +1,11 @@
 import { NextResponse } from "next/server";
 import Exa from "exa-js";
 import { COMPANIES } from "@/lib/companies";
-import type { Beat } from "@/lib/companies";
+import { BEAT_QUERIES } from "@/lib/exa";
+import { requireCronAuth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
-
-const BEAT_QUERIES: [Beat, string[]][] = [
-  ["Physical AI", [
-    "humanoid robotics companies raising capital or announcing commercial partnerships",
-    "embodied AI and physical robotics enterprise deployment contracts and milestones",
-    "robotics company product launches, competitive moves, or strategic hires",
-  ]],
-  ["AI Infrastructure", [
-    "AI developer infrastructure and tooling companies announcing funding or product milestones",
-    "vector databases, LLM observability, and ML platform providers announcing deals or launches",
-    "AI compute and cloud infrastructure companies raising capital or forming partnerships",
-  ]],
-  ["AI Labs", [
-    "foundation model laboratories releasing new models or announcing major research breakthroughs",
-    "AI research lab funding rounds, valuations, and strategic partnerships",
-    "AI safety and alignment research announcements and institutional moves",
-  ]],
-  ["Vertical AI", [
-    "vertical AI software companies signing enterprise customers or announcing ARR growth",
-    "AI agent and workflow automation companies raising capital or announcing partnerships",
-    "AI copilot products winning enterprise contracts or expanding into new verticals",
-  ]],
-];
 
 const VC_BLOG_DOMAINS: Record<string, string> = {
   "Andreessen Horowitz": "a16z.com",
@@ -69,14 +47,8 @@ interface DomainInfo {
 }
 
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   const exa = new Exa(process.env.EXA_API_KEY!);
   const sevenDaysAgo = new Date();

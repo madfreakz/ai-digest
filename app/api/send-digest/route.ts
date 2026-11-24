@@ -3,18 +3,12 @@ import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 
 export const dynamic = "force-dynamic";
+import { requireCronAuth } from "@/lib/auth";
 import { buildEmailHtml } from "@/lib/email";
 
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    console.error("[auth] CRON_SECRET not configured — refusing request");
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   const url = new URL(req.url);
   const skipEmail = url.searchParams.get("skipEmail") === "true";
@@ -39,6 +33,7 @@ export async function GET(req: Request) {
     // Publish to stable KV key so the page only changes when this cron runs
     await publishFinalDigest(digest);
     revalidatePath("/");
+    revalidatePath("/opengraph-image");
 
     if (skipEmail) {
       return NextResponse.json({ success: true, published: true, emailSent: false, articleCount: digest.articles.length });
@@ -48,7 +43,9 @@ export async function GET(req: Request) {
     const html = buildEmailHtml(digest, staleBeats);
 
     const resend = new Resend(process.env.RESEND_API_KEY!);
-    const date   = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const date   = new Date().toLocaleDateString("en-US", {
+      month: "short", day: "numeric", timeZone: "America/Los_Angeles",
+    });
     // emailSubject is model-generated from web-derived content. It becomes an
     // email header (not HTML-escaped body), so collapse any CR/LF (header
     // injection) and cap the length before handing it to Resend.

@@ -3,6 +3,7 @@ import { kv } from "@vercel/kv";
 import { DISCOVERED_INDEX_KEY, KV_CONFIGURED } from "@/lib/kv-config";
 import { isPlausibleDomain } from "@/lib/companies";
 import type { DiscoveredCompany } from "@/lib/companies";
+import { requireCronAuth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -11,14 +12,8 @@ export const maxDuration = 60;
 // calls. Answers "is discovery quality good enough, or is there a gap a Parallel
 // enrichment pass would close?" See Knowledge/Engineering/search-provider-strategy.md.
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
   if (!KV_CONFIGURED) {
     return NextResponse.json({ error: "KV not configured" }, { status: 503 });
   }

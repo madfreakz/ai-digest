@@ -3,6 +3,7 @@ import CinematicLayout from "@/components/CinematicLayout";
 import { MOCK_DIGEST } from "@/lib/mock-digest";
 import type { Digest } from "@/lib/summarize";
 import { getPublishedDigest, getPreviousDigest } from "@/lib/beat-digests";
+import { normalizeUrl } from "@/lib/exa";
 
 // Dev only: set DEV_DIGEST_FILE (e.g. in .env.development.local) to a saved
 // digest JSON to preview real data locally. Falls back to the mock.
@@ -43,10 +44,19 @@ export default async function Home() {
   }
 
   // First-publish guard: only mark "new" when a previous snapshot exists,
-  // otherwise every article on day one would carry a NEW badge.
+  // otherwise every article on day one would carry a NEW badge. Match on both
+  // storyId and normalized URL so a re-scored story with a new storyId isn't
+  // falsely tagged NEW.
   const priorIds = previous ? new Set(previous.articles.map(a => a.storyId)) : null;
-  const augmented = priorIds
-    ? { ...digest, articles: digest.articles.map(a => ({ ...a, isNew: !priorIds.has(a.storyId) })) }
+  const priorUrls = previous ? new Set(previous.articles.map(a => normalizeUrl(a.url))) : null;
+  const augmented = priorIds && priorUrls
+    ? {
+        ...digest,
+        articles: digest.articles.map(a => ({
+          ...a,
+          isNew: !priorIds.has(a.storyId) && !priorUrls.has(normalizeUrl(a.url)),
+        })),
+      }
     : digest;
 
   return <CinematicLayout digest={augmented} />;

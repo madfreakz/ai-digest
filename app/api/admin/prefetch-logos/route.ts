@@ -3,6 +3,7 @@ import { kv } from "@vercel/kv";
 import { COMPANIES, DOMAIN_ALIASES } from "@/lib/companies";
 import type { DiscoveredCompany } from "@/lib/companies";
 import { DISCOVERED_INDEX_KEY } from "@/lib/kv-config";
+import { requireCronAuth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60; // KV reads for discovered companies only
@@ -16,14 +17,8 @@ function resolveDomain(company: (typeof COMPANIES)[number]): string | undefined 
 }
 
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   const logoDevKey = process.env.LOGO_DEV_KEY;
   if (!logoDevKey) {

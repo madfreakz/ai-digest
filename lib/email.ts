@@ -85,18 +85,45 @@ function featuredBlock(a: DigestArticle): string {
 </table>`;
 }
 
+const ABBREVIATIONS = new Set([
+  "u.s.", "u.k.", "inc.", "corp.", "ltd.", "dr.", "mr.", "mrs.", "ms.",
+  "st.", "vs.", "no.", "jan.", "feb.", "mar.", "apr.", "aug.", "sep.",
+  "sept.", "oct.", "nov.", "dec.",
+]);
+
+export function firstSentence(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+
+  const boundary = /([.!?])(?=\s|$)/g;
+  let match: RegExpExecArray | null;
+  while ((match = boundary.exec(trimmed)) !== null) {
+    const end = match.index + 1;
+    const prefix = trimmed.slice(0, end);
+    const lastToken = prefix.split(/\s+/).pop()?.toLowerCase() ?? "";
+
+    if (match[1] === "." && (ABBREVIATIONS.has(lastToken) || /^(?:[a-z]\.){2,}$/i.test(lastToken))) {
+      continue;
+    }
+
+    return prefix;
+  }
+
+  return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+}
+
 function quickHitRow(a: DigestArticle, last: boolean): string {
   const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
   const borderStyle = last ? "none" : `1px solid ${BORDER}`;
   const url = escapeHtml(a.url);
   const title = escapeHtml(displayTitle(a.title));
-  const summaryLead = escapeHtml(a.summary.split(". ")[0]);
+  const summaryLead = escapeHtml(firstSentence(a.summary));
   return `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0;border-collapse:collapse;">
   <tr><td style="padding:12px 0;border-bottom:${borderStyle};">
     <div style="margin-bottom:2px;">${pill(a.beat, beatColor)}</div>
     <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:15px;font-weight:500;text-decoration:none;line-height:1.4;margin-bottom:4px;">${title}</a>
-    <p style="color:${TEXT_LOW};font-size:13px;line-height:1.5;margin:0;">${summaryLead}.</p>
+    <p style="color:${TEXT_LOW};font-size:13px;line-height:1.5;margin:0;">${summaryLead}</p>
   </td></tr>
 </table>`;
 }

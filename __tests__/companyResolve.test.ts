@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert";
-import { resolveCanonicalCompanyName } from "../lib/companies";
+import { resolveCanonicalCompanyName, COMPANIES } from "../lib/companies";
 
 describe("resolveCanonicalCompanyName", () => {
   test("returns tag unchanged when no match", () => {
@@ -32,5 +32,11 @@ describe("resolveCanonicalCompanyName", () => {
   test("does not collapse short names that would over-match", () => {
     // "AI" is too short — never a valid match
     assert.equal(resolveCanonicalCompanyName("AI"), "AI");
+  });
+
+  test("resolves 'Parallel Web Systems' to 'Parallel' and has no duplicate company names", () => {
+    assert.equal(resolveCanonicalCompanyName("Parallel Web Systems"), "Parallel");
+    const names = COMPANIES.map(c => c.name.toLowerCase());
+    assert.equal(new Set(names).size, names.length);
   });
 });

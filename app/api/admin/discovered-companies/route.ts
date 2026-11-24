@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import type { DiscoveredCompany } from "@/lib/companies";
 import { DISCOVERED_INDEX_KEY } from "@/lib/kv-config";
+import { requireCronAuth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -20,18 +21,12 @@ async function removeFromIndex(deletedNames: string[]): Promise<void> {
 }
 
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
   // Header-only, matching every other route. The ?secret= query fallback that
   // used to be accepted here put CRON_SECRET into Vercel access logs, browser
   // history and outbound Referer headers — and it is the same secret that
   // authorizes the cron routes and this route's DELETE. Do not reintroduce it.
-  const auth = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (auth !== cronSecret) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   try {
     const keys = (await kv.keys("discovered:*")).filter(k => k !== DISCOVERED_INDEX_KEY);
@@ -58,14 +53,8 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization")?.replace("Bearer ", "");
-  if (auth !== cronSecret) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   const { searchParams } = new URL(req.url);
   const mode = searchParams.get("mode");

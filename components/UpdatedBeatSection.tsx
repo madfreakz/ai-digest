@@ -185,7 +185,7 @@ export default function UpdatedBeatSection({ articles }: UpdatedBeatSectionProps
             {items.length > 0 ? (
               <div className="beat-list">
                 {items.map((article) => (
-                  <UpdatedNewsCard key={article.storyId} article={article} />
+                  <UpdatedNewsCard key={article.url} article={article} />
                 ))}
               </div>
             ) : (

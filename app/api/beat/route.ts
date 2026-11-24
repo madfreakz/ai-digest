@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { cacheBeatArticles } from "@/lib/beat-digests";
 import type { Beat } from "@/lib/companies";
+import { requireCronAuth } from "@/lib/auth";
 
 const VALID_BEATS: Beat[] = ["Physical AI", "AI Infrastructure", "AI Labs", "Vertical AI"];
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    console.error("[auth] CRON_SECRET not configured — refusing request");
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
-  }
-  const auth = req.headers.get("authorization");
-  if (auth !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const authError = requireCronAuth(req);
+  if (authError) return authError;
 
   const { searchParams } = new URL(req.url);
   const beat = searchParams.get("beat") as Beat | null;

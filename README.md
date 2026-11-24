@@ -9,7 +9,7 @@
 ![Exa](https://img.shields.io/badge/retrieval-Exa-111?style=flat-square)
 ![Vercel](https://img.shields.io/badge/Vercel-000?style=flat-square&logo=vercel)
 
-A daily, automated news digest for frontier AI. It tracks ~130 companies across four beats, retrieves the day's real developments, scores them for signal, writes an editorial synthesis, and emails the result. No human in the loop after deploy.
+A daily, automated news digest for frontier AI. It tracks 145+ companies across four beats, retrieves the day's real developments, scores them for signal, writes an editorial synthesis, and emails the result. No human in the loop after deploy.
 
 👉 **Read today's:** [frontier-ai-digest.vercel.app](https://frontier-ai-digest.vercel.app/)
 
@@ -91,12 +91,13 @@ Defined in [`vercel.json`](vercel.json): the four beats refresh on a stagger thr
 
 ```
 app/api/beat        per-beat retrieve + score + cache
-app/api/digest      assemble the front page
-app/api/send-digest the morning email
+app/api/digest      aggregate cached beats on demand
+app/api/send-digest publish to KV + send the morning email
 lib/exa.ts          retrieval
 lib/summarize.ts    scoring, dedup, synthesis, resilience
-lib/companies.ts    the ~130 tracked companies
-lib/html.ts         email + page rendering (with URL guards)
+lib/companies.ts    145+ tracked companies
+lib/email.ts        email template builder (Outlook-safe)
+lib/html.ts         HTML escaping helper
 __tests__/          pipeline tests, incl. 503-resilience
 ```
 

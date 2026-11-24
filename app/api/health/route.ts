@@ -9,11 +9,23 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const { getBeatFreshness, getPublishedDigest } = await import("@/lib/beat-digests");
+    const { isFutureDated } = await import("@/lib/summarize");
     const [freshness, digest] = await Promise.all([getBeatFreshness(), getPublishedDigest()]);
 
     const staleBeats = freshness.filter(f => f.stale).map(f => f.beat);
-    const dates = digest ? digest.articles.map(a => a.publishedAt).sort() : [];
-    const newestArticle = dates.length ? dates[dates.length - 1] : null;
+    const nowMs = Date.now();
+    let newestMs = -Infinity;
+    let newestArticle: string | null = null;
+    if (digest) {
+      for (const article of digest.articles) {
+        if (isFutureDated(article, nowMs)) continue;
+        const ms = Date.parse(article.publishedAt);
+        if (!Number.isNaN(ms) && ms > newestMs) {
+          newestMs = ms;
+          newestArticle = article.publishedAt;
+        }
+      }
+    }
 
     return NextResponse.json({
       status: staleBeats.length === 0 ? "ok" : "degraded",

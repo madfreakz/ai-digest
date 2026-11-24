@@ -33,9 +33,10 @@ export function formatPublishedAt(iso: string): string {
   return `${when} PT`;
 }
 
-// Drops a trailing " | Publisher" that repeats the source line ("... | TechCrunch").
+// Drops trailing publisher suffixes (" | TechCrunch", " :: Amesite, Inc. (AMST)",
+// " - Physical AI News") when the source is already shown in the metadata row.
 // Display only: cross-beat dedup compares the raw titles.
-const PUBLISHER_SUFFIX = /\s+\|\s+[^|]{1,40}$/;
+const PUBLISHER_SUFFIX = /\s+(?:\|\s+[^|]{1,40}|::\s+.{1,40}|-\s+[A-Z0-9][^-|]{0,34})$/;
 
 export function displayTitle(title: string): string {
   const stripped = title.replace(PUBLISHER_SUFFIX, "");
