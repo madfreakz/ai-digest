@@ -6,20 +6,20 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 const DEFAULT_ROLE_MODELS: Record<LlmRole, string[]> = {
   triage: [
-    "deepseek/deepseek-v4.1-flash",
-    "openai/gpt-5.4-nano",
+    "deepseek/deepseek-v4.1-flash:floor",
+    "openai/gpt-5.4-nano:floor",
     "google/gemini-3.5-flash-lite",
   ],
   scoring: [
-    "deepseek/deepseek-v4.1-flash",
-    "openai/gpt-5.6-luna",
-    "openai/gpt-5.4-nano",
+    "openai/gpt-5.4-nano:floor",
+    "openai/gpt-5.6-luna:floor",
+    "deepseek/deepseek-v4.1-flash:floor",
     "google/gemini-3.5-flash-lite",
   ],
   synthesis: [
-    "google/gemini-4-hydrogen",
-    "openai/gpt-5.6-luna",
-    "openai/gpt-5.4-nano",
+    "google/gemini-4-hydrogen:floor",
+    "openai/gpt-5.6-luna:floor",
+    "openai/gpt-5.4-nano:floor",
     "google/gemini-3.5-flash-lite",
   ],
 };
@@ -122,7 +122,7 @@ export async function callOpenRouterJson<T>(
 
   const models = opts.models && opts.models.length > 0 ? opts.models : getRoleModels(opts.role);
   const fetchImpl = opts.fetchImpl ?? fetch;
-  const timeoutMs = opts.timeoutMs ?? 90_000;
+  const timeoutMs = opts.timeoutMs ?? 120_000;
   const baseDelayMs = opts.baseDelayMs ?? 3_000;
   const reasoningEffort = opts.reasoningEffort ?? "low";
 

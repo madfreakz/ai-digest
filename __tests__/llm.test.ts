@@ -18,9 +18,9 @@ describe("getRoleModels", () => {
       delete process.env.OPENROUTER_SCORING_FALLBACKS;
       delete process.env.OPENROUTER_SYNTHESIS_MODEL;
 
-      assert.equal(getRoleModels("triage")[0], "deepseek/deepseek-v4.1-flash");
-      assert.equal(getRoleModels("scoring")[0], "deepseek/deepseek-v4.1-flash");
-      assert.equal(getRoleModels("synthesis")[0], "google/gemini-4-hydrogen");
+      assert.equal(getRoleModels("triage")[0], "deepseek/deepseek-v4.1-flash:floor");
+      assert.equal(getRoleModels("scoring")[0], "openai/gpt-5.4-nano:floor");
+      assert.equal(getRoleModels("synthesis")[0], "google/gemini-4-hydrogen:floor");
 
       process.env.OPENROUTER_SCORING_MODEL = "qwen/qwen3.8-flash";
       process.env.OPENROUTER_SCORING_FALLBACKS = "openai/gpt-5.6-luna, qwen/qwen3.8-flash";
@@ -112,7 +112,7 @@ describe("callOpenRouterJson", () => {
       const seenBodies: Array<Record<string, unknown>> = [];
       const res = await callOpenRouterJson({
         role: "scoring",
-        models: ["openai/gpt-5.6-luna"],
+        models: ["openai/gpt-5.4-nano:floor"],
         systemInstruction: "sys",
         prompt: "usr",
         schema,
@@ -128,7 +128,7 @@ describe("callOpenRouterJson", () => {
           }
           return new Response(
             JSON.stringify({
-              model: "openai/gpt-5.6-luna",
+              model: "openai/gpt-5.4-nano",
               choices: [{ message: { content: "{\"ok\":true,\"note\":\"ok\"}" } }],
               usage: { prompt_tokens: 10, completion_tokens: 5 },
             }),

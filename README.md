@@ -76,9 +76,10 @@ Environment (`.env.local`):
 | Var | Purpose |
 |-----|---------|
 | `OPENROUTER_API_KEY` | Optional unified router key (enables 3-slot cross-vendor routing + fallback) |
-| `OPENROUTER_TRIAGE_MODEL` | Slot 1 (`45 -> 15` triage, e.g. `deepseek/deepseek-v4.1-flash`) |
-| `OPENROUTER_SCORING_MODEL` | Slot 2 (15-item scoring + "So What?", e.g. `deepseek/deepseek-v4.1-flash`) |
-| `OPENROUTER_SYNTHESIS_MODEL` | Slot 3 (daily thesis + weekly rollup, e.g. `google/gemini-4-hydrogen`) |
+| `OPENROUTER_TRIAGE_MODEL` | Slot 1 (`45 -> 15` triage, default `deepseek/deepseek-v4.1-flash:floor`) |
+| `OPENROUTER_SCORING_MODEL` | Slot 2 (15-item scoring + "So What?", default `openai/gpt-5.4-nano:floor`) |
+| `OPENROUTER_SCORING_FALLBACKS` | Comma-separated Slot 2 fallbacks (`gpt-5.6-luna:floor`, `deepseek-v4.1-flash:floor`, `gemini-3.5-flash-lite`) |
+| `OPENROUTER_SYNTHESIS_MODEL` | Slot 3 (daily thesis + weekly rollup, default `google/gemini-4-hydrogen:floor`) |
 | `GOOGLE_API_KEY` | Fallback/direct Gemini scoring when `OPENROUTER_API_KEY` is unset |
 | `GOOGLE_API_KEY_SYNTHESIS` | Fallback/direct Gemini synthesis when `OPENROUTER_API_KEY` is unset |
 | `EXA_API_KEY` | Retrieval |
@@ -89,11 +90,11 @@ Environment (`.env.local`):
 
 ### The cron schedule
 
-Defined in [`vercel.json`](vercel.json): beats refresh on a stagger through the early UTC hours, the morning digest publishes at `14:00 UTC` (~6-7am PT), and Sunday runs refresh the logo map and compile the weekly rollup.
+Defined in [`vercel.json`](vercel.json): beats refresh overnight Pacific time (`10:00-13:00 UTC`, avoiding DeepSeek peak hours and tapping Flex capacity troughs), the morning digest publishes at `14:00 UTC` (~6-7am PT), and Sunday runs refresh the logo map and compile the weekly rollup.
 
 ```
-02:00 UTC  Physical AI        04:00 UTC  AI Labs
-03:00 UTC  AI Infrastructure  05:00 UTC  Vertical AI
+10:00 UTC  Physical AI        12:00 UTC  AI Labs
+11:00 UTC  AI Infrastructure  13:00 UTC  Vertical AI
 14:00 UTC  send daily digest ✉️
 Sun 01:00 UTC  prefetch company logos
 Sun 15:00 UTC  weekly rollup + email ✉️
