@@ -5,7 +5,7 @@
 [![Live](https://img.shields.io/badge/live-frontier--ai--digest.vercel.app-1f6feb?style=flat-square)](https://frontier-ai-digest.vercel.app/)
 ![Next.js](https://img.shields.io/badge/Next.js-000?style=flat-square&logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini-8E75FF?style=flat-square&logo=googlegemini&logoColor=white)
+![OpenRouter](https://img.shields.io/badge/models-OpenRouter%203--slot-6366F1?style=flat-square)
 ![Exa](https://img.shields.io/badge/retrieval-Exa%20%2B%20RSS-111?style=flat-square)
 ![Vercel](https://img.shields.io/badge/Vercel-000?style=flat-square&logo=vercel)
 
@@ -30,35 +30,35 @@ Each beat runs on its own cron, scores its own stories, and feeds one shared fro
 
 ```mermaid
 flowchart LR
-    A[Exa + 20 RSS/Atom feeds] --> B[Pre-filter & flash-lite triage<br/>up to 45 -> top 15]
-    B --> C[Gemini 2.5 Flash scoring<br/>ecosystem shift + grounding]
+    A[Exa + 20 RSS/Atom feeds] --> B[Pre-filter & DeepSeek triage<br/>up to 45 -> top 15]
+    B --> C[GPT-5.4 Nano :floor scoring<br/>ecosystem shift + grounding]
     C --> D[3-layer dedup<br/>seen URLs · 2-pass · cross-beat]
     D --> E[Pick lead w/ 14-day memory<br/>avoid repeating yesterday]
-    E --> F[Editorial synthesis<br/>written about the lead]
+    E --> F[Gemini 4 Hydrogen synthesis<br/>written about the lead]
     F --> G[(Vercel KV<br/>cache + 90d archive)]
     G --> H[Front page + /archive + /weekly]
     G --> I[Resend beat-grouped email<br/>~7am PT + Sunday rollup]
 ```
 
 1. **Retrieve.** [Exa](https://exa.ai) neural queries plus 20 verified primary-source RSS/Atom feeds (`openai.com`, `deepmind.google`, `huggingface.co`, `blogs.nvidia.com`, `bostondynamics.com`, `waymo.com`, `stratechery.com`, `simonwillison.net`, etc.) pull breaking developments across each beat.
-2. **Pre-filter & 2-stage triage.** Deterministic filters (`lib/filters.ts`) drop IR subdomains, periodic roundups, generic media-center pages, and excluded industries before `gemini-2.5-flash-lite` triages up to 45 candidates down to the top 15 for deep scoring.
-3. **Score for stack shifts.** `gemini-2.5-flash` ranks each item on ecosystem value shifts across models, infrastructure, vertical apps, and robotics, with strict source grounding and a "So What?" linter.
+2. **Pre-filter & 2-stage triage.** Deterministic filters (`lib/filters.ts`) drop IR subdomains, periodic roundups, generic media-center pages, and excluded industries before `deepseek/deepseek-v4.1-flash:floor` (or `gemini-2.5-flash-lite` direct fallback) triages up to 45 candidates down to the top 15 for deep scoring.
+3. **Score for stack shifts.** `openai/gpt-5.4-nano:floor` on OpenRouter's half-price Flex tier (with cross-vendor fallbacks) ranks each item on ecosystem value shifts across models, infrastructure, vertical apps, and robotics, with strict source grounding and a "So What?" linter.
 4. **Dedup, three ways.** Exa/RSS normalized `seenUrls`, a two-pass URL + `storyId` collapse, and a cross-beat dedup pass at aggregation so the same story never shows up twice.
-5. **Choose an unseen lead, then write about it.** `pickFeaturedArticle` excludes recent leads persisted in KV (`digest:recent-leads`) so consecutive days don't open with the same story, then Gemini writes the thesis and email subject about that exact lead.
+5. **Choose an unseen lead, then write about it.** `pickFeaturedArticle` excludes recent leads persisted in KV (`digest:recent-leads`) so consecutive days don't open with the same story, then `google/gemini-4-hydrogen:floor` writes the thesis and email subject about that exact lead.
 6. **Cache, archive, & deliver.** Results land in Vercel KV (`digest:published` + `digest:archive:YYYY-MM-DD`), power `/`, `/archive`, and `/weekly`, and send a beat-grouped "So What?" morning email (plus a Sunday weekly synthesis) via [Resend](https://resend.com).
 
 ## Built to survive a bad API day
 
 The interesting engineering here is in the failure modes, not the happy path:
 
-- **503 resilience + ops alerts.** Heavy Gemini Flash models throw intermittent "high demand" 503s. Scoring retries with escalating backoff, falls back to `gemini-2.5-flash-lite` (with valid thinking budget), and fires a rate-limited ops alert (`lib/alerts.ts`) on fallback or total failure.
+- **Cross-vendor failover + ops alerts.** OpenRouter `:floor` routing prefers half-price Flex capacity and falls back to standard endpoints automatically, while scoring retries and fails over across vendors (`gpt-5.4-nano:floor` -> `gpt-5.6-luna:floor` -> `deepseek-v4.1-flash:floor` -> `gemini-3.5-flash-lite`, or direct Gemini `flash` -> `flash-lite` 503 fallback when `OPENROUTER_API_KEY` is unset). Total failures and fallbacks trigger rate-limited ops alerts (`lib/alerts.ts`).
 - **Untrusted by default.** Web and RSS text is treated as a prompt-injection vector: sanitized, wrapped in unguessable fences, kept out of `systemInstruction`, and verified with `http(s)` URL guards.
 - **No silent data loss.** If a beat refresh fails outright, it preserves the existing KV cache, re-throws so Vercel logs an HTTP 500 failure, and surfaces stale beats on `/api/health` and in the email header.
 - **Edge-proxied logos & self-hosted fonts.** Company logos serve through `/api/logo/[domain]` so `LOGO_DEV_KEY` stays server-side, and Playfair Display + DM Sans are self-hosted via `next/font/local`.
 
 ## Stack
 
-`Next.js` (App Router) · `TypeScript` · `Tailwind` · `@google/genai` (Gemini) · `exa-js` · `Resend` · `@vercel/kv` · `zod` · deployed on `Vercel` with cron + analytics.
+`Next.js` (App Router) · `TypeScript` · `Tailwind` · `OpenRouter` (`lib/llm.ts`, 3-slot routing) · `@google/genai` (direct Gemini fallback) · `exa-js` · `Resend` · `@vercel/kv` · `zod` · deployed on `Vercel` with cron + analytics.
 
 ## Running it yourself
 
@@ -129,4 +129,4 @@ __tests__/                 pipeline, resilience, filter, RSS, email & auth tests
 
 ---
 
-<sub>A personal project by [@madfreakz](https://github.com/madfreakz). Built in the open, run on a budget of about 16 cents a beat. ☕</sub>
+<sub>A personal project by [@madfreakz](https://github.com/madfreakz). Built in the open, running under $1/month in LLM costs (plus Exa + Vercel). ☕</sub>
