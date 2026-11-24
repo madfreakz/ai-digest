@@ -1,17 +1,17 @@
 # 🛰️ Frontier AI Digest
 
-**Every morning, a small swarm of agents reads the AI frontier so you don't have to.**
+**Every morning, an automated pipeline reads the AI frontier across all layers of the stack so you don't have to.**
 
 [![Live](https://img.shields.io/badge/live-frontier--ai--digest.vercel.app-1f6feb?style=flat-square)](https://frontier-ai-digest.vercel.app/)
 ![Next.js](https://img.shields.io/badge/Next.js-000?style=flat-square&logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Gemini-8E75FF?style=flat-square&logo=googlegemini&logoColor=white)
-![Exa](https://img.shields.io/badge/retrieval-Exa-111?style=flat-square)
+![Exa](https://img.shields.io/badge/retrieval-Exa%20%2B%20RSS-111?style=flat-square)
 ![Vercel](https://img.shields.io/badge/Vercel-000?style=flat-square&logo=vercel)
 
-A daily, automated news digest for frontier AI. It tracks 145+ companies across four beats, retrieves the day's real developments, scores them for signal, writes an editorial synthesis, and emails the result. No human in the loop after deploy.
+A daily, automated intelligence digest tracking where value is shifting or accruing across frontier AI. It monitors 145+ tracked companies plus 20 primary-source RSS/Atom feeds across four beats, triages and scores stories for ecosystem impact, maintains cross-day lead memory and a 90-day archive, sends a beat-grouped morning briefing, and compiles a Sunday weekly synthesis.
 
-👉 **Read today's:** [frontier-ai-digest.vercel.app](https://frontier-ai-digest.vercel.app/)
+👉 **Read today's:** [frontier-ai-digest.vercel.app](https://frontier-ai-digest.vercel.app/) · [Archive](https://frontier-ai-digest.vercel.app/archive) · [Weekly](https://frontier-ai-digest.vercel.app/weekly)
 
 ---
 
@@ -24,34 +24,37 @@ A daily, automated news digest for frontier AI. It tracks 145+ companies across 
 | 🧪 **AI Labs** | Frontier model releases, research, the labs themselves |
 | 📊 **Vertical AI** | AI going deep into one industry at a time |
 
-Each beat runs on its own cron, scores its own stories, and feeds one shared front page and email.
+Each beat runs on its own cron, scores its own stories, and feeds one shared front page, archive, weekly rollup, and morning email.
 
 ## How a digest gets made
 
 ```mermaid
 flowchart LR
-    A[Exa retrieval<br/>fresh items per beat] --> B[Gemini scoring<br/>signal vs. noise]
-    B --> C[3-layer dedup<br/>seen URLs · 2-pass · cross-beat]
-    C --> D[Pick featured<br/>deterministically]
-    D --> E[Editorial synthesis<br/>written about the lead]
-    E --> F[(Vercel KV<br/>cache)]
-    F --> G[Front page]
-    F --> H[Resend email<br/>~7am PT]
+    A[Exa + 20 RSS/Atom feeds] --> B[Pre-filter & flash-lite triage<br/>up to 45 -> top 15]
+    B --> C[Gemini 2.5 Flash scoring<br/>ecosystem shift + grounding]
+    C --> D[3-layer dedup<br/>seen URLs · 2-pass · cross-beat]
+    D --> E[Pick lead w/ 14-day memory<br/>avoid repeating yesterday]
+    E --> F[Editorial synthesis<br/>written about the lead]
+    F --> G[(Vercel KV<br/>cache + 90d archive)]
+    G --> H[Front page + /archive + /weekly]
+    G --> I[Resend beat-grouped email<br/>~7am PT + Sunday rollup]
 ```
 
-1. **Retrieve.** [Exa](https://exa.ai) pulls the day's primary-source items for each beat. Exa is tuned for event recall (breaking, primary sources), not aggregator answers.
-2. **Score.** Gemini ranks each item for "would a frontier-watcher actually care," with explicit signal/noise reasoning.
-3. **Dedup, three ways.** Exa-level `seenUrls`, a Gemini two-pass collapse, and a cross-beat URL dedup at the aggregation layer so the same story never shows up twice in two costumes.
-4. **Choose the lead, then write about it.** The featured article is picked deterministically *first*; the editorial synthesis is generated to describe that exact lead, so the headline and the thesis can never drift apart.
-5. **Cache + deliver.** Results land in Vercel KV; the front page reads from cache and a [Resend](https://resend.com) email goes out each morning.
+1. **Retrieve.** [Exa](https://exa.ai) neural queries plus 20 verified primary-source RSS/Atom feeds (`openai.com`, `deepmind.google`, `huggingface.co`, `blogs.nvidia.com`, `bostondynamics.com`, `waymo.com`, `stratechery.com`, `simonwillison.net`, etc.) pull breaking developments across each beat.
+2. **Pre-filter & 2-stage triage.** Deterministic filters (`lib/filters.ts`) drop IR subdomains, periodic roundups, generic media-center pages, and excluded industries before `gemini-2.5-flash-lite` triages up to 45 candidates down to the top 15 for deep scoring.
+3. **Score for stack shifts.** `gemini-2.5-flash` ranks each item on ecosystem value shifts across models, infrastructure, vertical apps, and robotics, with strict source grounding and a "So What?" linter.
+4. **Dedup, three ways.** Exa/RSS normalized `seenUrls`, a two-pass URL + `storyId` collapse, and a cross-beat dedup pass at aggregation so the same story never shows up twice.
+5. **Choose an unseen lead, then write about it.** `pickFeaturedArticle` excludes recent leads persisted in KV (`digest:recent-leads`) so consecutive days don't open with the same story, then Gemini writes the thesis and email subject about that exact lead.
+6. **Cache, archive, & deliver.** Results land in Vercel KV (`digest:published` + `digest:archive:YYYY-MM-DD`), power `/`, `/archive`, and `/weekly`, and send a beat-grouped "So What?" morning email (plus a Sunday weekly synthesis) via [Resend](https://resend.com).
 
 ## Built to survive a bad API day
 
 The interesting engineering here is in the failure modes, not the happy path:
 
-- **503 resilience.** The heavier Gemini Flash models throw intermittent "high demand" 503s. Every model call retries, then falls back to `gemini-2.5-flash-lite` (a separate, healthier capacity pool) with a valid thinking budget. A bad spike degrades quality, it never empties the cache.
-- **Untrusted by default.** Web and search text is treated as a prompt-injection vector: fenced, kept out of the system instruction, and any model-emitted URL is guarded (an HTML escaper alone won't stop a `javascript:` href).
-- **No silent data loss.** If a beat refresh fails outright, it re-throws *before* overwriting the cache, so a failed cron can never replace good stories with an empty array.
+- **503 resilience + ops alerts.** Heavy Gemini Flash models throw intermittent "high demand" 503s. Scoring retries with escalating backoff, falls back to `gemini-2.5-flash-lite` (with valid thinking budget), and fires a rate-limited ops alert (`lib/alerts.ts`) on fallback or total failure.
+- **Untrusted by default.** Web and RSS text is treated as a prompt-injection vector: sanitized, wrapped in unguessable fences, kept out of `systemInstruction`, and verified with `http(s)` URL guards.
+- **No silent data loss.** If a beat refresh fails outright, it preserves the existing KV cache, re-throws so Vercel logs an HTTP 500 failure, and surfaces stale beats on `/api/health` and in the email header.
+- **Edge-proxied logos & self-hosted fonts.** Company logos serve through `/api/logo/[domain]` so `LOGO_DEV_KEY` stays server-side, and Playfair Display + DM Sans are self-hosted via `next/font/local`.
 
 ## Stack
 
@@ -64,41 +67,56 @@ npm install
 npm run dev          # http://localhost:3000
 npm test             # node --test across the pipeline
 npm run build        # production build
+npm run eval -- --live   # offline quality scorecard against live production
 ```
 
 Environment (`.env.local`):
 
 | Var | Purpose |
 |-----|---------|
-| `GOOGLE_API_KEY` | Per-beat scoring + discovery |
-| `GOOGLE_API_KEY_SYNTHESIS` | Editorial synthesis (own key for usage tracking; falls back to `GOOGLE_API_KEY`) |
+| `GOOGLE_API_KEY` | Per-beat triage, scoring & discovery |
+| `GOOGLE_API_KEY_SYNTHESIS` | Daily & weekly synthesis (falls back to `GOOGLE_API_KEY`) |
 | `EXA_API_KEY` | Retrieval |
-| `RESEND_API_KEY` | Daily email |
-| `CRON_SECRET` | Guards the cron routes |
-| `KV_*` | Vercel KV cache (auto-injected on Vercel) |
+| `RESEND_API_KEY` | Daily briefing, weekly rollup & ops alerts |
+| `LOGO_DEV_KEY` | Company logo proxy (`/api/logo/[domain]`) |
+| `CRON_SECRET` | Guards cron and admin routes (constant-time Bearer check) |
+| `KV_*` | Vercel KV cache & archive (auto-injected on Vercel) |
 
 ### The cron schedule
 
-Defined in [`vercel.json`](vercel.json): the four beats refresh on a stagger through the early UTC hours (kept apart so Gemini's rate limits stay happy), then the email goes out mid-day UTC, which lands around 7am Pacific.
+Defined in [`vercel.json`](vercel.json): beats refresh on a stagger through the early UTC hours, the morning digest publishes at `14:00 UTC` (~6-7am PT), and Sunday runs refresh the logo map and compile the weekly rollup.
 
 ```
 02:00 UTC  Physical AI        04:00 UTC  AI Labs
 03:00 UTC  AI Infrastructure  05:00 UTC  Vertical AI
-                                14:00 UTC  send digest ✉️
+14:00 UTC  send daily digest ✉️
+Sun 01:00 UTC  prefetch company logos
+Sun 15:00 UTC  weekly rollup + email ✉️
 ```
 
 ## Repo map
 
 ```
-app/api/beat        per-beat retrieve + score + cache
-app/api/digest      aggregate cached beats on demand
-app/api/send-digest publish to KV + send the morning email
-lib/exa.ts          retrieval
-lib/summarize.ts    scoring, dedup, synthesis, resilience
-lib/companies.ts    145+ tracked companies
-lib/email.ts        email template builder (Outlook-safe)
-lib/html.ts         HTML escaping helper
-__tests__/          pipeline tests, incl. 503-resilience
+app/page.tsx               homepage (New/Earlier filter, search, lead + beats)
+app/archive/               90-day daily edition archive (/archive & /archive/[date])
+app/weekly/                Sunday cross-stack weekly rollup (/weekly)
+app/api/beat               per-beat retrieve (Exa + RSS) + triage + score + cache
+app/api/digest             aggregate cached beats on demand
+app/api/send-digest        publish to KV + archive + send morning briefing
+app/api/weekly-digest      synthesize & email Sunday weekly rollup
+app/api/logo/[domain]      server-side Logo.dev proxy
+app/api/health             public beat freshness + published digest status
+lib/exa.ts                 Exa retrieval & URL normalization
+lib/rss.ts                 20 primary-source RSS/Atom feeds & XML parser
+lib/filters.ts             deterministic noise/industry filter & So What linter
+lib/summarize.ts           2-stage triage, scoring, dedup, synthesis, resilience
+lib/beat-digests.ts        KV orchestration, cross-day lead memory, daily archive
+lib/weekly.ts              Sunday weekly synthesis & Outlook-safe email builder
+lib/alerts.ts              rate-limited Resend ops alerts
+lib/companies.ts           145+ tracked companies + canonical tag resolver
+lib/email.ts               beat-grouped Outlook-safe morning briefing builder
+scripts/eval-digest.ts     offline & --live quality scorecard
+__tests__/                 pipeline, resilience, filter, RSS, email & auth tests
 ```
 
 ---
