@@ -14,7 +14,7 @@ const CARD_BG   = "#FFFFFF";
 const BORDER    = "#DED8CC";
 const TEXT_HIGH = "#18140C";
 const TEXT_MID  = "#585048";
-const TEXT_LOW  = "#7A7268";  // 4.7:1 on white
+const TEXT_LOW  = "#736B61";  // 4.9:1 on PAGE_BG, 5.3:1 on white (rows sit on the page, not a card)
 const ACCENT    = "#1B3A6B";
 const FOOTER_CLR = "#736B61"; // 4.9:1 on PAGE_BG (was #A8A098, 2.4:1)
 
@@ -54,33 +54,63 @@ function isHttpUrl(raw: string | null): raw is string {
 }
 
 // ── Email builder ─────────────────────────────────────────────────────────────
+// Headlines use a system serif: Gmail ignores @font-face, so the site's display
+// face can't ship, but Georgia gets the same editorial feel on every client.
+const SERIF = "Georgia,'Times New Roman',Times,serif";
+const SITE  = "https://frontier-ai-digest.vercel.app";
+
 function pill(label: string, color: string): string {
-  return `<span style="display:inline-block;margin:0 6px 4px 0;background:${tint(color, 0x18 / 255)};color:${color};font-size:12px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid ${tint(color, 0x33 / 255)};white-space:nowrap;">${escapeHtml(label)}</span>`;
+  return `<span style="display:inline-block;margin:0 0 0 8px;background:${tint(color, 0x18 / 255)};color:${color};font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;padding:2px 7px;border-radius:4px;border:1px solid ${tint(color, 0x33 / 255)};white-space:nowrap;vertical-align:1px;">${escapeHtml(label)}</span>`;
 }
 
-function featuredBlock(a: DigestArticle): string {
+const NEW_BADGE = `<span style="display:inline-block;margin-right:6px;background:#047857;color:#FFFFFF;font-size:12px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:0.04em;">NEW</span>`;
+
+// Logos come back from the pipeline as site-relative proxy paths
+// (/api/logo/<domain>); a mail client needs the absolute URL.
+function absoluteLogo(raw: string | undefined): string | null {
+  if (!raw) return null;
+  const abs = raw.startsWith("/") ? `${SITE}${raw}` : raw;
+  return isHttpUrl(abs) ? abs : null;
+}
+
+// "the-decoder.com" reads as a URL; "the-decoder" reads as a source.
+function sourceLabel(source: string): string {
+  const s = source.replace(/^www\./, "");
+  // Only a bare domain loses its TLD: "news.sap" reads worse than "news.sap.com".
+  return /^[^.]+\.(com|ai|io|org|net|co)$/.test(s) ? s.replace(/\.[a-z]+$/, "") : s;
+}
+
+function metaLine(a: DigestArticle): string {
+  const date = formatPublishedAt(a.publishedAt).replace(/,\s*\d{1,2}:\d{2}\s*[AP]M PT$/, "");
+  return [sourceLabel(a.source), ...a.companyTags.slice(0, 2), date].filter(Boolean).map(escapeHtml).join(" · ");
+}
+
+// Mirrors the site's lead story: eyebrow, serif headline, meta, summary and a
+// labeled "So what?" callout. No hero image: company-tagged stories' og:images
+// were mostly unrelated stock photos, and the site dropped them for that reason.
+function featuredBlock(a: DigestArticle, showNew: boolean): string {
   const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
   const catColor  = CATEGORY_COLORS[a.category] ?? CATEGORY_COLORS.General;
   const url       = escapeHtml(a.url);
   const title     = escapeHtml(displayTitle(a.title));
   const summary   = escapeHtml(a.summary);
-  const bdRel     = escapeHtml(a.bdRelevance);
-  const imgBlock  = isHttpUrl(a.ogImage)
-    ? `<a href="${url}" style="display:block;text-decoration:none;"><img src="${escapeHtml(a.ogImage)}" alt="" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" /></a>`
+  const soWhat    = a.bdRelevance?.trim()
+    ? `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr><td style="border-left:2px solid ${beatColor};padding:2px 0 2px 12px;">
+          <p style="margin:0 0 4px;color:${beatColor};font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">So what?</p>
+          <p style="margin:0;color:${TEXT_MID};font-size:15px;line-height:1.6;font-style:italic;">${escapeHtml(a.bdRelevance)}</p>
+        </td></tr>
+      </table>`
     : "";
 
   return `
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;background:${CARD_BG};border-radius:8px;overflow:hidden;border:1px solid ${BORDER};">
-  <tr><td>
-    ${imgBlock}
-    <div style="padding:18px 20px;">
-      <div style="margin-bottom:6px;">${pill(a.beat, beatColor)}${pill(a.category, catColor)}</div>
-      <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:18px;font-weight:600;text-decoration:none;line-height:1.35;margin-bottom:10px;">${title}</a>
-      <p style="color:${TEXT_MID};font-size:14px;line-height:1.6;margin:0 0 12px;">${summary}</p>
-      <div style="border-left:2px solid ${beatColor};padding-left:10px;">
-        <p style="color:${TEXT_MID};font-size:13px;line-height:1.55;margin:0;font-style:italic;">${bdRel}</p>
-      </div>
-    </div>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;border-collapse:collapse;background:${CARD_BG};border:1px solid ${BORDER};border-radius:10px;">
+  <tr><td style="padding:22px 20px 22px;">
+    <p style="margin:0 0 12px;color:${ACCENT};font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">${showNew && a.isNew ? NEW_BADGE : ""}Lead story${pill(a.category, catColor)}</p>
+    <a href="${url}" style="display:block;color:${TEXT_HIGH};font-family:${SERIF};font-size:26px;font-weight:700;text-decoration:none;line-height:1.22;letter-spacing:-0.01em;margin-bottom:10px;">${title}</a>
+    <p style="color:${TEXT_LOW};font-size:13px;line-height:1.4;margin:0 0 14px;">${metaLine(a)}</p>
+    <p style="color:${TEXT_MID};font-size:16px;line-height:1.6;margin:0 0 16px;">${summary}</p>
+    ${soWhat}
   </td></tr>
 </table>`;
 }
@@ -114,39 +144,46 @@ export function firstSentence(text: string): string {
 
 const BEAT_ORDER: Beat[] = ["AI Labs", "Vertical AI", "AI Infrastructure", "Physical AI"];
 
-function beatRow(a: DigestArticle, last: boolean): string {
+// One story per row, logo on the right (the news-app list pattern): the logo
+// lets the eye find a company before reading. Rows without a logo keep the
+// full width rather than showing an empty box.
+function beatRow(a: DigestArticle, last: boolean, showNew: boolean): string {
   const borderStyle = last ? "none" : `1px solid ${BORDER}`;
   const url = escapeHtml(a.url);
   const title = escapeHtml(displayTitle(a.title));
   const soWhat = escapeHtml(a.bdRelevance?.trim() || firstSentence(a.summary));
-  const dateLabel = formatPublishedAt(a.publishedAt);
-  const metaParts = [a.source, ...a.companyTags.slice(0, 2), dateLabel].filter(Boolean).map(escapeHtml).join(" · ");
-  const newTag = a.isNew
-    ? `<span style="display:inline-block;margin-right:6px;background:#047857;color:#FFFFFF;font-size:12px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:0.04em;">NEW</span>`
+  const logo = absoluteLogo(a.companyLogoUrl);
+  const logoCell = logo
+    ? `<td width="56" valign="top" style="width:56px;padding:2px 0 0 14px;">
+        <a href="${url}" style="text-decoration:none;"><img src="${escapeHtml(logo)}" alt="" width="42" height="42" style="display:block;width:42px;height:42px;border:1px solid ${BORDER};border-radius:8px;background:#FFFFFF;" /></a>
+      </td>`
     : "";
 
   return `
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:0;border-collapse:collapse;">
-  <tr><td style="padding:12px 0;border-bottom:${borderStyle};">
-    <p style="color:${TEXT_LOW};font-size:12px;line-height:1.4;margin:0 0 4px;">${newTag}${metaParts}</p>
-    <a href="${url}" style="display:block;color:${TEXT_HIGH};font-size:15px;font-weight:600;text-decoration:none;line-height:1.4;margin-bottom:4px;">${title}</a>
-    <p style="color:${TEXT_MID};font-size:13px;line-height:1.5;margin:0;">${soWhat}</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+  <tr><td style="padding:16px 0;border-bottom:${borderStyle};">
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      <tr>
+        <td valign="top">
+          <p style="color:${TEXT_LOW};font-size:12px;line-height:1.4;margin:0 0 5px;">${showNew && a.isNew ? NEW_BADGE : ""}${metaLine(a)}</p>
+          <a href="${url}" style="display:block;color:${TEXT_HIGH};font-family:${SERIF};font-size:18px;font-weight:700;text-decoration:none;line-height:1.3;margin-bottom:6px;">${title}</a>
+          <p style="color:${TEXT_MID};font-size:14px;line-height:1.55;margin:0;">${soWhat}</p>
+        </td>
+        ${logoCell}
+      </tr>
+    </table>
   </td></tr>
 </table>`;
 }
 
-function beatSectionBlock(beat: Beat, items: DigestArticle[]): string {
+function beatSectionBlock(beat: Beat, items: DigestArticle[], showNew: boolean): string {
   const beatColor = BEAT_COLORS[beat] ?? ACCENT;
-  const rows = items.map((a, i) => beatRow(a, i === items.length - 1)).join("");
+  const rows = items.map((a, i) => beatRow(a, i === items.length - 1, showNew)).join("");
   return `
-<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:18px;border-collapse:collapse;">
-  <tr><td>
-    <p style="margin:0 0 6px;color:${beatColor};font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">${escapeHtml(beat)} <span style="color:${TEXT_LOW};font-weight:500;">(${items.length})</span></p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:${CARD_BG};border:1px solid ${BORDER};border-radius:8px;border-collapse:separate;">
-      <tr><td style="padding:0 16px;">
-        ${rows}
-      </td></tr>
-    </table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;border-collapse:collapse;">
+  <tr><td style="border-top:2px solid ${beatColor};padding-top:12px;">
+    <p style="margin:0;color:${TEXT_HIGH};font-family:${SERIF};font-size:22px;font-weight:700;line-height:1.2;">${escapeHtml(beat)} <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:${TEXT_LOW};font-size:13px;font-weight:400;">${items.length} ${items.length === 1 ? "story" : "stories"}</span></p>
+    ${rows}
   </td></tr>
 </table>`;
 }
@@ -180,21 +217,26 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
   const briefingPool = newOnly.length > 0 ? newOnly : remaining;
   const totalNewCount = sorted.filter(a => a.isNew).length;
   const statsLine = totalNewCount > 0
-    ? `${date} · ${totalNewCount} new today · ${sorted.length} total`
-    : `${date} · ${sorted.length} stories`;
+    ? `${totalNewCount} new · ${sorted.length} stories`
+    : `${sorted.length} stories`;
+  // A NEW badge on every row is noise: show badges only when new stories are
+  // the minority, so the badge still marks something. The count is in the header.
+  const showNew = totalNewCount > 0 && totalNewCount <= sorted.length / 2;
 
   const beatSections = BEAT_ORDER
     .map(beat => {
       const items = briefingPool.filter(a => a.beat === beat).slice(0, 3);
-      return items.length > 0 ? beatSectionBlock(beat, items) : "";
+      return items.length > 0 ? beatSectionBlock(beat, items, showNew) : "";
     })
     .filter(Boolean)
     .join("");
 
+  // The editor's thesis sits under the masthead as the edition's dek, set like
+  // the site's: a ruled pull quote, not a shaded box.
   const thesisBlock = digest.synthesis?.thesis
-    ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
-  <tr><td style="background:${tint(ACCENT, 0x0D / 255)};border-left:3px solid ${ACCENT};border-radius:0 4px 4px 0;padding:12px 16px;">
-    <p style="color:${TEXT_MID};font-size:14px;line-height:1.65;margin:0;font-style:italic;">${escapeHtml(digest.synthesis.thesis)}</p>
+    ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;border-collapse:collapse;">
+  <tr><td style="border-left:2px solid ${ACCENT};padding:2px 0 2px 14px;">
+    <p style="color:${TEXT_MID};font-size:16px;line-height:1.6;margin:0;font-style:italic;">${escapeHtml(digest.synthesis.thesis)}</p>
   </td></tr>
 </table>`
     : "";
@@ -207,30 +249,36 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
   <title>Frontier AI Digest</title>
   <style>
     body { margin:0; padding:0; background:${PAGE_BG}; -webkit-text-size-adjust:100%; }
     img  { border:0; outline:none; text-decoration:none; }
     a    { color:${ACCENT}; }
     @media only screen and (max-width:600px) {
-      .wrapper { padding: 16px 12px !important; }
+      .wrapper { padding: 20px 16px !important; }
     }
   </style>
 </head>
 <body style="background:${PAGE_BG};margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${PAGE_BG};">
     <tr><td align="center">
-      <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;padding:28px 20px;">
+      <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;padding:32px 24px;">
         <tr><td>
 
           <!-- Masthead rule: a solid table cell, since Outlook drops gradients and empty divs -->
-          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:22px;border-collapse:collapse;">
             <tr><td height="3" bgcolor="${ACCENT}" style="height:3px;line-height:3px;font-size:0;background:${ACCENT};">&nbsp;</td></tr>
           </table>
 
-          <!-- Header -->
-          <h1 style="color:${TEXT_HIGH};font-size:24px;font-weight:700;margin:0 0 4px;letter-spacing:-0.02em;">Frontier AI Digest</h1>
-          <p style="color:${TEXT_LOW};font-size:13px;margin:0 0 28px;">${statsLine}</p>
+          <!-- Masthead: serif title over a hairline, then edition date and counts -->
+          <h1 style="color:${TEXT_HIGH};font-family:${SERIF};font-size:32px;font-weight:700;line-height:1.1;margin:0 0 14px;letter-spacing:-0.01em;">Frontier AI Digest</h1>
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border-collapse:collapse;">
+            <tr><td style="border-top:1px solid ${BORDER};padding-top:10px;">
+              <p style="color:${TEXT_LOW};font-size:13px;margin:0;">${escapeHtml(date)} &nbsp;·&nbsp; <strong style="color:${TEXT_MID};font-weight:600;">${statsLine}</strong></p>
+            </td></tr>
+          </table>
 
           <!-- Stale-beat warning (renders only when a beat is overdue) -->
           ${staleWarningBanner(staleBeats)}
@@ -238,19 +286,18 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
           <!-- Editor's thesis -->
           ${thesisBlock}
 
-          <!-- Featured story -->
-          ${featuredBlock(featured)}
+          <!-- Lead story -->
+          ${featuredBlock(featured, showNew)}
 
           <!-- Beat-grouped "So What?" briefing -->
-          <p style="color:${TEXT_HIGH};font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin:0 0 12px;">${sectionHeading}</p>
+          <p style="color:${ACCENT};font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 14px;">${sectionHeading}</p>
           ${beatSections}
 
           <!-- CTA -->
-          <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 28px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 28px;">
             <tr><td align="center">
-              <a href="https://frontier-ai-digest.vercel.app" style="display:inline-block;background:${ACCENT};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:6px;letter-spacing:0.01em;">View full digest →</a>
-              &nbsp;&nbsp;
-              <a href="https://frontier-ai-digest.vercel.app/archive" style="color:${ACCENT};font-size:13px;font-weight:600;text-decoration:underline;">Browse archive</a>
+              <a href="${SITE}" style="display:block;background:${ACCENT};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:14px 24px;border-radius:8px;text-align:center;">Read the full digest →</a>
+              <p style="margin:14px 0 0;"><a href="${SITE}/archive" style="color:${ACCENT};font-size:13px;font-weight:600;text-decoration:underline;">Browse the archive</a></p>
             </td></tr>
           </table>
 

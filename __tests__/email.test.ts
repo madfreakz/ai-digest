@@ -91,6 +91,44 @@ describe("buildEmailHtml", () => {
     assert.match(richHtml, /href="https:\/\/frontier-ai-digest\.vercel\.app\/archive"/);
   });
 
+  test("makes proxy logo paths absolute and sets headlines in a system serif", () => {
+    const withLogo = buildEmailHtml(mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
+      mkArticle({ title: "Logo row", url: "https://example.com/logo", companyLogoUrl: "/api/logo/anthropic.com", storyId: "logo" }),
+    ]));
+    assert.match(withLogo, /<img src="https:\/\/frontier-ai-digest\.vercel\.app\/api\/logo\/anthropic\.com"/);
+    assert.doesNotMatch(withLogo, /<img src="\/api\/logo/);
+    assert.match(withLogo, /font-family:Georgia/);
+    assert.doesNotMatch(withLogo, /@font-face/);
+  });
+
+  test("drops NEW badges when most stories are new, keeping the count in the header", () => {
+    const allNew = buildEmailHtml(mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead", isNew: true }),
+      mkArticle({ title: "Second new story", url: "https://example.com/b", isNew: true, storyId: "b" }),
+      mkArticle({ title: "Third new story", url: "https://example.com/c", isNew: true, storyId: "c" }),
+    ]));
+    assert.doesNotMatch(allNew, />NEW<\/span>/);
+    assert.match(allNew, /3 new · 3 stories/);
+  });
+
+  test("shows the source without its TLD and the date without a clock time", () => {
+    const row = buildEmailHtml(mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
+      mkArticle({ title: "Decoder row story", url: "https://example.com/d", source: "the-decoder.com", publishedAt: "2026-11-24T20:42:00.000Z", storyId: "d" }),
+    ]));
+    assert.match(row, />the-decoder · Nov 24</);
+    assert.match(buildEmailHtml(mkDigest([
+      mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
+      mkArticle({ title: "SAP row story here", url: "https://example.com/s", source: "news.sap.com", storyId: "s" }),
+    ])), /news\.sap\.com · /);
+    assert.doesNotMatch(row, /PM PT/);
+  });
+
+  test("keeps small text at AA on the page background (rows no longer sit in a white card)", () => {
+    assert.doesNotMatch(html, /#7A7268/i); // 4.46:1 on #FAF8F4
+  });
+
   test("falls back to firstSentence(summary) without double periods when bdRelevance is empty", () => {
     const single = mkDigest([
       mkArticle({ title: "Lead story", url: "https://example.com/lead" }),
