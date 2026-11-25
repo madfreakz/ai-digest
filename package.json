@@ -8,7 +8,8 @@
     "start": "next start",
     "eval": "tsx scripts/eval-digest.ts",
     "eval:models": "tsx scripts/model-ab.ts",
-    "test": "node --import tsx --test __tests__/html.test.ts __tests__/pickFeatured.test.ts __tests__/summarize.test.ts __tests__/companyResolve.test.ts __tests__/sanitize.test.ts __tests__/summarizeResilience.test.ts __tests__/beatFloor.test.ts __tests__/format.test.ts __tests__/ogImages.test.ts __tests__/email.test.ts __tests__/pipelineFixes.test.ts __tests__/filtersAndRss.test.ts __tests__/preScreenAndWeekly.test.ts __tests__/llm.test.ts"
+    "jev:report": "tsx --env-file=.env.local scripts/jev-shadow-report.ts",
+    "test": "node --import tsx --test __tests__/html.test.ts __tests__/pickFeatured.test.ts __tests__/summarize.test.ts __tests__/companyResolve.test.ts __tests__/sanitize.test.ts __tests__/summarizeResilience.test.ts __tests__/beatFloor.test.ts __tests__/format.test.ts __tests__/ogImages.test.ts __tests__/email.test.ts __tests__/pipelineFixes.test.ts __tests__/filtersAndRss.test.ts __tests__/preScreenAndWeekly.test.ts __tests__/llm.test.ts __tests__/jevShadow.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

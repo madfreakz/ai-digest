@@ -9,6 +9,8 @@ import { KV_CONFIGURED } from "./kv-config";
 import { getEffectivePriority } from "./sources";
 import { cleanSoWhat, filterNoisyArticles, lintSoWhat } from "./filters";
 import { callOpenRouterJson, isOpenRouterConfigured } from "./llm";
+import type { JevArticleInput } from "./jev-shadow";
+import { isJevShadowEnabled, recordJevShadow, scoreWithJev } from "./jev-shadow";
 
 export type { Beat, DealSignalType };
 
@@ -149,6 +151,7 @@ const SCORING_LITE_THINKING_BUDGET = 512;
 // quota: a beat that genuinely produced fewer real articles shows what it has.
 const BEAT_ARTICLE_FLOOR = 6;
 const SCORING_BATCH_LIMIT = 15;
+const PRE_SCREEN_POOL_SIZE = 45;
 
 // Rank candidate articles deterministically before capping to the Gemini batch
 // limit. Without ranking, Promise.allSettled query arrival order determines
@@ -399,7 +402,7 @@ export async function preScreenArticlesForScoring(
 ): Promise<ExaArticle[]> {
   if (articles.length <= limit) return articles;
 
-  const pool = selectArticlesForScoring(articles, 45);
+  const pool = selectArticlesForScoring(articles, PRE_SCREEN_POOL_SIZE);
   const compactList = pool
     .map((a, idx) => {
       const src = sanitizeUntrusted(a.source, 60) || "unknown";
@@ -501,6 +504,20 @@ export async function summarizeBeat(
   const companyContext = getCompanyContext(beat);
   const allCompanyNames = await getCompanyNames();
   const companyNames = allCompanyNames.join(", ");
+
+  // Jev shadow run (lib/jev-shadow.ts): ask Jev about the same ~45-article pool
+  // the pre-screen sees, concurrently with pre-screen + scoring. Logged only;
+  // never affects what this beat publishes. Off unless enabled and in-window.
+  const shadowInputs: JevArticleInput[] = isJevShadowEnabled()
+    ? selectArticlesForScoring(prefiltered, PRE_SCREEN_POOL_SIZE).map(a => ({
+        url: normalizeUrl(a.url),
+        title: sanitizeUntrusted(a.title, 300) || "Untitled",
+        source: sanitizeUntrusted(a.source, 120) || "unknown",
+        publishedAt: a.publishedAt,
+        excerpt: sanitizeUntrusted(a.text, 800),
+      }))
+    : [];
+  const shadowJev = shadowInputs.length > 0 ? scoreWithJev(beat, shadowInputs) : null;
 
   const candidates = await preScreenArticlesForScoring(beat, prefiltered, ai, SCORING_BATCH_LIMIT);
 
@@ -718,6 +735,20 @@ Also return discoveredCompanies: for any company in these articles that is NOT i
       selected = [...passedGate, ...backfill];
       console.log(`[floor] ${beat} - ${passedGate.length} passed gate, backfilled ${backfill.length} to ${selected.length} (of ${deduped.length} available)`);
     }
+  }
+
+  if (shadowJev) {
+    await recordJevShadow(beat, shadowJev, {
+      poolInputs: shadowInputs,
+      prescreenKept: new Set(candidates.map(a => normalizeUrl(a.url))),
+      llmScored: new Map(parsed.articles.map(a => [normalizeUrl(a.url), {
+        relevanceScore: a.relevanceScore,
+        dealSignal: a.dealSignal,
+        excludedIndustry: Boolean(a.excludedIndustry),
+      }])),
+      passedGate: new Set(passedGate.map(a => normalizeUrl(a.url))),
+      published: new Set(selected.map(a => normalizeUrl(a.url))),
+    });
   }
 
   return {
