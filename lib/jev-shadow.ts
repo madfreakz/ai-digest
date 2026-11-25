@@ -9,6 +9,11 @@
 // integer the prose-writing LLM emits, and the pre-screen drops ~30 of ~45
 // candidates with no record. Jev returns calibrated probabilities per article.
 // After a week, `npm run jev:report` turns the log into a disagreement table.
+//
+// Editorial lens: the digest tracks how news shifts ecosystem strategy and
+// where value accrues across the AI stack, not whether something is a deal.
+// The Jev gate reads value shift and leverage. `deal` is asked only so the
+// report can show stories the live gate admits through its legacy deal path.
 
 import type { Beat } from "./companies";
 
@@ -23,12 +28,28 @@ const CALL_TIMEOUT_MS = 15_000;
 const SHADOW_BUDGET_MS = 30_000;
 const CONCURRENCY = 10;
 
-export const RELEVANCE_LEVELS = [
-  "PR fluff, opinion piece, weekly roundup, landing page, or a minor update",
-  "Routine small funding round or incremental product news",
-  "Notable enterprise adoption, or a strategic funding round above $50M",
-  "Major model, infrastructure, or distribution shift in the AI stack",
+// Ordered by how much the story moves where value sits in the AI stack. Each
+// level names the effect AND concrete event anchors: Jev pattern-matches and
+// does not infer second-order strategy, so effect-only wording put a frontier
+// model launch at "no effect" (first real run, 2026-11-25).
+export const SHIFT_LEVELS = [
+  "Noise: PR, opinion, interviews, roundups, tutorials, minor or niche releases, or a single customer story with no wider implication",
+  "Incremental: a routine product update, small funding round, or adoption news that keeps every player's position as it was",
+  "Meaningful: changes one player's or one layer's position, such as a frontier model or major platform launch, a pricing or distribution move, a notable enterprise rollout, or a strategic round that shifts competition",
+  "Structural: changes where value accrues across the AI stack, such as a layer commoditizing, a player integrating up or down the stack, a new chokepoint or standard forming, or a frontier capability jump that resets competition",
 ] as const;
+
+// Where value is moving. Logged for the "where value is accruing" readout.
+export const VALUE_TO_CRITERIA: Record<string, string> = {
+  model_labs: "Toward frontier model labs",
+  compute: "Toward compute, chips, data centers, and cloud",
+  tooling: "Toward developer tooling, inference, and AI platforms",
+  applications: "Toward application and vertical AI companies",
+  incumbents: "Toward Big Tech incumbents through distribution, bundling, or existing customers",
+  physical: "Toward robotics and physical AI hardware",
+  open_source: "Toward open models and open-source ecosystems",
+  none: "No clear shift in where value accrues",
+};
 
 const EXCLUDED_INDUSTRIES =
   "defense or military, healthcare or medical, insurance, government or govtech, " +
@@ -55,18 +76,21 @@ export interface JevArticleInput {
 }
 
 export interface JevVerdict {
-  relevance: number; // probability-weighted level, 0..3
-  relevanceProbs: number[]; // P(level 0..3)
-  deal: number; // P(yes)
-  excluded: number; // P(yes)
+  shift: number; // probability-weighted SHIFT_LEVELS index, 0..3
+  shiftProbs: number[]; // P(level 0..3)
+  leverage: number; // P(changes who holds leverage)
+  valueTo: string; // most likely VALUE_TO_CRITERIA key
+  valueToProbs: Record<string, number>;
+  deal: number; // P(deal), logged only, never gates
+  excluded: number; // P(excluded industry)
   beat: string; // most likely BEAT_CRITERIA key
   beatProbs: Record<string, number>;
 }
 
-/** P(level 3: major shift). */
-export const pMajor = (v: JevVerdict) => v.relevanceProbs[3] ?? 0;
-/** P(level 2 or 3: notable or major). */
-export const pNotable = (v: JevVerdict) => (v.relevanceProbs[2] ?? 0) + (v.relevanceProbs[3] ?? 0);
+/** P(structural shift). */
+export const pStructural = (v: JevVerdict) => v.shiftProbs[3] ?? 0;
+/** P(meaningful or structural shift). */
+export const pMeaningful = (v: JevVerdict) => (v.shiftProbs[2] ?? 0) + (v.shiftProbs[3] ?? 0);
 
 export type JevResult = { verdict: JevVerdict; cost: number } | { error: string };
 
@@ -94,18 +118,28 @@ export function buildJevRequest(beat: Beat, article: JevArticleInput) {
       excerpt: article.excerpt,
     },
     questions: {
-      relevance: {
+      shift: {
         type: "score",
         instructions:
-          "How important is the news story in `title` and `excerpt` for a strategy leader tracking where value is " +
-          "shifting across the AI stack (models, compute, developer tooling, vertical apps, robotics)?",
-        criteria: [...RELEVANCE_LEVELS],
+          "How much does the news in `title` and `excerpt` change ecosystem strategy and where value accrues across " +
+          "the AI stack (frontier models, compute and infrastructure, developer tooling, applications, robotics)?",
+        criteria: [...SHIFT_LEVELS],
+      },
+      leverage: {
+        type: "noul",
+        instructions:
+          "Does the news in `excerpt` change who holds leverage, meaning pricing power, distribution, switching " +
+          "costs, or a moat, between companies or between layers of the AI stack?",
+      },
+      valueTo: {
+        type: "choice",
+        instructions: "If the news in `excerpt` shifts where value accrues in the AI stack, toward whom does it move?",
+        criteria: VALUE_TO_CRITERIA,
       },
       deal: {
         type: "noul",
         instructions:
-          "Does the story in `excerpt` describe a major funding round, a strategic partnership, a marquee enterprise " +
-          "rollout, a positioning shift, a competitive move, or a major product launch?",
+          "Is the news in `excerpt` a funding round, partnership, customer win, or product launch announcement?",
       },
       excluded: {
         type: "noul",
@@ -127,20 +161,36 @@ function num(v: unknown): number | null {
 export function parseJevResponse(body: unknown): JevVerdict {
   const answers = (body as { answers?: Record<string, Record<string, unknown>> })?.answers;
   if (!answers) throw new Error("no answers in response");
-  const rel = answers.relevance;
-  const relevance = num(rel?.score);
-  const probsRaw = (rel?.probabilities ?? {}) as Record<string, unknown>;
-  // Index by key, not position: Jev's key order varies between calls.
-  const relevanceProbs = RELEVANCE_LEVELS.map((_, i) => num(probsRaw[String(i)]) ?? 0);
+  // Index probabilities by key, not position: Jev's key order varies between calls.
+  const choiceProbs = (a: Record<string, unknown> | undefined, keys: string[]) => {
+    const raw = (a?.probabilities ?? {}) as Record<string, unknown>;
+    return Object.fromEntries(keys.map(k => [k, num(raw[k]) ?? 0]));
+  };
+  const shift = num(answers.shift?.score);
+  const shiftRaw = (answers.shift?.probabilities ?? {}) as Record<string, unknown>;
+  const shiftProbs = SHIFT_LEVELS.map((_, i) => num(shiftRaw[String(i)]) ?? 0);
+  const leverage = num(answers.leverage?.noul);
+  const valueTo = answers.valueTo?.choice;
   const deal = num(answers.deal?.noul);
   const excluded = num(answers.excluded?.noul);
-  const beatChoice = answers.beat?.choice;
-  const beatRaw = (answers.beat?.probabilities ?? {}) as Record<string, unknown>;
-  const beatProbs = Object.fromEntries(Object.keys(BEAT_CRITERIA).map(k => [k, num(beatRaw[k]) ?? 0]));
-  if (relevance === null || deal === null || excluded === null || typeof beatChoice !== "string") {
+  const beat = answers.beat?.choice;
+  if (
+    shift === null || leverage === null || deal === null || excluded === null ||
+    typeof valueTo !== "string" || typeof beat !== "string"
+  ) {
     throw new Error("missing or refused answer");
   }
-  return { relevance, relevanceProbs, deal, excluded, beat: beatChoice, beatProbs };
+  return {
+    shift,
+    shiftProbs,
+    leverage,
+    valueTo,
+    valueToProbs: choiceProbs(answers.valueTo, Object.keys(VALUE_TO_CRITERIA)),
+    deal,
+    excluded,
+    beat,
+    beatProbs: choiceProbs(answers.beat, Object.keys(BEAT_CRITERIA)),
+  };
 }
 
 async function askJev(
@@ -199,22 +249,30 @@ export async function scoreWithJev(
 }
 
 // ── Tentative Jev gate ───────────────────────────────────────────────────────
-// Mirrors the current rule's intent (strong story, or a deal that is at least
-// notable), plus the exclusion and off-beat drops the LLM does in prose. The
-// shadow log keeps raw probabilities, so the report can re-run other cut-offs.
-// The live gate keeps a lone 8, the top of the rubric's "notable" (7-8) band,
-// so the Jev gate has a matching high-bar notable path alongside major and deal.
+// Judged on the digest's lens: how much the story moves ecosystem strategy and
+// where value accrues. Deal-ness never admits a story. Exclusion and "clearly
+// unrelated" drops mirror what the scoring LLM does. The shadow log keeps raw
+// probabilities, so the report can re-run other cut-offs.
 export interface JevGateThresholds {
-  major: number; // P(major shift) that keeps a story on its own
-  notable: number; // P(notable or major) that keeps a story on its own
-  dealProb: number; // P(deal) needed for the deal path
-  dealNotable: number; // P(notable or major) needed on the deal path
+  structural: number; // P(structural shift) that keeps a story on its own
+  meaningful: number; // P(meaningful or structural) that keeps a story on its own
+  leverageProb: number; // P(changes leverage) needed on the leverage path
+  leverageMeaningful: number; // P(meaningful or structural) needed on the leverage path
 }
-export const DEFAULT_JEV_GATE: JevGateThresholds = { major: 0.5, notable: 0.8, dealProb: 0.7, dealNotable: 0.5 };
+export const DEFAULT_JEV_GATE: JevGateThresholds = {
+  structural: 0.5,
+  meaningful: 0.8,
+  leverageProb: 0.5,
+  leverageMeaningful: 0.5,
+};
 
 export function jevWouldKeep(v: JevVerdict, t: JevGateThresholds = DEFAULT_JEV_GATE): boolean {
   if (v.excluded >= 0.5 || v.beat === "unrelated") return false;
-  return pMajor(v) >= t.major || pNotable(v) >= t.notable || (v.deal >= t.dealProb && pNotable(v) >= t.dealNotable);
+  return (
+    pStructural(v) >= t.structural ||
+    pMeaningful(v) >= t.meaningful ||
+    (v.leverage >= t.leverageProb && pMeaningful(v) >= t.leverageMeaningful)
+  );
 }
 
 // ── Shadow record ────────────────────────────────────────────────────────────
@@ -324,11 +382,19 @@ type DatedItem = ShadowItem & { beat: Beat; date: string };
 function jevCutReason(v: JevVerdict): string {
   if (v.excluded >= 0.5) return "excluded industry";
   if (v.beat === "unrelated") return "unrelated to AI";
-  return "below relevance bar";
+  return "no meaningful value shift";
+}
+
+/** True when the live gate admitted the story only through its deal path (deal + 6-7). */
+export function viaDealPath(i: ShadowItem): boolean {
+  return Boolean(i.passedGate && i.llm && i.llm.dealSignal && i.llm.relevanceScore < 8);
 }
 
 export function currentStatus(i: ShadowItem): string {
-  if (i.published) return i.passedGate ? "published (gate)" : "published (floor backfill)";
+  if (i.published) {
+    if (!i.passedGate) return "published (floor backfill)";
+    return viaDealPath(i) ? "published (deal path)" : "published (gate)";
+  }
   if (!i.prescreenKept) return "dropped at pre-screen";
   if (!i.llm) return "skipped by scoring LLM";
   if (i.llm.excludedIndustry) return "LLM marked excluded";
@@ -358,10 +424,13 @@ export function buildShadowReport(
   const lines: string[] = [];
   lines.push(`# Jev shadow report`, "");
   lines.push(
-    `Model \`${JEV_MODEL}\`. Gate tested: drop if P(excluded industry) >= 0.5 or the beat choice is "unrelated"; ` +
-      `otherwise keep if P(major) >= ${t.major}, or P(notable or major) >= ${t.notable}, ` +
-      `or P(deal) >= ${t.dealProb} with P(notable or major) >= ${t.dealNotable}. ` +
-      `"Major" = major model, infra, or distribution shift; "notable" = enterprise adoption or a >$50M strategic round.`,
+    `Model \`${JEV_MODEL}\`. Lens: how much a story changes ecosystem strategy and where value accrues, not whether it is a deal. ` +
+      `Gate tested: drop if P(excluded industry) >= 0.5 or the beat choice is "unrelated"; otherwise keep if ` +
+      `P(structural) >= ${t.structural}, or P(meaningful+) >= ${t.meaningful}, or P(changes leverage) >= ${t.leverageProb} ` +
+      `with P(meaningful+) >= ${t.leverageMeaningful}.`,
+    "",
+    `Levels: structural = changes where value accrues across the stack; meaningful = moves pricing power, distribution, ` +
+      `switching costs, or a moat for specific players or one layer.`,
     "",
   );
   lines.push(`## Overview`, "");
@@ -378,6 +447,25 @@ export function buildShadowReport(
   lines.push(`| **Not published** | ${dropKeep} | ${dropCut} |`, "");
   lines.push(`Agreement: ${pct(pubKeep + dropCut, judged.length)} of judged articles.`, "");
 
+  const dealPath = judged.filter(i => i.published && viaDealPath(i));
+  lines.push(`## Live gate's deal path`, "");
+  lines.push(
+    `${dealPath.length} published stories got in only through the live gate's deal path (dealSignal with a 6-7 score). ` +
+      `Jev would keep ${dealPath.filter(i => keeps(i)).length} of them on value shift.`,
+    "",
+  );
+
+  lines.push(`## Where value is moving (stories Jev keeps)`, "");
+  const beats = [...new Set(sorted.map(r => r.beat))];
+  lines.push(`| Toward | ${beats.join(" | ")} | Total |`, `|---|${beats.map(() => "---|").join("")}---|`);
+  const kept = judged.filter(i => keeps(i));
+  for (const k of Object.keys(VALUE_TO_CRITERIA)) {
+    const perBeat = beats.map(b => kept.filter(i => i.beat === b && i.jev!.valueTo === k).length);
+    const total = perBeat.reduce((a, b) => a + b, 0);
+    if (total > 0) lines.push(`| ${VALUE_TO_CRITERIA[k]} | ${perBeat.join(" | ")} | ${total} |`);
+  }
+  lines.push("");
+
   lines.push(`## Volume per beat run`, "");
   lines.push(`| Date | Beat | Pool | Published | Jev keeps | Both |`, `|---|---|---|---|---|---|`);
   for (const r of sorted) {
@@ -389,43 +477,44 @@ export function buildShadowReport(
   lines.push("");
 
   const runs = Math.max(1, sorted.length);
-  const sweep = (label: string, field: "major" | "notable", values: number[]) => {
+  const sweep = (label: string, field: "structural" | "meaningful", values: number[]) => {
     lines.push(`## Threshold sweep: ${label} (other cut-offs at default, average per beat run)`, "");
     lines.push(`| ${label} >= | Avg Jev keeps | Of which published |`, `|---|---|---|`);
     for (const value of values) {
       const tt = { ...t, [field]: value };
-      let kept = 0;
+      let k = 0;
       let both = 0;
       for (const r of sorted) {
         for (const i of r.items) {
           if (!keeps(i, tt)) continue;
-          kept++;
+          k++;
           if (i.published) both++;
         }
       }
-      lines.push(`| ${value} | ${(kept / runs).toFixed(1)} | ${(both / runs).toFixed(1)} |`);
+      lines.push(`| ${value} | ${(k / runs).toFixed(1)} | ${(both / runs).toFixed(1)} |`);
     }
     lines.push("");
   };
-  sweep("P(major)", "major", [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]);
-  sweep("P(notable or major)", "notable", [0.6, 0.7, 0.8, 0.85, 0.9, 1.01]);
+  sweep("P(structural)", "structural", [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]);
+  sweep("P(meaningful+)", "meaningful", [0.6, 0.7, 0.8, 0.85, 0.9, 1.01]);
 
   const header = [
-    `| Date | Beat | Story | Source | P(major) | P(notable+) | P(deal) | LLM score | Why | Your call |`,
-    `|---|---|---|---|---|---|---|---|---|---|`,
+    `| Date | Beat | Story | Source | P(structural) | P(meaningful+) | P(leverage) | Value toward | LLM score | Why | Your call |`,
+    `|---|---|---|---|---|---|---|---|---|---|---|`,
   ];
   const row = (i: DatedItem, why: string) =>
-    `| ${i.date} | ${i.beat} | [${cell(i.title)}](${i.url}) | ${cell(i.source)} | ${f2(pMajor(i.jev!))} | ` +
-    `${f2(pNotable(i.jev!))} | ${f2(i.jev!.deal)} | ${i.llm ? i.llm.relevanceScore : "-"} | ${why} | |`;
+    `| ${i.date} | ${i.beat} | [${cell(i.title)}](${i.url}) | ${cell(i.source)} | ${f2(pStructural(i.jev!))} | ` +
+    `${f2(pMeaningful(i.jev!))} | ${f2(i.jev!.leverage)} | ${i.jev!.valueTo} | ` +
+    `${i.llm ? i.llm.relevanceScore : "-"} | ${why} | |`;
 
-  const missed = judged.filter(i => !i.published && keeps(i)).sort((a, b) => pMajor(b.jev!) - pMajor(a.jev!));
+  const missed = judged.filter(i => !i.published && keeps(i)).sort((a, b) => pMeaningful(b.jev!) - pMeaningful(a.jev!));
   lines.push(`## A. Jev would keep, you never saw (${missed.length})`, "");
-  lines.push(`Mark "Jev" if you'd have wanted it, "current" if dropping it was right.`, "");
+  lines.push(`Mark "Jev" if it changes where value accrues and you'd have wanted it, "current" if dropping it was right.`, "");
   lines.push(...header, ...missed.map(i => row(i, currentStatus(i))), "");
 
-  const cut = judged.filter(i => i.published && !keeps(i)).sort((a, b) => pMajor(a.jev!) - pMajor(b.jev!));
+  const cut = judged.filter(i => i.published && !keeps(i)).sort((a, b) => pMeaningful(a.jev!) - pMeaningful(b.jev!));
   lines.push(`## B. You saw it, Jev would cut (${cut.length})`, "");
-  lines.push(`Mark "Jev" if it was filler, "current" if it belonged in the digest.`, "");
+  lines.push(`Mark "Jev" if it didn't move where value accrues, "current" if it belonged in the digest.`, "");
   lines.push(...header, ...cut.map(i => row(i, `${jevCutReason(i.jev!)}; ${currentStatus(i)}`)), "");
 
   return lines.join("\n");

@@ -10,6 +10,7 @@ import {
   parseJevResponse,
   recordJevShadow,
   scoreWithJev,
+  viaDealPath,
   type JevArticleInput,
   type JevVerdict,
 } from "../lib/jev-shadow";
@@ -22,9 +23,11 @@ const article = (i: number): JevArticleInput => ({
   excerpt: `Body ${i}`,
 });
 
-const okBody = (rel: number, deal = 0.1, excluded = 0.02) => ({
+const okBody = (shift: number, deal = 0.1, excluded = 0.02) => ({
   answers: {
-    relevance: { type: "score", score: rel, probabilities: { "3": 0.5, "0": 0.1, "1": 0.1, "2": 0.3 } },
+    shift: { type: "score", score: shift, probabilities: { "3": 0.5, "0": 0.1, "1": 0.1, "2": 0.3 } },
+    leverage: { type: "noul", noul: 0.8 },
+    valueTo: { type: "choice", choice: "compute", probabilities: { compute: 0.7, model_labs: 0.2, none: 0.1 } },
     deal: { type: "noul", noul: deal },
     excluded: { type: "noul", noul: excluded },
     beat: { type: "choice", choice: "ai_labs", probabilities: { unrelated: 0.05, ai_labs: 0.9, vertical_ai: 0.05 } },
@@ -32,10 +35,13 @@ const okBody = (rel: number, deal = 0.1, excluded = 0.02) => ({
   usage: { cost: 0.00002 },
 });
 
-// probs = [fluff, routine, notable, major]
+// probs = [no effect, incremental, meaningful, structural]
 const verdict = (probs: number[], v: Partial<JevVerdict> = {}): JevVerdict => ({
-  relevance: probs.reduce((s, p, i) => s + p * i, 0),
-  relevanceProbs: probs,
+  shift: probs.reduce((s, p, i) => s + p * i, 0),
+  shiftProbs: probs,
+  leverage: 0,
+  valueTo: "none",
+  valueToProbs: { none: 1 },
   deal: 0,
   excluded: 0,
   beat: "ai_labs",
@@ -66,24 +72,31 @@ describe("isJevShadowEnabled", () => {
 });
 
 describe("request and parsing", () => {
-  test("request carries the article as state and four typed questions", () => {
+  test("request asks value-shift questions, not just deal-ness", () => {
     const req = buildJevRequest("AI Labs", article(1));
     assert.strictEqual(req.model, "typesafe/jev-1.14");
     assert.strictEqual(req.state.title, "Story 1");
     assert.strictEqual(req.state.published, "2026-11-24");
-    assert.deepStrictEqual(Object.keys(req.questions).sort(), ["beat", "deal", "excluded", "relevance"]);
-    assert.strictEqual(req.questions.relevance.criteria?.length, 4);
+    assert.deepStrictEqual(
+      Object.keys(req.questions).sort(),
+      ["beat", "deal", "excluded", "leverage", "shift", "valueTo"],
+    );
+    assert.strictEqual(req.questions.shift.criteria.length, 4);
+    assert.match(req.questions.shift.instructions, /where value accrues/);
   });
   test("probabilities are read by key, not position", () => {
     const v = parseJevResponse(okBody(2.2));
-    assert.deepStrictEqual(v.relevanceProbs, [0.1, 0.1, 0.3, 0.5]);
-    assert.strictEqual(v.relevance, 2.2);
+    assert.deepStrictEqual(v.shiftProbs, [0.1, 0.1, 0.3, 0.5]);
+    assert.strictEqual(v.shift, 2.2);
+    assert.strictEqual(v.leverage, 0.8);
+    assert.strictEqual(v.valueTo, "compute");
+    assert.strictEqual(v.valueToProbs.compute, 0.7);
+    assert.strictEqual(v.valueToProbs.physical, 0); // missing keys default to 0
     assert.strictEqual(v.beat, "ai_labs");
     assert.strictEqual(v.beatProbs.ai_labs, 0.9);
-    assert.strictEqual(v.beatProbs.physical_ai, 0); // missing keys default to 0
   });
   test("a refused or missing answer throws", () => {
-    assert.throws(() => parseJevResponse({ answers: { relevance: { type: "refusal" } } }));
+    assert.throws(() => parseJevResponse({ answers: { shift: { type: "refusal" } } }));
     assert.throws(() => parseJevResponse({}));
   });
 });
@@ -144,21 +157,37 @@ describe("recordJevShadow never throws into the beat", () => {
 });
 
 describe("jevWouldKeep", () => {
-  // Real case from the first run: 71% major, 24% fluff. Expected value 2.19,
-  // but the probability of a major shift is what the gate should read.
-  test("bimodal major story kept on P(major)", () =>
+  // Bimodal answers (71% structural, 24% no effect) average into the middle;
+  // the gate reads the probability of a structural shift instead.
+  test("bimodal structural story kept on P(structural)", () =>
     assert.strictEqual(jevWouldKeep(verdict([0.24, 0.04, 0.01, 0.71])), true));
-  test("routine story cut", () => assert.strictEqual(jevWouldKeep(verdict([0.2, 0.6, 0.1, 0.1])), false));
-  test("notable deal kept via deal path", () =>
-    assert.strictEqual(jevWouldKeep(verdict([0.1, 0.1, 0.7, 0.1], { deal: 0.9 })), true));
-  test("middling notable without a deal cut", () =>
-    assert.strictEqual(jevWouldKeep(verdict([0.2, 0.2, 0.5, 0.1], { deal: 0.3 })), false));
-  test("high-bar notable kept alone, like a lone 8 today", () =>
-    assert.strictEqual(jevWouldKeep(verdict([0.05, 0.05, 0.7, 0.2], { deal: 0.3 })), true));
-  test("excluded industry cut even if major", () =>
+  test("incremental story cut", () => assert.strictEqual(jevWouldKeep(verdict([0.2, 0.6, 0.1, 0.1])), false));
+  test("high-bar meaningful shift kept alone", () =>
+    assert.strictEqual(jevWouldKeep(verdict([0.05, 0.05, 0.7, 0.2])), true));
+  test("middling meaningful shift kept when it changes leverage", () =>
+    assert.strictEqual(jevWouldKeep(verdict([0.2, 0.2, 0.5, 0.1], { leverage: 0.85 })), true));
+  test("middling meaningful shift cut without a leverage change", () =>
+    assert.strictEqual(jevWouldKeep(verdict([0.2, 0.2, 0.5, 0.1], { leverage: 0.3 })), false));
+  test("a deal alone never gets a story in", () =>
+    assert.strictEqual(jevWouldKeep(verdict([0.3, 0.5, 0.15, 0.05], { deal: 0.99 })), false));
+  test("excluded industry cut even if structural", () =>
     assert.strictEqual(jevWouldKeep(verdict([0, 0, 0, 1], { excluded: 0.9 })), false));
-  test("unrelated beat cut even if major", () =>
+  test("unrelated beat cut even if structural", () =>
     assert.strictEqual(jevWouldKeep(verdict([0, 0, 0, 1], { beat: "unrelated" })), false));
+});
+
+describe("live gate deal path", () => {
+  const base = { url: "u", title: "t", source: "s", prescreenKept: true, published: true, passedGate: true };
+  test("a 6-7 deal story is flagged as deal path", () => {
+    const i = { ...base, llm: { relevanceScore: 7, dealSignal: true, excludedIndustry: false } };
+    assert.strictEqual(viaDealPath(i), true);
+    assert.strictEqual(currentStatus(i), "published (deal path)");
+  });
+  test("an 8+ story is on merit even with a deal", () => {
+    const i = { ...base, llm: { relevanceScore: 8, dealSignal: true, excludedIndustry: false } };
+    assert.strictEqual(viaDealPath(i), false);
+    assert.strictEqual(currentStatus(i), "published (gate)");
+  });
 });
 
 describe("shadow record and report", () => {
@@ -204,7 +233,28 @@ describe("shadow record and report", () => {
     assert.match(md, /## A\. Jev would keep, you never saw \(1\)/);
     assert.match(md, /Story 1\]\(https:\/\/example\.com\/a1\).*dropped at pre-screen/);
     assert.match(md, /## B\. You saw it, Jev would cut \(1\)/);
-    assert.match(md, /Story 2\].*below relevance bar; published \(floor backfill\)/);
+    assert.match(md, /Story 2\].*no meaningful value shift; published \(floor backfill\)/);
     assert.match(md, /Agreement: 33% of judged articles/);
+    assert.match(md, /## Where value is moving/);
+    assert.match(md, /## Live gate's deal path/);
+  });
+
+  test("where-value table counts kept stories by direction", () => {
+    const toCompute = verdict([0, 0, 0.1, 0.9], { valueTo: "compute" });
+    const r = buildShadowRecord(
+      "AI Infrastructure",
+      {
+        poolInputs: [article(10), article(11)],
+        prescreenKept: new Set(),
+        llmScored: new Map(),
+        passedGate: new Set(),
+        published: new Set(),
+      },
+      new Map([
+        [article(10).url, { verdict: toCompute, cost: 0 }],
+        [article(11).url, { verdict: toCompute, cost: 0 }],
+      ]),
+    );
+    assert.match(buildShadowReport([r]), /\| Toward compute, chips, data centers, and cloud \| 2 \| 2 \|/);
   });
 });
