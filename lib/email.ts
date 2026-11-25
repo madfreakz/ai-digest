@@ -88,17 +88,21 @@ function metaLine(a: DigestArticle): string {
 // Mirrors the site's lead story: eyebrow, serif headline, meta, summary and a
 // labeled "So what?" callout. No hero image: company-tagged stories' og:images
 // were mostly unrelated stock photos, and the site dropped them for that reason.
-function featuredBlock(a: DigestArticle, showNew: boolean): string {
+// The editor's thesis is written around this same story, so the email doesn't
+// print it above the headline as well: on a phone it pushed the lead below the
+// first screen. It stands in only when the story has no "So what?".
+function featuredBlock(a: DigestArticle, showNew: boolean, thesis?: string): string {
   const beatColor = BEAT_COLORS[a.beat] ?? ACCENT;
   const catColor  = CATEGORY_COLORS[a.category] ?? CATEGORY_COLORS.General;
   const url       = escapeHtml(a.url);
   const title     = escapeHtml(displayTitle(a.title));
   const summary   = escapeHtml(a.summary);
-  const soWhat    = a.bdRelevance?.trim()
+  const soWhatText = a.bdRelevance?.trim() || thesis?.trim() || "";
+  const soWhat    = soWhatText
     ? `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
         <tr><td style="border-left:2px solid ${beatColor};padding:2px 0 2px 12px;">
           <p style="margin:0 0 4px;color:${beatColor};font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">So what?</p>
-          <p style="margin:0;color:${TEXT_MID};font-size:15px;line-height:1.6;font-style:italic;">${escapeHtml(a.bdRelevance)}</p>
+          <p style="margin:0;color:${TEXT_MID};font-size:15px;line-height:1.6;font-style:italic;">${escapeHtml(soWhatText)}</p>
         </td></tr>
       </table>`
     : "";
@@ -231,16 +235,6 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
     .filter(Boolean)
     .join("");
 
-  // The editor's thesis sits under the masthead as the edition's dek, set like
-  // the site's: a ruled pull quote, not a shaded box.
-  const thesisBlock = digest.synthesis?.thesis
-    ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;border-collapse:collapse;">
-  <tr><td style="border-left:2px solid ${ACCENT};padding:2px 0 2px 14px;">
-    <p style="color:${TEXT_MID};font-size:16px;line-height:1.6;margin:0;font-style:italic;">${escapeHtml(digest.synthesis.thesis)}</p>
-  </td></tr>
-</table>`
-    : "";
-
   const sectionHeading = newOnly.length > 0 ? "What Shifted Today" : "By Beat";
 
   return `<!DOCTYPE html>
@@ -283,11 +277,8 @@ export function buildEmailHtml(digest: Digest, staleBeats: string[] = []): strin
           <!-- Stale-beat warning (renders only when a beat is overdue) -->
           ${staleWarningBanner(staleBeats)}
 
-          <!-- Editor's thesis -->
-          ${thesisBlock}
-
           <!-- Lead story -->
-          ${featuredBlock(featured, showNew)}
+          ${featuredBlock(featured, showNew, digest.synthesis?.thesis)}
 
           <!-- Beat-grouped "So What?" briefing -->
           <p style="color:${ACCENT};font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 14px;">${sectionHeading}</p>

@@ -125,6 +125,15 @@ describe("buildEmailHtml", () => {
     assert.doesNotMatch(row, /PM PT/);
   });
 
+  test("leads with the headline: the thesis only stands in for a missing So what?", () => {
+    assert.doesNotMatch(html, />Thesis\.</);
+    const noSoWhat = buildEmailHtml(mkDigest([
+      mkArticle({ title: "Lead story without a so-what", url: "https://example.com/lead", bdRelevance: "" }),
+    ]));
+    assert.match(noSoWhat, />Thesis\.</);
+    assert.equal(noSoWhat.indexOf(">Thesis.<") > noSoWhat.indexOf("Lead story without a so-what"), true);
+  });
+
   test("keeps small text at AA on the page background (rows no longer sit in a white card)", () => {
     assert.doesNotMatch(html, /#7A7268/i); // 4.46:1 on #FAF8F4
   });
