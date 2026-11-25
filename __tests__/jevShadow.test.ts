@@ -103,10 +103,16 @@ describe("scoreWithJev never throws", () => {
     assert.deepStrictEqual(out.get(article(2).url), { error: "socket hang up" });
   });
   test("a hanging endpoint is cut off by the overall budget", async () => {
-    // Never resolves on its own; only rejects when its signal aborts.
+    // Never resolves on its own; only rejects when its signal aborts. The ref'd
+    // timer stands in for a real socket: AbortSignal.timeout is unref'd, and
+    // Node 22's test runner cancels a test whose only pending work is unref'd.
     const fetchImpl = (_url: string, init?: RequestInit) =>
       new Promise<Response>((_, reject) => {
-        init?.signal?.addEventListener("abort", () => reject(new Error("aborted")));
+        const socket = setTimeout(() => {}, 5_000);
+        init?.signal?.addEventListener("abort", () => {
+          clearTimeout(socket);
+          reject(new Error("aborted"));
+        });
       });
     const articles = Array.from({ length: 25 }, (_, i) => article(i));
     const t0 = Date.now();
